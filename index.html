@@ -1,0 +1,4957 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>AL-FENIX NOVA - 13 Mundos Arcade</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Global touch lock and zero-scroll mobile container */
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      touch-action: none;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      background-color: #020308;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Calibrated iPhone 14 (390x844) viewport frame */
+    #device-frame {
+      position: relative;
+      width: 100%;
+      height: 100dvh;
+      max-width: 430px;
+      background: #040612;
+      overflow: hidden;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.95);
+    }
+
+    @media (min-width: 480px) {
+      #device-frame {
+        height: 94dvh;
+        max-height: 856px;
+        border-radius: 32px;
+        border: 2px solid rgba(56, 189, 248, 0.35);
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.95), 0 0 35px rgba(56, 189, 248, 0.18);
+      }
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Clean unobstructed Top HUD (no pilot portrait blocking gameplay vision) */
+    .hud-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding-top: max(10px, env(safe-area-inset-top));
+      padding-left: 10px;
+      padding-right: 10px;
+      padding-bottom: 6px;
+      background: linear-gradient(180deg, rgba(2, 4, 14, 0.92) 0%, rgba(2, 4, 14, 0.48) 76%, rgba(2, 4, 14, 0) 100%);
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    /* Bottom-right BOMBA button only; bottom-left stays completely clear */
+    .hud-bottom-right {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      padding-bottom: max(14px, env(safe-area-inset-bottom));
+      padding-right: 12px;
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    .ctrl-btn {
+      pointer-events: auto;
+      background: rgba(15, 23, 42, 0.78);
+      border: 1.5px solid rgba(251, 191, 36, 0.55);
+      color: #f8fafc;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.08s ease, background 0.12s ease, border-color 0.12s ease;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55);
+      cursor: pointer;
+    }
+
+    .ctrl-btn:active {
+      transform: scale(0.92);
+      background: rgba(245, 158, 11, 0.35);
+      border-color: #fbbf24;
+    }
+
+    .util-mini {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      pointer-events: auto;
+    }
+
+    .bomb-pill {
+      height: 38px;
+      padding: 0 13px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+    }
+
+    .ship-card {
+      background: rgba(15, 23, 42, 0.88);
+      border: 2px solid rgba(71, 85, 105, 0.55);
+      border-radius: 16px;
+      padding: 7px 5px;
+      transition: all 0.14s ease;
+      cursor: pointer;
+    }
+
+    .ship-card.selected {
+      transform: translateY(-2px) scale(1.02);
+      background: rgba(15, 23, 42, 0.98);
+    }
+
+    .ship-card[data-ship="xverde"].selected {
+      border-color: #10b981;
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.45);
+    }
+
+    .ship-card[data-ship="adarapaz"].selected {
+      border-color: #f472b6;
+      box-shadow: 0 0 16px rgba(244, 114, 182, 0.45);
+    }
+
+    .ship-card[data-ship="elizdark"].selected {
+      border-color: #38bdf8;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.45);
+    }
+
+    .btn-phoenix {
+      background: linear-gradient(135deg, #10b981 0%, #0ea5e9 50%, #ec4899 100%);
+      box-shadow: 0 0 24px rgba(14, 165, 233, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.45);
+      transition: transform 0.12s ease;
+      cursor: pointer;
+    }
+
+    .btn-phoenix:active {
+      transform: scale(0.96);
+    }
+
+    @keyframes phoenixFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-4px); }
+    }
+
+    .animate-phoenix {
+      animation: phoenixFloat 2.4s ease-in-out infinite;
+    }
+
+    @keyframes speakerPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+
+    .speaker-active {
+      animation: speakerPulse 1.1s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body>
+  <div id="device-frame">
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- CLEAN TOP HUD (NO PORTRAIT IN CORNER FOR FULL VISIBILITY) -->
+    <div class="hud-top">
+      <div class="flex items-center justify-between gap-1.5">
+        <!-- Ship Name & +15% Increased Max HP Bar -->
+        <div class="flex flex-col flex-1 min-w-0 max-w-[156px]">
+          <div class="flex justify-between items-center text-[9px] font-extrabold tracking-wider mb-0.5">
+            <span id="ship-hud-name" class="text-emerald-300 truncate max-w-[86px]">XVERDE</span>
+            <span id="hp-text" class="text-white tabular-nums">115/115</span>
+          </div>
+          <div class="w-full h-3 bg-slate-950/95 rounded-full border border-slate-600/90 overflow-hidden p-[1px]">
+            <div id="hp-bar" class="h-full rounded-full bg-gradient-to-r from-emerald-400 via-cyan-400 to-sky-400 transition-all duration-150" style="width: 100%;"></div>
+          </div>
+        </div>
+
+        <!-- World & Level Indicator (MUNDO 01/13 to 13/13) -->
+        <div class="px-1.5 py-0.5 rounded-lg bg-slate-900/85 border border-cyan-400/35 text-center shrink-0">
+          <span id="world-name-hud" class="text-[7px] uppercase tracking-wider text-cyan-300 block leading-tight truncate max-w-[88px]">FOSA ESMERALDA</span>
+          <span id="level-text" class="text-[10px] font-black text-amber-300 leading-none">MUNDO 01/13</span>
+        </div>
+
+        <!-- Score + Mute + Pause -->
+        <div class="flex items-center gap-1 shrink-0">
+          <div class="text-right mr-0.5">
+            <span class="text-[7px] uppercase tracking-wider text-slate-400 block leading-tight">PTS</span>
+            <span id="score-text" class="text-[11px] font-black text-white leading-none tabular-nums">000000</span>
+          </div>
+          <button id="btn-mute" class="ctrl-btn util-mini" title="Silenciar / Activar Audio" aria-label="Audio">
+            <span id="mute-icon" class="text-[11px]">🔊</span>
+          </button>
+          <button id="btn-pause" class="ctrl-btn util-mini" title="Pausar" aria-label="Pausa">
+            <span class="text-[10px] font-black">⏸</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Boss Health Bar (or Asteroid Belt Progress Bar) -->
+      <div id="boss-bar-wrap" class="hidden mt-1.5 bg-slate-950/90 border border-rose-500/60 rounded-lg px-2 py-1">
+        <div class="flex justify-between items-center text-[9px] font-black tracking-wide mb-0.5">
+          <span id="boss-title" class="text-rose-400 uppercase truncate max-w-[245px]">KRAKEN ABISAL</span>
+          <span id="boss-hp-pct" class="text-amber-300">100%</span>
+        </div>
+        <div class="w-full h-2 bg-slate-900 rounded-full overflow-hidden">
+          <div id="boss-hp-fill" class="h-full bg-gradient-to-r from-rose-600 via-orange-500 to-amber-300 transition-all duration-100" style="width: 100%;"></div>
+        </div>
+      </div>
+
+      <!-- Active Temporary Power-ups -->
+      <div id="active-buffs-hud" class="flex flex-wrap justify-center gap-1 mt-1.5 min-h-[16px]"></div>
+    </div>
+
+    <!-- BOTTOM-RIGHT BOMBA BUTTON -->
+    <div class="hud-bottom-right" id="bottom-hud">
+      <button id="btn-bomb" class="ctrl-btn bomb-pill border-amber-400/70 text-amber-300" aria-label="Bomba">
+        <span>💥 BOMBA: <strong id="bomb-count" class="text-white">2</strong></span>
+      </button>
+    </div>
+
+    <!-- BOSS PORTRAIT DIALOGUE OVERLAY (ARRIVAL NORMAL PORTRAIT & DEFEAT INJURED PORTRAIT) -->
+    <div id="boss-dialogue-overlay" class="hidden absolute inset-0 z-30 flex flex-col justify-between bg-slate-950/78 px-3.5 pt-16 pb-6">
+      <div class="flex flex-col items-center">
+        <span id="boss-dlg-badge" class="px-3 py-0.5 rounded-full bg-rose-500/20 border border-rose-400/60 text-rose-300 text-[9px] font-black tracking-widest uppercase mb-2.5">
+          ⚠️ ALERTA DE LEVIATÁN • MUNDO 01
+        </span>
+
+        <div id="boss-dlg-card" class="flex flex-col items-center p-2.5 rounded-2xl bg-slate-900/95 border-2 border-rose-500/75 shadow-[0_0_28px_rgba(244,63,94,0.35)] speaker-active">
+          <canvas id="boss-portrait-canvas" width="116" height="116" class="rounded-xl border border-slate-700 bg-slate-950"></canvas>
+          <span id="boss-dlg-status" class="text-[9px] font-extrabold uppercase tracking-wider text-amber-300 mt-1.5">
+            Amenaza Detectada
+          </span>
+        </div>
+      </div>
+
+      <div id="boss-dlg-box" class="w-full bg-slate-950/95 border-2 border-rose-500/75 rounded-2xl p-3.5 shadow-[0_0_28px_rgba(244,63,94,0.32)] cursor-pointer">
+        <div class="flex items-center justify-between mb-1.5">
+          <span id="boss-dlg-name" class="text-xs font-black uppercase tracking-wider text-rose-400">KRAKEN ABISAL</span>
+          <span id="boss-dlg-phase-tag" class="text-[9px] font-extrabold uppercase px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-500/40">
+            JEFE DE SECTOR
+          </span>
+        </div>
+        <p id="boss-dlg-text" class="text-xs sm:text-sm font-semibold text-slate-100 leading-relaxed min-h-[54px]"></p>
+        <div class="flex items-center justify-between mt-2 pt-1.5 border-t border-slate-800/90 text-[10px] text-amber-300 font-bold">
+          <span id="boss-dlg-hint">Toca para continuar...</span>
+          <button id="btn-boss-dlg-skip" type="button" class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 hover:text-white text-[9px] font-extrabold uppercase cursor-pointer">
+            Continuar ⏭
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BETWEEN-WORLD CONVERSATION OVERLAY (SPEAKER PORTRAIT + BOTTOM TYPEWRITER + LOW SERIOUS MUSIC) -->
+    <div id="conversation-overlay" class="hidden absolute inset-0 z-30 flex flex-col justify-between bg-slate-950/78 px-3 pt-16 pb-5">
+      <div class="flex flex-col items-center">
+        <span class="px-2.5 py-0.5 rounded-full bg-slate-900/90 border border-slate-600/80 text-[9px] font-black tracking-widest text-amber-300 uppercase mb-2">
+          Comunicaciones del Escuadrón • <span id="conv-sector-label">MUNDO 01 → 02</span>
+        </span>
+
+        <div class="grid grid-cols-3 gap-2 w-full max-w-[340px]" id="conv-portraits-grid">
+          <div id="conv-slot-xverde" class="flex flex-col items-center p-1.5 rounded-2xl bg-slate-900/85 border border-slate-700/70 transition-all">
+            <canvas id="conv-img-xverde" width="76" height="76" class="rounded-xl"></canvas>
+            <span class="text-[9px] font-black text-emerald-300 mt-1">XVERDE</span>
+          </div>
+          <div id="conv-slot-adarapaz" class="flex flex-col items-center p-1.5 rounded-2xl bg-slate-900/85 border border-slate-700/70 transition-all">
+            <canvas id="conv-img-adarapaz" width="76" height="76" class="rounded-xl"></canvas>
+            <span class="text-[9px] font-black text-pink-300 mt-1">ADA-Ra-Paz</span>
+          </div>
+          <div id="conv-slot-elizdark" class="flex flex-col items-center p-1.5 rounded-2xl bg-slate-900/85 border border-slate-700/70 transition-all">
+            <canvas id="conv-img-elizdark" width="76" height="76" class="rounded-xl"></canvas>
+            <span class="text-[9px] font-black text-sky-300 mt-1">Eliz-Dark-Abeth</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="conv-box" class="w-full bg-slate-950/95 border-2 border-cyan-400/70 rounded-2xl p-3.5 shadow-[0_0_28px_rgba(14,165,233,0.28)] cursor-pointer">
+        <div class="flex items-center justify-between mb-1.5">
+          <span id="conv-speaker-name" class="text-xs font-black uppercase tracking-wider text-emerald-300">XVERDE</span>
+          <span id="conv-line-counter" class="text-[10px] font-bold text-slate-400">1 / 3</span>
+        </div>
+        <p id="conv-typewriter-text" class="text-xs sm:text-sm font-semibold text-slate-100 leading-relaxed min-h-[54px]"></p>
+        <div class="flex items-center justify-between mt-2 pt-1.5 border-t border-slate-800/90 text-[10px] text-cyan-300 font-bold">
+          <span id="conv-hint">Toca para avanzar...</span>
+          <button id="btn-conv-skip" type="button" class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 hover:text-white text-[9px] font-extrabold uppercase cursor-pointer">
+            Saltar ⏭
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BETWEEN-WORLD SHIP SWITCH MODAL (AFTER CONVERSATION -> RELAY FLY-OUT / FLY-IN) -->
+    <div id="hangar-modal" class="hidden absolute inset-x-3 top-24 z-30 bg-slate-950/95 border-2 border-cyan-400/65 rounded-2xl p-3.5 text-center shadow-[0_0_35px_rgba(34,211,238,0.32)]">
+      <div class="flex items-center justify-between mb-1">
+        <span class="px-2 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/50 text-amber-300 text-[9px] font-black uppercase tracking-wider">
+          Relevo de Escuadrón
+        </span>
+        <span id="hangar-timer-badge" class="text-[10px] font-black text-cyan-300">
+          Listo para despegar
+        </span>
+      </div>
+
+      <h3 class="text-xs font-black text-white mb-0.5">CAMBIO DE NAVE ENTRE MUNDOS</h3>
+      <p id="hangar-next-world" class="text-[10px] text-slate-300 mb-2.5">Siguiente: Mundo 02 - ABISMO CARMESÍ</p>
+
+      <div class="grid grid-cols-3 gap-1.5 mb-3">
+        <div class="ship-card hangar-card" data-ship="xverde" id="hangar-card-xverde">
+          <canvas id="hangar-prev-xverde" width="66" height="46" class="mx-auto mb-0.5"></canvas>
+          <div class="text-[10px] font-black text-emerald-400 leading-tight">XVERDE</div>
+          <div class="text-[8px] text-slate-300">HP 115 • Vel +++</div>
+        </div>
+        <div class="ship-card hangar-card" data-ship="adarapaz" id="hangar-card-adarapaz">
+          <canvas id="hangar-prev-adarapaz" width="66" height="46" class="mx-auto mb-0.5"></canvas>
+          <div class="text-[10px] font-black text-pink-400 leading-tight">ADA-Ra-Paz</div>
+          <div class="text-[8px] text-slate-300">HP 110 • Doble Haz</div>
+        </div>
+        <div class="ship-card hangar-card" data-ship="elizdark" id="hangar-card-elizdark">
+          <canvas id="hangar-prev-elizdark" width="66" height="46" class="mx-auto mb-0.5"></canvas>
+          <div class="text-[9px] font-black text-sky-400 leading-tight">Eliz-Dark-Abeth</div>
+          <div class="text-[8px] text-slate-300">HP 150 • Plasma</div>
+        </div>
+      </div>
+
+      <button id="btn-hangar-continue" class="btn-phoenix w-full py-2.5 rounded-xl text-white font-black text-xs tracking-wider uppercase cursor-pointer">
+        ▶ DESPEGAR AL SIGUIENTE MUNDO
+      </button>
+    </div>
+
+    <!-- EMERGENCY INFIRMARY CHAT OVERLAY (INJURED PORTRAIT + SAD MUSIC + RETRY SAME WORLD) -->
+    <div id="infirmary-overlay" class="hidden absolute inset-0 z-30 flex flex-col justify-between bg-slate-950/94 px-3.5 pt-14 pb-5">
+      <div class="flex flex-col items-center">
+        <span class="px-3 py-0.5 rounded-full bg-rose-500/20 border border-rose-400/60 text-rose-300 text-[9px] font-black tracking-widest uppercase mb-2">
+          🚨 Alerta de Impacto • Canal de Enfermería
+        </span>
+
+        <div class="flex items-center gap-3 w-full bg-slate-900/95 border border-rose-500/45 rounded-2xl p-2.5">
+          <canvas id="injured-pilot-canvas" width="92" height="92" class="rounded-xl border border-rose-400/50 bg-slate-950 shrink-0"></canvas>
+          <div class="text-left">
+            <div id="injured-pilot-name" class="text-sm font-black text-rose-300">XVERDE</div>
+            <div id="injured-pilot-status" class="text-[10px] font-bold text-amber-300">Estado: Herido — Camino a Enfermería</div>
+            <p class="text-[10px] text-slate-300 mt-1 leading-snug">
+              Recuperación médica activa. Podrás volver a intentarlo desde el inicio de este mismo mundo.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div id="infirmary-chat-list" class="flex-1 my-2.5 overflow-y-auto space-y-2 pr-1"></div>
+
+      <div class="w-full">
+        <button id="btn-infirmary-retry" class="hidden btn-phoenix w-full py-3 rounded-2xl text-white font-black text-xs tracking-wider uppercase cursor-pointer">
+          🏥 VOLVER A LA NAVE (REINTENTAR ESTE MUNDO)
+        </button>
+        <div id="infirmary-typing-indicator" class="text-center text-[10px] font-bold text-rose-300/90 py-2">
+          Transmitiendo reporte médico...
+        </div>
+      </div>
+    </div>
+
+    <!-- START SCREEN -->
+    <div id="screen-start" class="absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-950/92 px-4 text-center overflow-y-auto py-4">
+      <div class="flex items-center gap-2 mb-1.5">
+        <span class="px-3 py-0.5 rounded-full bg-cyan-500/15 border border-cyan-400/40 text-cyan-300 text-[9px] font-extrabold tracking-widest uppercase">
+          13 Mundos • 10 Leviatanes • 3 Asteroides
+        </span>
+        <button id="btn-start-audio" class="px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/50 text-amber-300 text-[9px] font-extrabold uppercase cursor-pointer">
+          🎵 Tema Inicio
+        </button>
+      </div>
+
+      <h1 class="text-3xl sm:text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-cyan-200 to-pink-400 drop-shadow-[0_4px_18px_rgba(56,189,248,0.45)] mb-1 animate-phoenix">
+        AL-FENIX NOVA
+      </h1>
+
+      <p class="text-[11px] text-slate-300 leading-snug max-w-[325px] mb-2.5">
+        Vuela libremente por toda la pantalla, supera 13 mundos con cinturones de asteroides y cambia de nave tras cada sector.
+      </p>
+
+      <!-- 3 SHIPS & PILOTS SELECTOR (+15% BASE HP) -->
+      <div class="w-full max-w-[348px] mb-3">
+        <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 block mb-1.5">Selecciona Nave y Piloto</span>
+        <div class="grid grid-cols-3 gap-2">
+          <!-- Ship 1: XVERDE (115 HP) -->
+          <div class="ship-card selected" data-ship="xverde" id="card-xverde">
+            <div class="flex items-center justify-center gap-1 mb-0.5">
+              <canvas id="preview-xverde" width="44" height="44"></canvas>
+              <canvas id="pilot-mini-xverde" width="40" height="40" class="rounded-lg"></canvas>
+            </div>
+            <div class="text-[10px] font-black text-emerald-400 leading-tight">XVERDE</div>
+            <div class="text-[8px] text-slate-300 font-semibold">Fuego Rápido</div>
+            <div class="w-full bg-slate-800 h-1 rounded-full mt-1 overflow-hidden">
+              <div class="bg-emerald-400 h-full" style="width: 85%"></div>
+            </div>
+            <div class="text-[8px] text-emerald-300/90 mt-0.5">HP 115 • Vel +++</div>
+          </div>
+
+          <!-- Ship 2: ADA-Ra-Paz (110 HP) -->
+          <div class="ship-card" data-ship="adarapaz" id="card-adarapaz">
+            <div class="flex items-center justify-center gap-1 mb-0.5">
+              <canvas id="preview-adarapaz" width="44" height="44"></canvas>
+              <canvas id="pilot-mini-adarapaz" width="40" height="40" class="rounded-lg"></canvas>
+            </div>
+            <div class="text-[10px] font-black text-pink-400 leading-tight">ADA-Ra-Paz</div>
+            <div class="text-[8px] text-slate-300 font-semibold">Doble Haz</div>
+            <div class="w-full bg-slate-800 h-1 rounded-full mt-1 overflow-hidden">
+              <div class="bg-pink-400 h-full" style="width: 88%"></div>
+            </div>
+            <div class="text-[8px] text-pink-300/90 mt-0.5">HP 110 • Ágil +++</div>
+          </div>
+
+          <!-- Ship 3: Eliz-Dark-Abeth (150 HP) -->
+          <div class="ship-card" data-ship="elizdark" id="card-elizdark">
+            <div class="flex items-center justify-center gap-1 mb-0.5">
+              <canvas id="preview-elizdark" width="44" height="44"></canvas>
+              <canvas id="pilot-mini-elizdark" width="40" height="40" class="rounded-lg"></canvas>
+            </div>
+            <div class="text-[9px] font-black text-sky-400 leading-tight">Eliz-Dark-Abeth</div>
+            <div class="text-[8px] text-slate-300 font-semibold">Plasma Pesado</div>
+            <div class="w-full bg-slate-800 h-1 rounded-full mt-1 overflow-hidden">
+              <div class="bg-sky-400 h-full" style="width: 98%"></div>
+            </div>
+            <div class="text-[8px] text-sky-300/90 mt-0.5">HP 150 • Daño +++</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Compact Power-up Legend (6 capsules) -->
+      <div class="grid grid-cols-6 gap-1 w-full max-w-[356px] mb-3.5 text-[8.5px]">
+        <div class="bg-slate-900/90 border border-amber-400/35 rounded-xl p-1 flex flex-col items-center">
+          <span class="w-4 h-4 rounded-full bg-amber-500/20 text-amber-300 font-black text-[9px] flex items-center justify-center mb-0.5">M</span>
+          <span class="font-bold text-slate-200">Misiles</span>
+        </div>
+        <div class="bg-slate-900/90 border border-cyan-400/35 rounded-xl p-1 flex flex-col items-center">
+          <span class="w-4 h-4 rounded-full bg-cyan-500/20 text-cyan-300 font-black text-[9px] flex items-center justify-center mb-0.5">E</span>
+          <span class="font-bold text-slate-200">Escudo</span>
+        </div>
+        <div class="bg-slate-900/90 border border-fuchsia-400/35 rounded-xl p-1 flex flex-col items-center">
+          <span class="w-4 h-4 rounded-full bg-fuchsia-500/20 text-fuchsia-300 font-black text-[9px] flex items-center justify-center mb-0.5">C</span>
+          <span class="font-bold text-slate-200">Aliado</span>
+        </div>
+        <div class="bg-slate-900/90 border border-rose-400/35 rounded-xl p-1 flex flex-col items-center">
+          <span class="w-4 h-4 rounded-full bg-rose-500/20 text-rose-300 font-black text-[9px] flex items-center justify-center mb-0.5">W</span>
+          <span class="font-bold text-slate-200">Triple</span>
+        </div>
+        <div class="bg-slate-900/90 border border-orange-400/35 rounded-xl p-1 flex flex-col items-center">
+          <span class="w-4 h-4 rounded-full bg-orange-500/20 text-orange-300 font-black text-[9px] flex items-center justify-center mb-0.5">B</span>
+          <span class="font-bold text-slate-200">Bomba</span>
+        </div>
+        <div class="bg-slate-900/90 border border-emerald-400/35 rounded-xl p-1 flex flex-col items-center">
+          <span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-300 font-black text-[9px] flex items-center justify-center mb-0.5">+</span>
+          <span class="font-bold text-slate-200">Vida</span>
+        </div>
+      </div>
+
+      <button id="btn-start" class="btn-phoenix w-full max-w-[260px] py-3 rounded-2xl text-white font-black text-base tracking-wider uppercase cursor-pointer">
+        ▶ DESPEGAR
+      </button>
+    </div>
+
+    <!-- PAUSE SCREEN -->
+    <div id="screen-pause" class="hidden absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-950/85 px-6 text-center">
+      <h2 class="text-2xl font-black text-cyan-300 mb-2">PAUSA</h2>
+      <p class="text-xs text-slate-300 mb-6">Tu nave mantiene posición en órbita.</p>
+      <div class="flex flex-col gap-3 w-full max-w-[220px]">
+        <button id="btn-resume" class="btn-phoenix py-3.5 rounded-xl text-white font-extrabold text-sm uppercase cursor-pointer">
+          Continuar
+        </button>
+        <button id="btn-change-ship" class="py-3 rounded-xl bg-slate-800 border border-slate-600 text-slate-200 font-bold text-xs uppercase cursor-pointer">
+          Cambiar Nave / Reiniciar
+        </button>
+      </div>
+    </div>
+
+    <!-- VICTORY / GAME OVER SUMMARY SCREEN -->
+    <div id="screen-end" class="hidden absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-950/94 px-6 text-center">
+      <span id="end-badge" class="text-[11px] font-extrabold tracking-widest text-amber-300 uppercase mb-1">MISIÓN COMPLETADA</span>
+      <h2 id="end-title" class="text-3xl font-black text-white mb-4">¡VICTORIA SUPREMA!</h2>
+
+      <div class="w-full max-w-[265px] bg-slate-900/90 border border-slate-700/80 rounded-2xl p-4 mb-6 space-y-2.5">
+        <div class="flex justify-between items-center text-xs">
+          <span class="text-slate-400">Nave Piloteada</span>
+          <span id="end-ship" class="font-black text-xs text-cyan-300">XVERDE</span>
+        </div>
+        <div class="flex justify-between items-center text-xs">
+          <span class="text-slate-400">Puntuación Final</span>
+          <span id="end-score" class="font-black text-base text-amber-300">000000</span>
+        </div>
+        <div class="flex justify-between items-center text-xs">
+          <span class="text-slate-400">Mundo Alcanzado</span>
+          <span id="end-level" class="font-black text-sm text-cyan-300">13 / 13</span>
+        </div>
+        <div class="flex justify-between items-center text-xs border-t border-slate-800 pt-2">
+          <span class="text-slate-400">Récord Histórico</span>
+          <span id="end-best" class="font-black text-sm text-emerald-400">000000</span>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2.5 w-full max-w-[250px]">
+        <button id="btn-replay" class="btn-phoenix w-full py-3.5 rounded-2xl text-white font-black text-sm tracking-wider uppercase cursor-pointer">
+          ↻ VOLVER A JUGAR
+        </button>
+        <button id="btn-menu-end" class="w-full py-2.5 rounded-xl bg-slate-800/90 border border-slate-600 text-slate-300 font-bold text-xs uppercase cursor-pointer">
+          Elegir Otra Nave
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * AL-FENIX NOVA — 13 WORLDS EDITION
+     * Complete self-contained vertical shoot-'em-up calibrated for iPhone 14 (390x844 / 100dvh).
+     */
+
+    // =========================================================================
+    // 1. THREE SHIPS & THREE PILOTS CATALOG (+15% BASE HEALTH)
+    // =========================================================================
+    const SHIPS_CATALOG = {
+      xverde: {
+        id: 'xverde',
+        name: 'XVERDE',
+        pilotName: 'XVERDE',
+        hudColor: 'text-emerald-300',
+        maxHp: 115, // +15% health
+        speed: 365,
+        fireRate: 0.142,
+        bulletDmg: 14,
+        twinBase: false,
+        hullPrimary: '#10b981',
+        hullSecondary: '#047857',
+        hullTrim: '#a7f3d0',
+        cockpit: '#fef08a',
+        flameOuter: '#059669',
+        flameInner: '#6ee7b7',
+        laserColor: '#34d399',
+        laserCore: '#ecfdf5',
+        infirmaryLines: [
+          'Ugh... me dieron de lleno. La nave se partió y estoy bastante golpeado.',
+          'Voy directo a la enfermería a que me revisen y me recupere bien.',
+          'Pero ni se les ocurra pensar que me rindo. En cuanto esté listo, vuelvo a la nave y lo intento otra vez.'
+        ]
+      },
+      adarapaz: {
+        id: 'adarapaz',
+        name: 'ADA-Ra-Paz',
+        pilotName: 'ADA-Ra-Paz',
+        hudColor: 'text-pink-300',
+        maxHp: 110, // +15% health
+        speed: 385,
+        fireRate: 0.175,
+        bulletDmg: 10,
+        twinBase: true,
+        hullPrimary: '#f472b6',
+        hullSecondary: '#db2777',
+        hullTrim: '#fbcfe8',
+        cockpit: '#38bdf8',
+        flameOuter: '#e11d48',
+        flameInner: '#f9a8d4',
+        laserColor: '#f472b6',
+        laserCore: '#fdf2f8',
+        infirmaryLines: [
+          '¡Auch...! Me pegaron muy fuerte y la nave explotó... estoy un poco golpeada.',
+          'Me toca pasar por la enfermería para curarme y agarrar fuerzas de nuevo.',
+          '¡No me voy a rendir! Voy a volver a la nave para intentarlo otra vez y ayudar a salvar la galaxia.'
+        ]
+      },
+      elizdark: {
+        id: 'elizdark',
+        name: 'Eliz-Dark-Abeth',
+        pilotName: 'Eliz-Dark-Abeth',
+        hudColor: 'text-sky-300',
+        maxHp: 150, // +15% health
+        speed: 340,
+        fireRate: 0.18,
+        bulletDmg: 21,
+        twinBase: false,
+        hullPrimary: '#0f172a',
+        hullSecondary: '#1e293b',
+        hullTrim: '#0ea5e9',
+        cockpit: '#38bdf8',
+        flameOuter: '#1d4ed8',
+        flameInner: '#7dd3fc',
+        laserColor: '#38bdf8',
+        laserCore: '#f0f9ff',
+        infirmaryLines: [
+          'El blindaje cedió... estoy golpeada y el impacto me dejó aturdida.',
+          'Me retiro un momento a la enfermería a recuperarme antes de que sea tarde.',
+          'No me rindo. Volveré a la nave y lo volveré a intentar hasta que esta misión termine.'
+        ]
+      }
+    };
+
+    // =========================================================================
+    // 2. THIRTEEN WORLDS (10 AQUATIC BOSSES + 3 ASTEROID BELTS IN WORLDS 3, 6, 9)
+    //    Each world has distinctive colors, planets/moons/eclipses, and chiptunes
+    // =========================================================================
+    const LEVELS_DATA = [
+      {
+        num: 1,
+        world: 'FOSA ESMERALDA',
+        isAsteroidWorld: false,
+        bgTop: '#042622',
+        bgBot: '#02090d',
+        nebulaA: 'rgba(16, 185, 129, 0.20)',
+        nebulaB: 'rgba(6, 182, 212, 0.15)',
+        planetStyle: 'ocean_ring',
+        planetColor1: '#10b981',
+        planetColor2: '#06b6d4',
+        starTint: '#a7f3d0',
+        bossName: 'KRAKEN ABISAL (PULPO GIGANTE)',
+        bossType: 'octopus',
+        bossHp: 1400,
+        bossColor1: '#ec4899',
+        bossColor2: '#8b5cf6',
+        arrivalQuote: '¡Ocho tentáculos bastarán para aplastar tu chispa en la oscuridad!',
+        defeatQuote: '¡Las profundidades no mueren... mi enjambre terminará lo que empecé!',
+        tempo: 152,
+        scale: [329.63, 392.00, 440.00, 493.88, 587.33, 659.25, 739.99, 783.99],
+        lead:    [0, 3, 4, 5, 4, 3, 1, 3, 4, 5, 7, 5, 4, 3, 2, 3],
+        harmony: [0, 1, 2, 3, 2, 1, 0, 1, 2, 3, 4, 3, 2, 1, 0, 1],
+        arp:     [0, 2, 4, 7, 4, 2, 1, 3, 2, 4, 5, 7, 5, 4, 2, 3],
+        bass:    [0, 0, 3, 0, 4, 0, 3, 0, 1, 1, 4, 1, 3, 3, 2, 3]
+      },
+      {
+        num: 2,
+        world: 'ABISMO CARMESÍ',
+        isAsteroidWorld: false,
+        bgTop: '#2e0814',
+        bgBot: '#0a0206',
+        nebulaA: 'rgba(225, 29, 72, 0.22)',
+        nebulaB: 'rgba(249, 115, 22, 0.15)',
+        planetStyle: 'gas_giant',
+        planetColor1: '#e11d48',
+        planetColor2: '#fb923c',
+        starTint: '#fecdd3',
+        bossName: 'MEGALODÓN CIBERNÉTICO',
+        bossType: 'megalodon',
+        bossHp: 1850,
+        bossColor1: '#38bdf8',
+        bossColor2: '#1d4ed8',
+        arrivalQuote: 'Mandíbulas reforzadas y radar térmico activo. No hay escapatoria de esta fosa.',
+        defeatQuote: '¡Un cascarón roto más... el depredador alfa del abismo siempre regresa!',
+        tempo: 158,
+        scale: [293.66, 329.63, 349.23, 392.00, 440.00, 466.16, 523.25, 587.33],
+        lead:    [0, 0, 4, 5, 4, 2, 0, 2, 3, 4, 5, 7, 5, 4, 2, 1],
+        harmony: [0, 0, 2, 3, 2, 0, 0, 0, 1, 2, 3, 4, 3, 2, 0, 0],
+        arp:     [0, 2, 4, 5, 4, 2, 0, 4, 3, 5, 7, 5, 4, 2, 1, 0],
+        bass:    [0, 0, 0, 4, 0, 0, 0, 5, 3, 3, 3, 4, 2, 2, 1, 1]
+      },
+      {
+        num: 3,
+        world: 'CINTURÓN DE METEOROS ÍGNEOS',
+        isAsteroidWorld: true,
+        asteroidTheme: 'igneous',
+        bgTop: '#2c1504',
+        bgBot: '#0c0501',
+        nebulaA: 'rgba(245, 158, 11, 0.22)',
+        nebulaB: 'rgba(234, 88, 12, 0.18)',
+        planetStyle: 'volcanic_moon',
+        planetColor1: '#f59e0b',
+        planetColor2: '#dc2626',
+        starTint: '#fde68a',
+        tempo: 168,
+        scale: [220.00, 246.94, 261.63, 329.63, 349.23, 440.00, 493.88, 523.25],
+        lead:    [0, 2, 3, 5, 3, 2, 0, 3, 5, 7, 5, 4, 3, 2, 1, 0],
+        harmony: [0, 0, 1, 3, 1, 0, 0, 1, 3, 5, 3, 2, 1, 0, 0, 0],
+        arp:     [0, 3, 5, 7, 5, 3, 0, 3, 2, 4, 6, 7, 6, 4, 2, 0],
+        bass:    [0, 0, 3, 3, 0, 0, 4, 4, 2, 2, 5, 5, 3, 3, 1, 0]
+      },
+      {
+        num: 4,
+        world: 'PANTANO ESTELAR VIOLETA',
+        isAsteroidWorld: false,
+        bgTop: '#1d0936',
+        bgBot: '#070212',
+        nebulaA: 'rgba(168, 85, 247, 0.22)',
+        nebulaB: 'rgba(132, 204, 22, 0.14)',
+        planetStyle: 'cracked_moon',
+        planetColor1: '#a855f7',
+        planetColor2: '#84cc16',
+        starTint: '#e9d5ff',
+        bossName: 'COCODRILO LEVIATÁN',
+        bossType: 'crocodile',
+        bossHp: 2300,
+        bossColor1: '#10b981',
+        bossColor2: '#eab308',
+        arrivalQuote: 'Piel blindada y cola de choque. ¡Veremos si tu nave aguanta la mordida!',
+        defeatQuote: '¡Maldición... subestimé la furia de quienes defienden las estrellas!',
+        tempo: 150,
+        scale: [196.00, 233.08, 261.63, 293.66, 349.23, 392.00, 466.16, 523.25],
+        lead:    [5, 3, 5, 6, 5, 3, 2, 3, 5, 7, 6, 5, 3, 2, 1, 0],
+        harmony: [3, 1, 3, 4, 3, 1, 0, 1, 3, 5, 4, 3, 1, 0, 0, 0],
+        arp:     [0, 1, 3, 5, 6, 5, 3, 1, 2, 3, 5, 7, 5, 3, 2, 1],
+        bass:    [0, 3, 0, 3, 2, 4, 2, 4, 1, 3, 1, 3, 0, 2, 1, 0]
+      },
+      {
+        num: 5,
+        world: 'CORRIENTE COBALTO',
+        isAsteroidWorld: false,
+        bgTop: '#071b40',
+        bgBot: '#020714',
+        nebulaA: 'rgba(37, 99, 235, 0.24)',
+        nebulaB: 'rgba(56, 189, 248, 0.18)',
+        planetStyle: 'twin_planets',
+        planetColor1: '#2563eb',
+        planetColor2: '#38bdf8',
+        starTint: '#bae6fd',
+        bossName: 'MANTARRAYA ABISAL',
+        bossType: 'mantaray',
+        bossHp: 2750,
+        bossColor1: '#a855f7',
+        bossColor2: '#22d3ee',
+        arrivalQuote: 'Planeo silencioso y descarga de marea. ¡Te borraré del mapa estelar!',
+        defeatQuote: '¡La marea oscura ya cubrió más de medio sector... no llegarás al núcleo!',
+        tempo: 160,
+        scale: [246.94, 293.66, 329.63, 369.99, 440.00, 493.88, 587.33, 659.25],
+        lead:    [5, 6, 7, 6, 5, 3, 4, 5, 3, 4, 5, 4, 3, 1, 2, 3],
+        harmony: [3, 4, 5, 4, 3, 1, 2, 3, 1, 2, 3, 2, 1, 0, 0, 1],
+        arp:     [0, 3, 5, 7, 5, 3, 0, 3, 1, 4, 6, 4, 1, 3, 2, 0],
+        bass:    [0, 3, 5, 3, 0, 3, 5, 3, 2, 4, 2, 4, 1, 3, 0, 3]
+      },
+      {
+        num: 6,
+        world: 'CAMPO DE ASTEROIDES CRISTALINOS',
+        isAsteroidWorld: true,
+        asteroidTheme: 'crystal',
+        bgTop: '#072b38',
+        bgBot: '#020b12',
+        nebulaA: 'rgba(34, 211, 238, 0.24)',
+        nebulaB: 'rgba(129, 140, 248, 0.18)',
+        planetStyle: 'ice_ring',
+        planetColor1: '#22d3ee',
+        planetColor2: '#818cf8',
+        starTint: '#cffafe',
+        tempo: 170,
+        scale: [261.63, 311.13, 349.23, 392.00, 466.16, 523.25, 622.25, 698.46],
+        lead:    [7, 5, 4, 3, 4, 5, 7, 5, 6, 4, 3, 1, 3, 4, 5, 7],
+        harmony: [5, 3, 2, 1, 2, 3, 5, 3, 4, 2, 1, 0, 1, 2, 3, 5],
+        arp:     [0, 2, 4, 7, 4, 2, 0, 4, 1, 3, 5, 7, 5, 3, 1, 0],
+        bass:    [0, 4, 0, 4, 2, 5, 2, 5, 1, 4, 1, 4, 3, 3, 2, 0]
+      },
+      {
+        num: 7,
+        world: 'FORJA SOLAR DORADA',
+        isAsteroidWorld: false,
+        bgTop: '#2e1d06',
+        bgBot: '#0d0702',
+        nebulaA: 'rgba(234, 179, 8, 0.22)',
+        nebulaB: 'rgba(217, 119, 6, 0.18)',
+        planetStyle: 'dwarf_star',
+        planetColor1: '#facc15',
+        planetColor2: '#f97316',
+        starTint: '#fef08a',
+        bossName: 'CANGREJO TENAZA NOVA',
+        bossType: 'crab',
+        bossHp: 3250,
+        bossColor1: '#f43f5e',
+        bossColor2: '#fb923c',
+        arrivalQuote: 'Pinzas de titanio listas para triturar. ¡Cierra filas, piloto, aquí se rompe el casco!',
+        defeatQuote: '¡Mis tenazas... cedieron ante un disparo tan preciso...! Qué error...',
+        tempo: 166,
+        scale: [220.00, 261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33],
+        lead:    [5, 4, 3, 4, 5, 7, 6, 5, 4, 3, 2, 3, 4, 5, 3, 0],
+        harmony: [3, 2, 1, 2, 3, 5, 4, 3, 2, 1, 0, 1, 2, 3, 1, 0],
+        arp:     [0, 1, 3, 5, 7, 5, 3, 1, 2, 4, 6, 4, 2, 3, 1, 0],
+        bass:    [0, 0, 5, 0, 3, 3, 5, 3, 2, 2, 4, 2, 3, 3, 4, 5]
+      },
+      {
+        num: 8,
+        world: 'FOSA BIOLUMINISCENTE',
+        isAsteroidWorld: false,
+        bgTop: '#062629',
+        bgBot: '#090314',
+        nebulaA: 'rgba(45, 212, 191, 0.22)',
+        nebulaB: 'rgba(232, 121, 249, 0.20)',
+        planetStyle: 'aurora_planet',
+        planetColor1: '#2dd4bf',
+        planetColor2: '#e879f9',
+        starTint: '#f5d0fe',
+        bossName: 'MEDUSA BIOLUMINISCENTE',
+        bossType: 'jellyfish',
+        bossHp: 3800,
+        bossColor1: '#e879f9',
+        bossColor2: '#2dd4bf',
+        arrivalQuote: 'Luz hipnótica y descarga de alta tensión. ¡Mira el brillo antes de caer!',
+        defeatQuote: '¡Apagas mi luz, pero mis chispas ya despertaron a los guardianes del abismo!',
+        tempo: 156,
+        scale: [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25],
+        lead:    [4, 5, 7, 5, 4, 3, 4, 5, 3, 4, 5, 4, 3, 2, 1, 2],
+        harmony: [2, 3, 5, 3, 2, 1, 2, 3, 1, 2, 3, 2, 1, 0, 0, 0],
+        arp:     [0, 2, 4, 5, 7, 5, 4, 2, 1, 3, 4, 6, 4, 3, 2, 0],
+        bass:    [4, 4, 2, 2, 3, 3, 0, 0, 1, 1, 3, 3, 4, 4, 2, 3]
+      },
+      {
+        num: 9,
+        world: 'TORMENTA DE ASTEROIDES DE HIERRO',
+        isAsteroidWorld: true,
+        asteroidTheme: 'iron',
+        bgTop: '#1e293b',
+        bgBot: '#070a12',
+        nebulaA: 'rgba(148, 163, 184, 0.20)',
+        nebulaB: 'rgba(56, 189, 248, 0.16)',
+        planetStyle: 'storm_planet',
+        planetColor1: '#94a3b8',
+        planetColor2: '#38bdf8',
+        starTint: '#f1f5f9',
+        tempo: 174,
+        scale: [196.00, 220.00, 233.08, 293.66, 311.13, 392.00, 440.00, 466.16],
+        lead:    [0, 1, 2, 4, 5, 7, 5, 4, 2, 4, 5, 6, 5, 4, 2, 1],
+        harmony: [0, 0, 0, 2, 3, 5, 3, 2, 0, 2, 3, 4, 3, 2, 0, 0],
+        arp:     [0, 2, 4, 6, 7, 6, 4, 2, 1, 3, 5, 7, 5, 3, 2, 0],
+        bass:    [0, 0, 4, 0, 1, 1, 5, 1, 3, 3, 6, 3, 4, 4, 1, 0]
+      },
+      {
+        num: 10,
+        world: 'HORIZONTE POLAR',
+        isAsteroidWorld: false,
+        bgTop: '#16284c',
+        bgBot: '#040814',
+        nebulaA: 'rgba(186, 230, 253, 0.22)',
+        nebulaB: 'rgba(99, 102, 241, 0.18)',
+        planetStyle: 'multi_ring',
+        planetColor1: '#e0f2fe',
+        planetColor2: '#6366f1',
+        starTint: '#ffffff',
+        bossName: 'NARVAL SUPERSÓNICO',
+        bossType: 'narwhal',
+        bossHp: 4350,
+        bossColor1: '#38bdf8',
+        bossColor2: '#facc15',
+        arrivalQuote: 'Un solo impacto de mi cuerno perfora escudos capitales. ¡Aparta o hazte trizas!',
+        defeatQuote: '¡Mi cuerno cayó, pero el eco del impacto llamará a toda la armada!',
+        tempo: 166,
+        scale: [261.63, 311.13, 349.23, 392.00, 466.16, 523.25, 622.25, 698.46],
+        lead:    [0, 3, 5, 6, 5, 3, 4, 5, 7, 6, 5, 3, 4, 3, 1, 0],
+        harmony: [0, 1, 3, 4, 3, 1, 2, 3, 5, 4, 3, 1, 2, 1, 0, 0],
+        arp:     [0, 3, 5, 7, 5, 3, 1, 4, 6, 4, 1, 3, 2, 4, 3, 1],
+        bass:    [0, 0, 3, 0, 4, 4, 3, 4, 2, 2, 4, 2, 3, 3, 4, 3]
+      },
+      {
+        num: 11,
+        world: 'NÚCLEO MAGMA',
+        isAsteroidWorld: false,
+        bgTop: '#330a06',
+        bgBot: '#0c0201',
+        nebulaA: 'rgba(239, 68, 68, 0.24)',
+        nebulaB: 'rgba(249, 115, 22, 0.20)',
+        planetStyle: 'lava_fractured',
+        planetColor1: '#ef4444',
+        planetColor2: '#fb923c',
+        starTint: '#fed7aa',
+        bossName: 'TORTUGA DRAGÓN ACORAZADA',
+        bossType: 'turtle',
+        bossHp: 4950,
+        bossColor1: '#f97316',
+        bossColor2: '#14b8a6',
+        arrivalQuote: 'Caparazón ancestral y aliento de dragón. ¡Tu fuego apenas rasguña mi coraza!',
+        defeatQuote: '¡Siglos guardando este paso... y caigo ante la voluntad de un solo escuadrón!',
+        tempo: 158,
+        scale: [174.61, 207.65, 233.08, 261.63, 311.13, 349.23, 415.30, 466.16],
+        lead:    [0, 0, 3, 0, 4, 3, 2, 1, 0, 3, 5, 6, 5, 3, 4, 3],
+        harmony: [0, 0, 1, 0, 2, 1, 0, 0, 0, 1, 3, 4, 3, 1, 2, 1],
+        arp:     [0, 1, 3, 4, 6, 4, 3, 1, 0, 2, 4, 5, 7, 5, 3, 1],
+        bass:    [0, 3, 0, 3, 1, 4, 1, 4, 2, 5, 2, 5, 3, 3, 4, 3]
+      },
+      {
+        num: 12,
+        world: 'TORMENTA VOLTAICA',
+        isAsteroidWorld: false,
+        bgTop: '#161142',
+        bgBot: '#040312',
+        nebulaA: 'rgba(250, 204, 21, 0.22)',
+        nebulaB: 'rgba(79, 70, 229, 0.22)',
+        planetStyle: 'plasma_storm',
+        planetColor1: '#facc15',
+        planetColor2: '#4f46e5',
+        starTint: '#fef08a',
+        bossName: 'ANGUILA VOLTAICA',
+        bossType: 'eel',
+        bossHp: 5500,
+        bossColor1: '#facc15',
+        bossColor2: '#06b6d4',
+        arrivalQuote: '¡Mil voltios recorren este sector! ¡Tu sistema no soportará la descarga!',
+        defeatQuote: '¡Cortaste la corriente... pero la tormenta ya está dentro de tu circuito!',
+        tempo: 172,
+        scale: [220.00, 233.08, 277.18, 293.66, 329.63, 349.23, 440.00, 466.16],
+        lead:    [0, 1, 2, 4, 5, 4, 2, 1, 6, 7, 6, 4, 5, 4, 2, 1],
+        harmony: [0, 0, 0, 2, 3, 2, 0, 0, 4, 5, 4, 2, 3, 2, 0, 0],
+        arp:     [0, 2, 4, 6, 7, 6, 4, 2, 1, 3, 5, 7, 5, 3, 2, 0],
+        bass:    [0, 0, 4, 0, 1, 1, 5, 1, 3, 3, 6, 3, 4, 4, 1, 0]
+      },
+      {
+        num: 13,
+        world: 'TRONO DEL ABISMO',
+        isAsteroidWorld: false,
+        bgTop: '#1a0421',
+        bgBot: '#030106',
+        nebulaA: 'rgba(244, 63, 94, 0.24)',
+        nebulaB: 'rgba(245, 158, 11, 0.22)',
+        planetStyle: 'total_eclipse',
+        planetColor1: '#fbbf24',
+        planetColor2: '#9333ea',
+        starTint: '#fde68a',
+        bossName: 'BALLENA HIDRA SUPREMA',
+        bossType: 'whale',
+        bossHp: 6800,
+        bossColor1: '#fbbf24',
+        bossColor2: '#e11d48',
+        arrivalQuote: '¡Soy el abismo hecho carne y acero! ¡Aquí termina tu viaje y cae la galaxia!',
+        defeatQuote: '¡Imposible... que una luz tan pequeña apague el océano entero...!',
+        tempo: 176,
+        scale: [293.66, 329.63, 349.23, 392.00, 440.00, 466.16, 523.25, 587.33],
+        lead:    [0, 2, 4, 7, 5, 4, 2, 4, 3, 5, 6, 5, 4, 2, 1, 4],
+        harmony: [0, 0, 2, 4, 3, 2, 0, 2, 1, 3, 4, 3, 2, 0, 0, 2],
+        arp:     [0, 2, 4, 5, 7, 5, 4, 2, 1, 3, 5, 6, 7, 5, 3, 2],
+        bass:    [0, 4, 0, 4, 5, 5, 2, 5, 3, 6, 3, 6, 4, 4, 1, 4]
+      }
+    ];
+
+    // Conversations between all 13 worlds (1 -> 2 up to 12 -> 13)
+    const BETWEEN_WORLD_DIALOGUES = {
+      1: [
+        { speaker: 'xverde', name: 'XVERDE', text: 'El Kraken cayó, pero el casco recibió más golpes de lo que esperaba. El aire se siente pesado aquí.' },
+        { speaker: 'adarapaz', name: 'ADA-Ra-Paz', text: '¡Yo vi algo grande moviéndose bajo la fosa! Parece un tiburón de metal con sensores encendidos.' },
+        { speaker: 'elizdark', name: 'Eliz-Dark-Abeth', text: 'Un Megalodón Cibernético. No te confíes por la primera victoria; tenemos que seguir adelante y salvar la galaxia.' }
+      ],
+      2: [
+        { speaker: 'adarapaz', name: 'ADA-Ra-Paz', text: '¡Ese tiburón casi me muerde la cola! Pero miren adelante... ¡el camino está lleno de rocas gigantes!' },
+        { speaker: 'xverde', name: 'XVERDE', text: 'Es un cinturón de asteroides denso. No hay jefes aquí, pero un solo choque puede partir el fuselaje.' },
+        { speaker: 'elizdark', name: 'Eliz-Dark-Abeth', text: 'Esquiven con precisión y destruyan los asteroides que bloqueen el paso. Tenemos que cruzar para salvar la galaxia.' }
+      ],
+      3: [
+        { speaker: 'xverde', name: 'XVERDE', text: 'Logramos abrirnos paso entre toda esa lluvia de rocas sin perder el rumbo.' },
+        { speaker: 'elizdark', name: 'Eliz-Dark-Abeth', text: 'No bajen la guardia. El radar marca blindaje pesado en el siguiente sector: un Cocodrilo Leviatán.' },
+        { speaker: 'adarapaz', name: 'ADA-Ra-Paz', text: '¡Tendremos mucho cuidado con su embestida y su cola! ¡Seguimos adelante!' }
+      ],
+      4: [
+        { speaker: 'elizdark', name: 'Eliz-Dark-Abeth', text: 'Buen trabajo sosteniendo la línea en medio del caos. El Leviatán quedó atrás, pero el enemigo apenas mide nuestra resistencia.' },
+        { speaker: 'xverde', name: 'XVERDE', text: 'El escáner detecta algo plano y rápido planeando entre las sombras. Parece una Mantarraya Abisal.' },
+        { speaker: 'adarapaz', name: 'ADA-Ra-Paz', text: '¡Hay que estar súper atentos a sus minas y disparos! La galaxia depende de que no nos rindamos.' }
+      ],
+      5: [
+        { speaker: 'xverde', name: 'XVERDE', text: 'La Mantarraya quedó atrás, pero los sensores vuelven a saturarse de objetos en movimiento.' },
+        { speaker: 'adarapaz', name: 'ADA-Ra-Paz', text: '¡Son asteroides brillando como cristal! Vienen girando por todas partes.' },
+        { speaker: 'elizdark', name: 'Eliz-Dark-Abeth', text: 'Mantengan la calma, esquiven los más grandes y pulvericen los que cierren la ruta. ¡A cruzar!' }
+      ],
+      6: [
+        { speaker: 'adarapaz', name: 'ADA-Ra-Paz', text: '¡Uf, qué alivio salir de ese campo de asteroides! Ya casi me mareaba dando vueltas.' },
+        { speaker: 'xverde', name: 'XVERDE', text: 'Respira hondo, porque adelante hay un cangrejo gigante con tenazas enormes cerrando el paso.' },
+        { speaker: 'elizdark', name: 'Eliz-Dark-Abeth', text: 'El Cangrejo Tenaza Nova. Mucho cuidado con sus pinzas; mantengan la distancia y sigamos salvando la galaxia.' }
+      ],
+      7: [
+        { speaker: 'adarapaz', name: 'ADA-Ra-Paz', text: '¡Esas pinzas daban miedo, pero logramos pasar! Aunque esa luz morada del fondo me da escalofríos...' },
+        { speaker: 'elizdark', name: 'Eliz-Dark-Abeth', text: 'Es una Medusa Bioluminiscente. Su brillo oculta descargas y láseres mortales.' },
+        { speaker: 'xverde', name: 'XVERDE', text: 'Cuidado con quedar encerrados en sus haces. Respiremos hondo, tomemos impulso y sigamos adelante.' }
+      ],
+      8: [
+        { speaker: 'elizdark', name: 'Eliz-Dark-Abeth', text: 'La medusa se apagó, pero entramos en la zona más inestable antes del tramo final.' },
+        { speaker: 'xverde', name: 'XVERDE', text: 'Es una tormenta de asteroides de hierro a toda velocidad. Si nos distraemos aquí, no llegaremos.' },
+        { speaker: 'adarapaz', name: 'ADA-Ra-Paz', text: '¡A esquivar y disparar sin parar! ¡Nada nos va a frenar ahora!' }
+      ],
+      9: [
+        { speaker: 'xverde', name: 'XVERDE', text: 'Cruzamos la tormenta de hierro de una pieza. Ya estamos entrando al núcleo profundo.' },
+        { speaker: 'adarapaz', name: 'ADA-Ra-Paz', text: '¡Cuidado! Algo corta el vacío a toda velocidad frente a nosotros... ¡es un Narval Supersónico!' },
+        { speaker: 'elizdark', name: 'Eliz-Dark-Abeth', text: 'Ese cuerno perfora escudos como papel. No se queden en su línea de carga.' }
+      ],
+      10: [
+        { speaker: 'xverde', name: 'XVERDE', text: 'Pasamos ese impacto de milagro. Cada mundo que cruzamos demuestra que esta amenaza es más vieja de lo que creíamos.' },
+        { speaker: 'adarapaz', name: 'ADA-Ra-Paz', text: 'Ahora veo un caparazón gigante como una fortaleza... ¡y escupe fuego como dragón!' },
+        { speaker: 'elizdark', name: 'Eliz-Dark-Abeth', text: 'La Tortuga Dragón Acorazada. Su coraza es dura, pero nuestra determinación lo es más. ¡A salvar la galaxia!' }
+      ],
+      11: [
+        { speaker: 'adarapaz', name: 'ADA-Ra-Paz', text: '¡Qué calor hacía cerca de ese dragón! Mis manos todavía tiemblan un poquito...' },
+        { speaker: 'elizdark', name: 'Eliz-Dark-Abeth', text: 'Recupérate rápido, ADA-Ra-Paz. El siguiente sector está cargado de electricidad: una Anguila Voltaica.' },
+        { speaker: 'xverde', name: 'XVERDE', text: 'Mucho cuidado con los arcos de voltaje. Ya estamos casi en la recta final; no podemos fallar ahora.' }
+      ],
+      12: [
+        { speaker: 'xverde', name: 'XVERDE', text: 'Doce mundos superados... si llegamos hasta aquí es porque nadie ha dado un paso atrás.' },
+        { speaker: 'adarapaz', name: 'ADA-Ra-Paz', text: 'El sensor está volviéndose loco... ¡es gigantesco! ¡Parece una ballena con varias cabezas!' },
+        { speaker: 'elizdark', name: 'Eliz-Dark-Abeth', text: 'Es la Ballena Hidra Suprema. El destino de toda la galaxia se decide aquí. ¡Tengan máximo cuidado y vamos con todo!' }
+      ]
+    };
+
+    // =========================================================================
+    // 3. FIVE-CHANNEL SYNTHESIZED CHIPTUNE & SCENE MUSIC ENGINE
+    // =========================================================================
+    class MegaPhoenixSymphonyEngine {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+        this.musicTimer = null;
+        this.step = 0;
+        this.currentTrack = 'none';
+        this.noiseBuffer = null;
+      }
+
+      unlock() {
+        try {
+          if (!this.ctx) {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (AudioCtx) {
+              this.ctx = new AudioCtx();
+              const len = Math.floor(this.ctx.sampleRate * 0.25);
+              this.noiseBuffer = this.ctx.createBuffer(1, len, this.ctx.sampleRate);
+              const data = this.noiseBuffer.getChannelData(0);
+              for (let i = 0; i < len; i++) {
+                data[i] = Math.random() * 2 - 1;
+              }
+            }
+          }
+          if (this.ctx && this.ctx.state === 'suspended') {
+            this.ctx.resume();
+          }
+        } catch (e) {}
+      }
+
+      toggleMute() {
+        this.muted = !this.muted;
+        if (this.muted) {
+          this.stopMusic();
+        } else {
+          if (game.status === 'start') this.startTitleMusic();
+          else if (game.status === 'conversation' || game.status === 'boss_dialogue') this.startSeriousDialogueMusic();
+          else if (game.status === 'infirmary') this.startSadInfirmaryMusic();
+          else if (game.status === 'playing') {
+            if (boss) this.startBossMusic();
+            else this.startLevelMusic(game.levelIndex);
+          }
+        }
+        return this.muted;
+      }
+
+      stopMusic() {
+        if (this.musicTimer) {
+          clearInterval(this.musicTimer);
+          this.musicTimer = null;
+        }
+      }
+
+      playDrumKit(now, type, volScale = 1) {
+        if (!this.noiseBuffer || !this.ctx) return;
+
+        if (type === 'kick') {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(145, now);
+          osc.frequency.exponentialRampToValueAtTime(36, now + 0.085);
+          gain.gain.setValueAtTime(0.072 * volScale, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.095);
+          return;
+        }
+
+        const src = this.ctx.createBufferSource();
+        src.buffer = this.noiseBuffer;
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = type === 'snare' ? 'bandpass' : 'highpass';
+        filter.frequency.setValueAtTime(type === 'snare' ? 1450 : 6000, now);
+
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime((type === 'snare' ? 0.034 : 0.013) * volScale, now);
+        gain.gain.exponentialRampToValueAtTime(0.0008, now + (type === 'snare' ? 0.095 : 0.032));
+
+        src.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+        src.start(now);
+        src.stop(now + (type === 'snare' ? 0.1 : 0.038));
+      }
+
+      startTitleMusic() {
+        this.stopMusic();
+        this.currentTrack = 'title';
+        this.step = 0;
+
+        const scale = [220.00, 246.94, 261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25];
+        const lead =    [7, 4, 7, 9, 8, 7, 6, 4, 5, 7, 9, 7, 6, 4, 6, 4];
+        const harmony = [4, 2, 4, 7, 6, 4, 3, 2, 3, 5, 7, 5, 4, 2, 4, 2];
+        const arp =     [0, 2, 4, 7, 0, 2, 4, 7, 5, 7, 9, 7, 6, 8, 9, 4];
+        const bass =    [0, 0, 4, 0, 0, 0, 4, 0, 5, 5, 6, 6, 4, 4, 4, 4];
+
+        const stepMs = 175;
+        const stepSec = stepMs / 1000;
+
+        this.musicTimer = setInterval(() => {
+          if (this.muted || !this.ctx || game.status !== 'start') return;
+          const now = this.ctx.currentTime;
+          const idx = this.step % 16;
+
+          const osc1 = this.ctx.createOscillator();
+          const g1 = this.ctx.createGain();
+          osc1.type = 'square';
+          osc1.frequency.setValueAtTime(scale[lead[idx]], now);
+          g1.gain.setValueAtTime(0.024, now);
+          g1.gain.exponentialRampToValueAtTime(0.001, now + stepSec * 0.9);
+          osc1.connect(g1);
+          g1.connect(this.ctx.destination);
+          osc1.start(now);
+          osc1.stop(now + stepSec * 0.92);
+
+          const osc2 = this.ctx.createOscillator();
+          const g2 = this.ctx.createGain();
+          osc2.type = 'sawtooth';
+          osc2.frequency.setValueAtTime(scale[harmony[idx]] * 0.5, now);
+          g2.gain.setValueAtTime(0.015, now);
+          g2.gain.exponentialRampToValueAtTime(0.001, now + stepSec * 0.85);
+          osc2.connect(g2);
+          g2.connect(this.ctx.destination);
+          osc2.start(now);
+          osc2.stop(now + stepSec * 0.88);
+
+          const osc3 = this.ctx.createOscillator();
+          const g3 = this.ctx.createGain();
+          osc3.type = 'triangle';
+          osc3.frequency.setValueAtTime(scale[arp[idx]] * 2, now);
+          g3.gain.setValueAtTime(0.013, now);
+          g3.gain.exponentialRampToValueAtTime(0.001, now + stepSec * 0.65);
+          osc3.connect(g3);
+          g3.connect(this.ctx.destination);
+          osc3.start(now);
+          osc3.stop(now + stepSec * 0.7);
+
+          const osc4 = this.ctx.createOscillator();
+          const g4 = this.ctx.createGain();
+          osc4.type = 'triangle';
+          osc4.frequency.setValueAtTime(scale[bass[idx]] * 0.25, now);
+          g4.gain.setValueAtTime(0.052, now);
+          g4.gain.exponentialRampToValueAtTime(0.001, now + stepSec * 0.95);
+          osc4.connect(g4);
+          g4.connect(this.ctx.destination);
+          osc4.start(now);
+          osc4.stop(now + stepSec * 0.96);
+
+          if (idx % 4 === 0) this.playDrumKit(now, 'kick');
+          else if (idx % 4 === 2) this.playDrumKit(now, 'snare');
+          else this.playDrumKit(now, 'hat');
+
+          this.step++;
+        }, stepMs);
+      }
+
+      startLevelMusic(levelIdx) {
+        const idxLvl = Math.max(0, Math.min(LEVELS_DATA.length - 1, levelIdx));
+        this.stopMusic();
+        this.currentTrack = `level_${idxLvl}`;
+        this.step = 0;
+
+        const lvl = LEVELS_DATA[idxLvl];
+        const stepMs = Math.round((60 / lvl.tempo / 2) * 1000);
+        const stepSec = stepMs / 1000;
+
+        this.musicTimer = setInterval(() => {
+          if (this.muted || !this.ctx || game.status !== 'playing') return;
+          const now = this.ctx.currentTime;
+          const idx = this.step % 16;
+
+          const leadFreq = lvl.scale[lvl.lead[idx] % lvl.scale.length];
+          const osc1 = this.ctx.createOscillator();
+          const gain1 = this.ctx.createGain();
+          osc1.type = 'square';
+          osc1.frequency.setValueAtTime(leadFreq, now);
+          gain1.gain.setValueAtTime(0.023, now);
+          gain1.gain.exponentialRampToValueAtTime(0.001, now + stepSec * 0.88);
+          osc1.connect(gain1);
+          gain1.connect(this.ctx.destination);
+          osc1.start(now);
+          osc1.stop(now + stepSec * 0.9);
+
+          const harmFreq = lvl.scale[lvl.harmony[idx] % lvl.scale.length] * 0.5;
+          const osc2 = this.ctx.createOscillator();
+          const gain2 = this.ctx.createGain();
+          osc2.type = 'square';
+          osc2.frequency.setValueAtTime(harmFreq, now);
+          gain2.gain.setValueAtTime(0.013, now);
+          gain2.gain.exponentialRampToValueAtTime(0.001, now + stepSec * 0.82);
+          osc2.connect(gain2);
+          gain2.connect(this.ctx.destination);
+          osc2.start(now);
+          osc2.stop(now + stepSec * 0.85);
+
+          const arpFreq = lvl.scale[lvl.arp[idx] % lvl.scale.length] * 2;
+          const osc3 = this.ctx.createOscillator();
+          const gain3 = this.ctx.createGain();
+          osc3.type = 'triangle';
+          osc3.frequency.setValueAtTime(arpFreq, now);
+          gain3.gain.setValueAtTime(0.011, now);
+          gain3.gain.exponentialRampToValueAtTime(0.001, now + stepSec * 0.6);
+          osc3.connect(gain3);
+          gain3.connect(this.ctx.destination);
+          osc3.start(now);
+          osc3.stop(now + stepSec * 0.64);
+
+          const bassFreq = lvl.scale[lvl.bass[idx] % lvl.scale.length] * 0.25;
+          const osc4 = this.ctx.createOscillator();
+          const gain4 = this.ctx.createGain();
+          osc4.type = 'triangle';
+          osc4.frequency.setValueAtTime(bassFreq, now);
+          gain4.gain.setValueAtTime(0.055, now);
+          gain4.gain.exponentialRampToValueAtTime(0.001, now + stepSec * 0.92);
+          osc4.connect(gain4);
+          gain4.connect(this.ctx.destination);
+          osc4.start(now);
+          osc4.stop(now + stepSec * 0.95);
+
+          if (idx % 4 === 0) this.playDrumKit(now, 'kick');
+          else if (idx % 4 === 2) this.playDrumKit(now, 'snare');
+          else this.playDrumKit(now, 'hat');
+
+          this.step++;
+        }, stepMs);
+      }
+
+      startBossMusic() {
+        this.stopMusic();
+        this.currentTrack = 'boss';
+        this.step = 0;
+        const bossNotes = [146.83, 155.56, 146.83, 174.61, 146.83, 155.56, 196.00, 185.00];
+
+        this.musicTimer = setInterval(() => {
+          if (this.muted || !this.ctx || game.status !== 'playing') return;
+          const now = this.ctx.currentTime;
+          const idx = this.step % bossNotes.length;
+          const freq = bossNotes[idx];
+
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(freq, now);
+          gain.gain.setValueAtTime(0.032, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.14);
+
+          const bass = this.ctx.createOscillator();
+          const bGain = this.ctx.createGain();
+          bass.type = 'triangle';
+          bass.frequency.setValueAtTime(freq * 0.5, now);
+          bGain.gain.setValueAtTime(0.05, now);
+          bGain.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+          bass.connect(bGain);
+          bGain.connect(this.ctx.destination);
+          bass.start(now);
+          bass.stop(now + 0.14);
+
+          this.playDrumKit(now, idx % 2 === 0 ? 'kick' : 'snare');
+          this.step++;
+        }, 142);
+      }
+
+      // Low, serious, tense music during between-world conversations & boss cutscenes
+      startSeriousDialogueMusic() {
+        this.stopMusic();
+        this.currentTrack = 'dialogue';
+        this.step = 0;
+        const lowNotes = [73.42, 73.42, 69.30, 65.41, 73.42, 82.41, 69.30, 65.41];
+        const tensePad = [146.83, 174.61, 164.81, 130.81, 146.83, 196.00, 164.81, 130.81];
+
+        this.musicTimer = setInterval(() => {
+          if (this.muted || !this.ctx || (game.status !== 'conversation' && game.status !== 'boss_dialogue')) return;
+          const now = this.ctx.currentTime;
+          const idx = this.step % lowNotes.length;
+
+          const sub = this.ctx.createOscillator();
+          const sGain = this.ctx.createGain();
+          sub.type = 'triangle';
+          sub.frequency.setValueAtTime(lowNotes[idx], now);
+          sGain.gain.setValueAtTime(0.048, now);
+          sGain.gain.exponentialRampToValueAtTime(0.002, now + 0.36);
+          sub.connect(sGain);
+          sGain.connect(this.ctx.destination);
+          sub.start(now);
+          sub.stop(now + 0.38);
+
+          if (idx % 2 === 0) {
+            const pad = this.ctx.createOscillator();
+            const pGain = this.ctx.createGain();
+            pad.type = 'sine';
+            pad.frequency.setValueAtTime(tensePad[idx], now);
+            pGain.gain.setValueAtTime(0.018, now);
+            pGain.gain.exponentialRampToValueAtTime(0.001, now + 0.72);
+            pad.connect(pGain);
+            pGain.connect(this.ctx.destination);
+            pad.start(now);
+            pad.stop(now + 0.74);
+          }
+
+          if (idx % 4 === 0) {
+            this.playDrumKit(now, 'kick', 0.45);
+          }
+
+          this.step++;
+        }, 380);
+      }
+
+      // Sad, melancholic music when ship explodes & opens emergency infirmary chat
+      startSadInfirmaryMusic() {
+        this.stopMusic();
+        this.currentTrack = 'infirmary';
+        this.step = 0;
+        const sadMelody = [293.66, 261.63, 220.00, 196.00, 220.00, 174.61, 196.00, 164.81];
+        const sadBass =   [146.83, 130.81, 110.00, 98.00,  110.00, 87.31,  98.00,  82.41];
+
+        this.musicTimer = setInterval(() => {
+          if (this.muted || !this.ctx || game.status !== 'infirmary') return;
+          const now = this.ctx.currentTime;
+          const idx = this.step % sadMelody.length;
+
+          const mel = this.ctx.createOscillator();
+          const mGain = this.ctx.createGain();
+          mel.type = 'triangle';
+          mel.frequency.setValueAtTime(sadMelody[idx], now);
+          mGain.gain.setValueAtTime(0.028, now);
+          mGain.gain.exponentialRampToValueAtTime(0.001, now + 0.48);
+          mel.connect(mGain);
+          mGain.connect(this.ctx.destination);
+          mel.start(now);
+          mel.stop(now + 0.5);
+
+          const bs = this.ctx.createOscillator();
+          const bGain = this.ctx.createGain();
+          bs.type = 'sine';
+          bs.frequency.setValueAtTime(sadBass[idx], now);
+          bGain.gain.setValueAtTime(0.036, now);
+          bGain.gain.exponentialRampToValueAtTime(0.001, now + 0.52);
+          bs.connect(bGain);
+          bGain.connect(this.ctx.destination);
+          bs.start(now);
+          bs.stop(now + 0.54);
+
+          this.step++;
+        }, 520);
+      }
+
+      /**
+       * Deep synthesized boss agony & pain lament sound when dying and exploding:
+       * Broken descending sawtooth/triangle wails with trembling LFO vibrato and sub-bass groan.
+       */
+      playBossAgonyDeath() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+
+        // Layer 1: Trembling descending creature roar/lament
+        const roar = this.ctx.createOscillator();
+        const roarGain = this.ctx.createGain();
+        const vibrato = this.ctx.createOscillator();
+        const vibGain = this.ctx.createGain();
+
+        roar.type = 'sawtooth';
+        roar.frequency.setValueAtTime(245, now);
+        roar.frequency.linearRampToValueAtTime(195, now + 0.35);
+        roar.frequency.exponentialRampToValueAtTime(52, now + 1.55);
+
+        vibrato.type = 'sine';
+        vibrato.frequency.setValueAtTime(14, now);
+        vibGain.gain.setValueAtTime(22, now);
+        vibGain.gain.exponentialRampToValueAtTime(4, now + 1.5);
+
+        vibrato.connect(vibGain);
+        vibGain.connect(roar.frequency);
+
+        const lowpass = this.ctx.createBiquadFilter();
+        lowpass.type = 'lowpass';
+        lowpass.frequency.setValueAtTime(680, now);
+        lowpass.frequency.exponentialRampToValueAtTime(140, now + 1.55);
+
+        roarGain.gain.setValueAtTime(0.16, now);
+        roarGain.gain.setValueAtTime(0.14, now + 0.45);
+        roarGain.gain.exponentialRampToValueAtTime(0.001, now + 1.6);
+
+        roar.connect(lowpass);
+        lowpass.connect(roarGain);
+        roarGain.connect(this.ctx.destination);
+
+        vibrato.start(now);
+        roar.start(now);
+        vibrato.stop(now + 1.62);
+        roar.stop(now + 1.62);
+
+        // Layer 2: Secondary dissonant cry (broken minor second wail)
+        const wail = this.ctx.createOscillator();
+        const wailGain = this.ctx.createGain();
+        wail.type = 'triangle';
+        wail.frequency.setValueAtTime(260, now + 0.12);
+        wail.frequency.exponentialRampToValueAtTime(64, now + 1.45);
+        wailGain.gain.setValueAtTime(0.11, now + 0.12);
+        wailGain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
+
+        wail.connect(wailGain);
+        wailGain.connect(this.ctx.destination);
+        wail.start(now + 0.12);
+        wail.stop(now + 1.52);
+
+        // Layer 3: Deep sub-bass collapse rumble
+        const sub = this.ctx.createOscillator();
+        const subGain = this.ctx.createGain();
+        sub.type = 'sine';
+        sub.frequency.setValueAtTime(92, now);
+        sub.frequency.exponentialRampToValueAtTime(26, now + 1.65);
+        subGain.gain.setValueAtTime(0.22, now);
+        subGain.gain.exponentialRampToValueAtTime(0.001, now + 1.68);
+        sub.connect(subGain);
+        subGain.connect(this.ctx.destination);
+        sub.start(now);
+        sub.stop(now + 1.7);
+      }
+
+      /**
+       * Potent multi-layered synthesized BOMBA detonation sound
+       */
+      playBombaDetonation() {
+        if (this.muted || !this.ctx) return;
+        this.playExplosion(2.7);
+        const now = this.ctx.currentTime;
+
+        // Rising plasma charge into deep sub-shockwave
+        const sweep = this.ctx.createOscillator();
+        const sGain = this.ctx.createGain();
+        sweep.type = 'sawtooth';
+        sweep.frequency.setValueAtTime(180, now);
+        sweep.frequency.exponentialRampToValueAtTime(680, now + 0.11);
+        sweep.frequency.exponentialRampToValueAtTime(32, now + 0.85);
+        sGain.gain.setValueAtTime(0.16, now);
+        sGain.gain.exponentialRampToValueAtTime(0.001, now + 0.88);
+        sweep.connect(sGain);
+        sGain.connect(this.ctx.destination);
+        sweep.start(now);
+        sweep.stop(now + 0.9);
+
+        const sub = this.ctx.createOscillator();
+        const bGain = this.ctx.createGain();
+        sub.type = 'sine';
+        sub.frequency.setValueAtTime(160, now);
+        sub.frequency.exponentialRampToValueAtTime(24, now + 0.95);
+        bGain.gain.setValueAtTime(0.26, now);
+        bGain.gain.exponentialRampToValueAtTime(0.001, now + 0.98);
+        sub.connect(bGain);
+        bGain.connect(this.ctx.destination);
+        sub.start(now);
+        sub.stop(now + 1.0);
+      }
+
+      playTypeBlip(pitch = 620) {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(pitch, now);
+        gain.gain.setValueAtTime(0.014, now);
+        gain.gain.exponentialRampToValueAtTime(0.0005, now + 0.032);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.035);
+      }
+
+      playShipSwapWhoosh() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(240, now);
+        osc.frequency.exponentialRampToValueAtTime(760, now + 0.22);
+        osc.frequency.exponentialRampToValueAtTime(320, now + 0.45);
+        gain.gain.setValueAtTime(0.075, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.46);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.47);
+      }
+
+      playSelect() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(587.33, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.08);
+        gain.gain.setValueAtTime(0.06, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.085);
+      }
+
+      playFanfare(isVictory = false) {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const notes = isVictory
+          ? [523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5, 1318.5]
+          : [392.00, 493.88, 587.33, 783.99];
+        notes.forEach((f, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(f, now + idx * 0.11);
+          gain.gain.setValueAtTime(0.06, now + idx * 0.11);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.11 + 0.22);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + idx * 0.11);
+          osc.stop(now + idx * 0.11 + 0.24);
+        });
+      }
+
+      playShoot(shipId) {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        if (shipId === 'elizdark') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(640, now);
+          osc.frequency.exponentialRampToValueAtTime(160, now + 0.085);
+        } else if (shipId === 'adarapaz') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(980, now);
+          osc.frequency.exponentialRampToValueAtTime(280, now + 0.075);
+        } else {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(840, now);
+          osc.frequency.exponentialRampToValueAtTime(220, now + 0.07);
+        }
+
+        gain.gain.setValueAtTime(0.034, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.085);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.09);
+      }
+
+      playMissileLaunch() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(320, now);
+        osc.frequency.exponentialRampToValueAtTime(760, now + 0.12);
+        gain.gain.setValueAtTime(0.045, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.13);
+      }
+
+      playPowerup(type) {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const freqs = type === 'life' ? [523.25, 659.25, 880] : [440, 587.33, 783.99, 1046.5];
+        freqs.forEach((f, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(f, now + i * 0.05);
+          gain.gain.setValueAtTime(0.06, now + i * 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.05 + 0.1);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + i * 0.05);
+          osc.stop(now + i * 0.05 + 0.11);
+        });
+      }
+
+      playExplosion(scale = 1) {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const dur = Math.min(0.85, 0.24 * scale);
+        const bufSize = Math.floor(this.ctx.sampleRate * dur);
+        const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+        const data = buf.getChannelData(0);
+        for (let i = 0; i < bufSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufSize * 0.35));
+        }
+
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buf;
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(780 / Math.sqrt(scale), now);
+        filter.frequency.exponentialRampToValueAtTime(55, now + dur);
+
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(Math.min(0.26, 0.11 * scale), now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+        noise.start(now);
+      }
+
+      playDamage() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(185, now);
+        osc.frequency.linearRampToValueAtTime(55, now + 0.22);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.23);
+      }
+    }
+
+    // =========================================================================
+    // 4. CANVAS SETUP (390 x 844 CALIBRATED FOR IPHONE 14)
+    // =========================================================================
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const audio = new MegaPhoenixSymphonyEngine();
+
+    const W = 390;
+    const H = 844;
+
+    function resizeCanvas() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = W * dpr;
+      canvas.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // HUD & Overlay DOM references
+    const shipHudName = document.getElementById('ship-hud-name');
+    const hpBar = document.getElementById('hp-bar');
+    const hpText = document.getElementById('hp-text');
+    const worldNameHud = document.getElementById('world-name-hud');
+    const levelText = document.getElementById('level-text');
+    const scoreText = document.getElementById('score-text');
+    const bossBarWrap = document.getElementById('boss-bar-wrap');
+    const bossTitle = document.getElementById('boss-title');
+    const bossHpPct = document.getElementById('boss-hp-pct');
+    const bossHpFill = document.getElementById('boss-hp-fill');
+    const activeBuffsHud = document.getElementById('active-buffs-hud');
+    const bombCountEl = document.getElementById('bomb-count');
+
+    const screenStart = document.getElementById('screen-start');
+    const screenPause = document.getElementById('screen-pause');
+    const screenEnd = document.getElementById('screen-end');
+    const hangarModal = document.getElementById('hangar-modal');
+    const hangarNextWorld = document.getElementById('hangar-next-world');
+
+    const bossDlgOverlay = document.getElementById('boss-dialogue-overlay');
+    const bossDlgBadge = document.getElementById('boss-dlg-badge');
+    const bossDlgCard = document.getElementById('boss-dlg-card');
+    const bossPortraitCanvas = document.getElementById('boss-portrait-canvas');
+    const bossDlgStatus = document.getElementById('boss-dlg-status');
+    const bossDlgName = document.getElementById('boss-dlg-name');
+    const bossDlgPhaseTag = document.getElementById('boss-dlg-phase-tag');
+    const bossDlgText = document.getElementById('boss-dlg-text');
+    const bossDlgHint = document.getElementById('boss-dlg-hint');
+
+    const convOverlay = document.getElementById('conversation-overlay');
+    const convSectorLabel = document.getElementById('conv-sector-label');
+    const convSpeakerName = document.getElementById('conv-speaker-name');
+    const convLineCounter = document.getElementById('conv-line-counter');
+    const convTypewriterText = document.getElementById('conv-typewriter-text');
+    const convHint = document.getElementById('conv-hint');
+
+    const infirmaryOverlay = document.getElementById('infirmary-overlay');
+    const injuredPilotName = document.getElementById('injured-pilot-name');
+    const injuredPilotStatus = document.getElementById('injured-pilot-status');
+    const infirmaryChatList = document.getElementById('infirmary-chat-list');
+    const btnInfirmaryRetry = document.getElementById('btn-infirmary-retry');
+    const infirmaryTypingIndicator = document.getElementById('infirmary-typing-indicator');
+
+    // =========================================================================
+    // 5. CUSTOM ILLUSTRATED PILOT & BOSS PORTRAITS (NORMAL & INJURED)
+    // =========================================================================
+    function drawPilotPortrait(pCtx, pilotId, injured = false, size = 80) {
+      pCtx.clearRect(0, 0, size, size);
+      const s = size / 80;
+      pCtx.save();
+      pCtx.scale(s, s);
+
+      const bg = pCtx.createLinearGradient(0, 0, 80, 80);
+      if (pilotId === 'xverde') {
+        bg.addColorStop(0, injured ? '#3b111c' : '#064e3b');
+        bg.addColorStop(1, '#0f172a');
+      } else if (pilotId === 'adarapaz') {
+        bg.addColorStop(0, injured ? '#45122b' : '#831843');
+        bg.addColorStop(1, '#0f172a');
+      } else {
+        bg.addColorStop(0, injured ? '#271438' : '#0c4a6e');
+        bg.addColorStop(1, '#020617');
+      }
+      pCtx.fillStyle = bg;
+      pCtx.fillRect(0, 0, 80, 80);
+
+      // Long dark hair behind Eliz-Dark-Abeth
+      if (pilotId === 'elizdark') {
+        pCtx.fillStyle = '#0f172a';
+        pCtx.beginPath();
+        if (injured) {
+          pCtx.moveTo(16, 28);
+          pCtx.quadraticCurveTo(10, 56, 14, 78);
+          pCtx.lineTo(66, 78);
+          pCtx.quadraticCurveTo(70, 54, 64, 28);
+        } else {
+          pCtx.moveTo(18, 26);
+          pCtx.lineTo(14, 78);
+          pCtx.lineTo(66, 78);
+          pCtx.lineTo(62, 26);
+        }
+        pCtx.closePath();
+        pCtx.fill();
+        pCtx.strokeStyle = '#38bdf8';
+        pCtx.lineWidth = 1.2;
+        pCtx.stroke();
+      }
+
+      // Flight suit shoulders
+      const suitColor = pilotId === 'xverde' ? '#059669' : pilotId === 'adarapaz' ? '#db2777' : '#0284c7';
+      pCtx.fillStyle = suitColor;
+      pCtx.beginPath();
+      pCtx.ellipse(40, 76, 26, 15, 0, Math.PI, 0);
+      pCtx.fill();
+
+      // Neck & skin tone
+      const skinColor = pilotId === 'xverde' ? '#9c6644' : pilotId === 'adarapaz' ? '#fde6d8' : '#f1d5c5';
+      pCtx.fillStyle = skinColor;
+      pCtx.fillRect(35, 50, 10, 10);
+
+      pCtx.beginPath();
+      pCtx.ellipse(40, 38, pilotId === 'xverde' ? 14 : 15, 17, 0, 0, Math.PI * 2);
+      pCtx.fill();
+
+      // Hair styles per character
+      if (pilotId === 'xverde') {
+        pCtx.fillStyle = '#14171f';
+        const curls = [
+          [26, 26, 5], [32, 22, 5.5], [40, 21, 6], [48, 22, 5.5], [54, 26, 5],
+          [24, 32, 4.5], [56, 32, 4.5]
+        ];
+        curls.forEach(([cx, cy, cr]) => {
+          pCtx.beginPath();
+          pCtx.arc(cx, cy, cr, 0, Math.PI * 2);
+          pCtx.fill();
+        });
+      } else if (pilotId === 'adarapaz') {
+        pCtx.fillStyle = '#facc15';
+        const blondeCurls = injured
+          ? [
+              [23, 27, 6.5], [30, 20, 7], [40, 18, 7], [50, 20, 7], [57, 28, 6.5],
+              [21, 37, 6], [59, 38, 6.5], [24, 46, 5.5], [56, 47, 5.5]
+            ]
+          : [
+              [24, 26, 6], [31, 21, 6.5], [40, 19, 6.5], [49, 21, 6.5], [56, 26, 6],
+              [22, 35, 5.5], [58, 35, 5.5], [23, 44, 5], [57, 44, 5]
+            ];
+        blondeCurls.forEach(([cx, cy, cr]) => {
+          pCtx.beginPath();
+          pCtx.arc(cx, cy, cr, 0, Math.PI * 2);
+          pCtx.fill();
+        });
+      } else {
+        pCtx.fillStyle = '#0f172a';
+        pCtx.beginPath();
+        pCtx.moveTo(24, 34);
+        pCtx.quadraticCurveTo(28, 18, 40, 18);
+        pCtx.quadraticCurveTo(52, 18, 56, 34);
+        pCtx.lineTo(52, 30);
+        pCtx.lineTo(40, 26);
+        pCtx.lineTo(28, 30);
+        pCtx.closePath();
+        pCtx.fill();
+        pCtx.strokeStyle = '#38bdf8';
+        pCtx.lineWidth = 1;
+        pCtx.stroke();
+      }
+
+      // Eyebrows
+      pCtx.strokeStyle = '#1e293b';
+      pCtx.lineWidth = 1.8;
+      if (injured) {
+        pCtx.beginPath();
+        pCtx.moveTo(31, 32);
+        pCtx.lineTo(37, 35);
+        pCtx.moveTo(49, 32);
+        pCtx.lineTo(43, 35);
+        pCtx.stroke();
+      } else {
+        pCtx.beginPath();
+        pCtx.moveTo(31, 32);
+        pCtx.lineTo(37, 31.5);
+        pCtx.moveTo(49, 32);
+        pCtx.lineTo(43, 31.5);
+        pCtx.stroke();
+      }
+
+      // Eyes
+      pCtx.fillStyle = '#0f172a';
+      pCtx.beginPath();
+      pCtx.arc(34.5, 37, 2.2, 0, Math.PI * 2);
+      pCtx.arc(45.5, 37, 2.2, 0, Math.PI * 2);
+      pCtx.fill();
+
+      pCtx.fillStyle = '#ffffff';
+      pCtx.fillRect(34.5, 35.5, 1.2, 1.2);
+      pCtx.fillRect(45.5, 35.5, 1.2, 1.2);
+
+      // Mouth
+      pCtx.strokeStyle = '#7f1d1d';
+      pCtx.lineWidth = 1.6;
+      pCtx.beginPath();
+      if (injured) {
+        pCtx.moveTo(36, 46);
+        pCtx.quadraticCurveTo(40, 44.5, 44, 46.5);
+      } else {
+        pCtx.moveTo(36, 45.5);
+        pCtx.quadraticCurveTo(40, 48.5, 44, 45.5);
+      }
+      pCtx.stroke();
+
+      // Injury details
+      if (injured) {
+        if (pilotId === 'xverde') {
+          pCtx.strokeStyle = '#ef4444';
+          pCtx.lineWidth = 1.5;
+          pCtx.beginPath();
+          pCtx.moveTo(36, 26);
+          pCtx.lineTo(43, 28.5);
+          pCtx.stroke();
+
+          pCtx.fillStyle = 'rgba(203, 213, 225, 0.55)';
+          pCtx.beginPath();
+          pCtx.arc(62, 18, 6, 0, Math.PI * 2);
+          pCtx.arc(68, 12, 8, 0, Math.PI * 2);
+          pCtx.fill();
+        } else if (pilotId === 'adarapaz') {
+          pCtx.fillStyle = 'rgba(225, 29, 72, 0.42)';
+          pCtx.beginPath();
+          pCtx.ellipse(48, 42, 4.5, 2.8, 0.2, 0, Math.PI * 2);
+          pCtx.fill();
+        } else if (pilotId === 'elizdark') {
+          pCtx.strokeStyle = '#f43f5e';
+          pCtx.lineWidth = 1.5;
+          pCtx.beginPath();
+          pCtx.moveTo(30, 40);
+          pCtx.lineTo(34, 43);
+          pCtx.stroke();
+        }
+      }
+
+      pCtx.restore();
+    }
+
+    function drawBossPortrait(bCtx, lvlData, injured = false, size = 116) {
+      bCtx.clearRect(0, 0, size, size);
+      const s = size / 116;
+      bCtx.save();
+      bCtx.scale(s, s);
+
+      const bg = bCtx.createRadialGradient(58, 54, 8, 58, 58, 68);
+      bg.addColorStop(0, injured ? '#4c0519' : lvlData.bossColor2);
+      bg.addColorStop(0.65, '#0f172a');
+      bg.addColorStop(1, '#020617');
+      bCtx.fillStyle = bg;
+      bCtx.fillRect(0, 0, 116, 116);
+
+      bCtx.strokeStyle = injured ? 'rgba(244, 63, 94, 0.2)' : 'rgba(56, 189, 248, 0.16)';
+      bCtx.lineWidth = 1;
+      for (let g = 16; g < 116; g += 20) {
+        bCtx.beginPath();
+        bCtx.moveTo(g, 0);
+        bCtx.lineTo(g, 116);
+        bCtx.moveTo(0, g);
+        bCtx.lineTo(116, g);
+        bCtx.stroke();
+      }
+
+      bCtx.save();
+      bCtx.translate(58, 60);
+      if (injured) bCtx.rotate(-0.08);
+
+      const c1 = lvlData.bossColor1;
+      const c2 = lvlData.bossColor2;
+
+      switch (lvlData.bossType) {
+        case 'octopus':
+          bCtx.strokeStyle = c2;
+          bCtx.lineWidth = 8;
+          bCtx.lineCap = 'round';
+          [-26, -10, 10, 26].forEach((tx, idx) => {
+            bCtx.beginPath();
+            bCtx.moveTo(tx, 14);
+            bCtx.quadraticCurveTo(tx + (idx % 2 === 0 ? -10 : 10), 34, tx * 1.15, injured ? 42 : 48);
+            bCtx.stroke();
+          });
+          bCtx.fillStyle = c1;
+          bCtx.beginPath();
+          bCtx.ellipse(0, -10, 34, 28, 0, 0, Math.PI * 2);
+          bCtx.fill();
+          break;
+
+        case 'megalodon':
+          bCtx.fillStyle = c2;
+          bCtx.beginPath();
+          bCtx.moveTo(0, -44);
+          bCtx.lineTo(16, -14);
+          bCtx.lineTo(-16, -14);
+          bCtx.closePath();
+          bCtx.fill();
+
+          bCtx.fillStyle = c1;
+          bCtx.beginPath();
+          bCtx.ellipse(0, 4, 38, 28, 0, 0, Math.PI * 2);
+          bCtx.fill();
+
+          bCtx.fillStyle = '#090d16';
+          bCtx.beginPath();
+          bCtx.arc(0, 14, 22, 0, Math.PI);
+          bCtx.fill();
+          bCtx.fillStyle = '#ffffff';
+          for (let tx = -15; tx <= 15; tx += 7.5) {
+            if (injured && tx === 0) continue;
+            bCtx.beginPath();
+            bCtx.moveTo(tx - 3, 14);
+            bCtx.lineTo(tx + 3, 14);
+            bCtx.lineTo(tx, 22);
+            bCtx.closePath();
+            bCtx.fill();
+          }
+          break;
+
+        case 'crocodile':
+          bCtx.fillStyle = c2;
+          bCtx.fillRect(-38, -14, 76, 32);
+          bCtx.fillStyle = c1;
+          bCtx.beginPath();
+          bCtx.moveTo(-26, -28);
+          bCtx.lineTo(26, -28);
+          bCtx.lineTo(32, 28);
+          bCtx.lineTo(-32, 28);
+          bCtx.closePath();
+          bCtx.fill();
+          break;
+
+        case 'mantaray':
+          bCtx.fillStyle = c1;
+          bCtx.beginPath();
+          bCtx.moveTo(0, -28);
+          bCtx.lineTo(48, 8);
+          bCtx.lineTo(0, 34);
+          bCtx.lineTo(-48, 8);
+          bCtx.closePath();
+          bCtx.fill();
+          bCtx.fillStyle = c2;
+          bCtx.beginPath();
+          bCtx.ellipse(0, 2, 20, 22, 0, 0, Math.PI * 2);
+          bCtx.fill();
+          break;
+
+        case 'crab':
+          bCtx.fillStyle = c2;
+          bCtx.beginPath();
+          bCtx.arc(-36, 16, 15, 0, Math.PI * 2);
+          bCtx.arc(36, 16, 15, 0, Math.PI * 2);
+          bCtx.fill();
+          bCtx.fillStyle = c1;
+          bCtx.beginPath();
+          bCtx.ellipse(0, -2, 36, 25, 0, 0, Math.PI * 2);
+          bCtx.fill();
+          break;
+
+        case 'jellyfish':
+          bCtx.fillStyle = c1;
+          bCtx.beginPath();
+          bCtx.arc(0, 2, 36, Math.PI, 0);
+          bCtx.quadraticCurveTo(0, 14, -36, 2);
+          bCtx.fill();
+          bCtx.strokeStyle = c2;
+          bCtx.lineWidth = 4;
+          [-22, -8, 8, 22].forEach(jx => {
+            bCtx.beginPath();
+            bCtx.moveTo(jx, 6);
+            bCtx.lineTo(jx + (injured ? -6 : 4), 42);
+            bCtx.stroke();
+          });
+          break;
+
+        case 'narwhal':
+          bCtx.fillStyle = c2;
+          bCtx.beginPath();
+          bCtx.moveTo(-6, -18);
+          bCtx.lineTo(6, -18);
+          bCtx.lineTo(0, injured ? -38 : -52);
+          bCtx.closePath();
+          bCtx.fill();
+          bCtx.fillStyle = c1;
+          bCtx.beginPath();
+          bCtx.ellipse(0, 8, 32, 28, 0, 0, Math.PI * 2);
+          bCtx.fill();
+          break;
+
+        case 'turtle':
+          bCtx.fillStyle = c2;
+          bCtx.beginPath();
+          bCtx.arc(0, 4, 40, Math.PI, 0);
+          bCtx.fill();
+          bCtx.fillStyle = c1;
+          bCtx.beginPath();
+          bCtx.ellipse(0, 12, 28, 22, 0, 0, Math.PI * 2);
+          bCtx.fill();
+          break;
+
+        case 'eel':
+          bCtx.fillStyle = c2;
+          bCtx.beginPath();
+          bCtx.ellipse(-10, -14, 24, 18, 0.3, 0, Math.PI * 2);
+          bCtx.fill();
+          bCtx.fillStyle = c1;
+          bCtx.beginPath();
+          bCtx.ellipse(4, 10, 28, 22, -0.2, 0, Math.PI * 2);
+          bCtx.fill();
+          break;
+
+        case 'whale':
+          bCtx.fillStyle = c2;
+          bCtx.beginPath();
+          bCtx.moveTo(-46, -12);
+          bCtx.lineTo(46, -12);
+          bCtx.lineTo(34, 32);
+          bCtx.lineTo(-34, 32);
+          bCtx.closePath();
+          bCtx.fill();
+          bCtx.fillStyle = c1;
+          bCtx.beginPath();
+          bCtx.ellipse(0, -4, 34, 26, 0, 0, Math.PI * 2);
+          bCtx.fill();
+          break;
+      }
+
+      if (!injured) {
+        bCtx.fillStyle = '#ffffff';
+        bCtx.beginPath();
+        bCtx.arc(-13, -2, 6, 0, Math.PI * 2);
+        bCtx.arc(13, -2, 6, 0, Math.PI * 2);
+        bCtx.fill();
+
+        bCtx.fillStyle = '#ef4444';
+        bCtx.beginPath();
+        bCtx.arc(-13, -1, 3, 0, Math.PI * 2);
+        bCtx.arc(13, -1, 3, 0, Math.PI * 2);
+        bCtx.fill();
+
+        bCtx.strokeStyle = '#090d16';
+        bCtx.lineWidth = 3;
+        bCtx.beginPath();
+        bCtx.moveTo(-21, -8);
+        bCtx.lineTo(-7, -4);
+        bCtx.moveTo(21, -8);
+        bCtx.lineTo(7, -4);
+        bCtx.stroke();
+      } else {
+        bCtx.strokeStyle = '#090d16';
+        bCtx.lineWidth = 2.5;
+        bCtx.beginPath();
+        bCtx.moveTo(-18, -6);
+        bCtx.lineTo(-9, 2);
+        bCtx.moveTo(-9, -6);
+        bCtx.lineTo(-18, 2);
+        bCtx.stroke();
+
+        bCtx.fillStyle = '#fef08a';
+        bCtx.beginPath();
+        bCtx.arc(13, -2, 5, 0, Math.PI);
+        bCtx.fill();
+
+        bCtx.strokeStyle = '#fef08a';
+        bCtx.lineWidth = 2.2;
+        bCtx.beginPath();
+        bCtx.moveTo(-24, -18);
+        bCtx.lineTo(-12, -8);
+        bCtx.lineTo(-18, 4);
+        bCtx.lineTo(-6, 14);
+        bCtx.moveTo(22, -12);
+        bCtx.lineTo(10, 0);
+        bCtx.lineTo(18, 12);
+        bCtx.stroke();
+
+        bCtx.fillStyle = 'rgba(203, 213, 225, 0.45)';
+        bCtx.beginPath();
+        bCtx.arc(-28, -26, 9, 0, Math.PI * 2);
+        bCtx.arc(30, -22, 11, 0, Math.PI * 2);
+        bCtx.arc(22, -34, 8, 0, Math.PI * 2);
+        bCtx.fill();
+
+        bCtx.fillStyle = '#fbbf24';
+        bCtx.fillRect(-20, 8, 4, 4);
+        bCtx.fillRect(18, -16, 4, 4);
+        bCtx.fillRect(4, 20, 4, 4);
+      }
+
+      bCtx.restore();
+      bCtx.restore();
+    }
+
+    function renderAllPortraits() {
+      ['xverde', 'adarapaz', 'elizdark'].forEach(id => {
+        const mini = document.getElementById(`pilot-mini-${id}`);
+        if (mini) drawPilotPortrait(mini.getContext('2d'), id, false, mini.width);
+
+        const convImg = document.getElementById(`conv-img-${id}`);
+        if (convImg) drawPilotPortrait(convImg.getContext('2d'), id, false, convImg.width);
+      });
+    }
+
+    // =========================================================================
+    // 6. GAME STATE, 13-WORLD AMBIENT OBJECTS & DIALOGUE STATES
+    // =========================================================================
+    const game = {
+      status: 'start', // 'start' | 'playing' | 'paused' | 'boss_dialogue' | 'conversation' | 'hangar' | 'infirmary' | 'gameover' | 'victory'
+      selectedShipId: 'xverde',
+      score: 0,
+      bestScore: Number(localStorage.getItem('alFenixNovaBest') || 0),
+      levelIndex: 0,
+      levelProgress: 0,
+      enemiesToBoss: 23, // +25% longer world progression
+      bossSpawned: false,
+      shake: 0,
+      flashAlpha: 0,
+      flashColor: '#ffffff',
+      lastTime: 0,
+      floatingTexts: [],
+      bgTop: LEVELS_DATA[0].bgTop,
+      bgBot: LEVELS_DATA[0].bgBot,
+      nebulaA: LEVELS_DATA[0].nebulaA,
+      nebulaB: LEVELS_DATA[0].nebulaB,
+      lightningAlpha: 0
+    };
+
+    const player = {
+      ship: SHIPS_CATALOG.xverde,
+      x: W / 2,
+      y: H - 140,
+      w: 38,
+      h: 42,
+      hp: 115,
+      maxHp: 115,
+      bombs: 2,
+      invuln: 0,
+      fireTimer: 0,
+      missileTimer: 0,
+      wingPhase: 0,
+      bank: 0,
+      buffs: {
+        missiles: 0,
+        shield: 0,
+        wingman: 0,
+        triple: 0
+      },
+      swapAnim: {
+        active: false,
+        phase: 'none', // 'exit' | 'enter'
+        outgoingShip: null,
+        outX: 0,
+        outY: 0,
+        targetX: W / 2,
+        targetY: H - 140
+      }
+    };
+
+    const controls = {
+      up: false,
+      down: false,
+      left: false,
+      right: false,
+      touchActive: false,
+      touchX: W / 2,
+      touchY: H - 140
+    };
+
+    const bossDialogueState = {
+      mode: 'arrival', // 'arrival' | 'defeat'
+      fullText: '',
+      charIndex: 0,
+      charTimer: 0
+    };
+
+    const dialogueState = {
+      lines: [],
+      lineIndex: 0,
+      charIndex: 0,
+      charTimer: 0,
+      completedWorldNum: 1
+    };
+
+    const infirmaryState = {
+      messages: [],
+      msgIndex: 0,
+      charIndex: 0,
+      charTimer: 0,
+      activeBubbleEl: null,
+      finished: false
+    };
+
+    let stars = [];
+    let nebulas = [];
+    let celestialBody = null;
+    let shootingStars = [];
+    let bullets = [];
+    let missiles = [];
+    let enemyBullets = [];
+    let bossLasers = [];
+    let enemies = [];
+    let asteroids = [];
+    let powerups = [];
+    let particles = [];
+    let shockwaves = [];
+    let boss = null;
+    let spawnTimer = 0;
+
+    // =========================================================================
+    // 7. SHIP RENDERING HELPERS
+    // =========================================================================
+    function renderShipModel(targetCtx, shipCfg, x, y, scale = 1, wingPhase = 0, bankAngle = 0) {
+      targetCtx.save();
+      targetCtx.translate(x, y);
+      targetCtx.scale(scale, scale);
+      targetCtx.rotate(bankAngle);
+
+      const flap = Math.sin(wingPhase) * 3;
+
+      targetCtx.fillStyle = shipCfg.flameOuter;
+      targetCtx.beginPath();
+      targetCtx.moveTo(-8, 15);
+      targetCtx.lineTo(0, 31 + flap);
+      targetCtx.lineTo(8, 15);
+      targetCtx.closePath();
+      targetCtx.fill();
+
+      targetCtx.fillStyle = shipCfg.flameInner;
+      targetCtx.beginPath();
+      targetCtx.moveTo(-4, 15);
+      targetCtx.lineTo(0, 23 + flap * 0.6);
+      targetCtx.lineTo(4, 15);
+      targetCtx.closePath();
+      targetCtx.fill();
+
+      if (shipCfg.id === 'xverde') {
+        targetCtx.fillStyle = shipCfg.hullSecondary;
+        targetCtx.beginPath();
+        targetCtx.moveTo(0, -14);
+        targetCtx.lineTo(23, 12 - flap * 0.4);
+        targetCtx.lineTo(14, 18);
+        targetCtx.lineTo(0, 7);
+        targetCtx.lineTo(-14, 18);
+        targetCtx.lineTo(-23, 12 - flap * 0.4);
+        targetCtx.closePath();
+        targetCtx.fill();
+
+        targetCtx.fillStyle = shipCfg.hullPrimary;
+        targetCtx.beginPath();
+        targetCtx.moveTo(0, -23);
+        targetCtx.lineTo(12, 12);
+        targetCtx.lineTo(0, 5);
+        targetCtx.lineTo(-12, 12);
+        targetCtx.closePath();
+        targetCtx.fill();
+
+        targetCtx.strokeStyle = shipCfg.hullTrim;
+        targetCtx.lineWidth = 1.5;
+        targetCtx.stroke();
+      } else if (shipCfg.id === 'adarapaz') {
+        targetCtx.fillStyle = shipCfg.hullSecondary;
+        targetCtx.beginPath();
+        targetCtx.moveTo(0, -16);
+        targetCtx.quadraticCurveTo(25, -2, 21, 16 - flap * 0.4);
+        targetCtx.lineTo(8, 12);
+        targetCtx.lineTo(-8, 12);
+        targetCtx.lineTo(-21, 16 - flap * 0.4);
+        targetCtx.quadraticCurveTo(-25, -2, 0, -16);
+        targetCtx.closePath();
+        targetCtx.fill();
+
+        targetCtx.fillStyle = shipCfg.hullPrimary;
+        targetCtx.beginPath();
+        targetCtx.moveTo(0, -22);
+        targetCtx.lineTo(10, 14);
+        targetCtx.lineTo(-10, 14);
+        targetCtx.closePath();
+        targetCtx.fill();
+
+        targetCtx.fillStyle = shipCfg.hullTrim;
+        targetCtx.fillRect(-14, -4, 3, 14);
+        targetCtx.fillRect(11, -4, 3, 14);
+      } else {
+        targetCtx.fillStyle = shipCfg.hullSecondary;
+        targetCtx.beginPath();
+        targetCtx.moveTo(0, -18);
+        targetCtx.lineTo(24, 10);
+        targetCtx.lineTo(18, 19);
+        targetCtx.lineTo(0, 11);
+        targetCtx.lineTo(-18, 19);
+        targetCtx.lineTo(-24, 10);
+        targetCtx.closePath();
+        targetCtx.fill();
+
+        targetCtx.fillStyle = shipCfg.hullPrimary;
+        targetCtx.beginPath();
+        targetCtx.moveTo(0, -24);
+        targetCtx.lineTo(13, 13);
+        targetCtx.lineTo(0, 8);
+        targetCtx.lineTo(-13, 13);
+        targetCtx.closePath();
+        targetCtx.fill();
+
+        targetCtx.strokeStyle = shipCfg.hullTrim;
+        targetCtx.lineWidth = 2;
+        targetCtx.stroke();
+
+        targetCtx.fillStyle = shipCfg.hullTrim;
+        targetCtx.fillRect(-17, 2, 3, 12);
+        targetCtx.fillRect(14, 2, 3, 12);
+      }
+
+      targetCtx.fillStyle = shipCfg.cockpit;
+      targetCtx.beginPath();
+      targetCtx.ellipse(0, -3, 3.5, 7, 0, 0, Math.PI * 2);
+      targetCtx.fill();
+
+      targetCtx.restore();
+    }
+
+    function drawShipPreviews() {
+      Object.values(SHIPS_CATALOG).forEach(ship => {
+        const prevCanvas = document.getElementById(`preview-${ship.id}`);
+        if (prevCanvas) {
+          const pCtx = prevCanvas.getContext('2d');
+          pCtx.clearRect(0, 0, prevCanvas.width, prevCanvas.height);
+          renderShipModel(pCtx, ship, prevCanvas.width / 2, prevCanvas.height / 2 + 2, 0.85, 0.8, 0);
+        }
+        const hangarCanvas = document.getElementById(`hangar-prev-${ship.id}`);
+        if (hangarCanvas) {
+          const hCtx = hangarCanvas.getContext('2d');
+          hCtx.clearRect(0, 0, hangarCanvas.width, hangarCanvas.height);
+          renderShipModel(hCtx, ship, hangarCanvas.width / 2, hangarCanvas.height / 2 + 2, 0.82, 0.8, 0);
+        }
+      });
+    }
+
+    // =========================================================================
+    // 8. SHIP SWITCH & LEFT-TO-RIGHT / RIGHT-TO-LEFT RELAY ANIMATION
+    // =========================================================================
+    function triggerShipSwitch(newShipId, launchAfterSwap = false) {
+      if (!SHIPS_CATALOG[newShipId]) return;
+      game.selectedShipId = newShipId;
+
+      document.querySelectorAll('.ship-card').forEach(c => {
+        c.classList.toggle('selected', c.getAttribute('data-ship') === newShipId);
+      });
+
+      const nextShip = SHIPS_CATALOG[newShipId];
+      const shipChanged = player.ship.id !== newShipId;
+
+      if (shipChanged && (game.status === 'playing' || game.status === 'hangar')) {
+        audio.playShipSwapWhoosh();
+
+        const hpRatio = player.hp / player.maxHp;
+        player.swapAnim.active = true;
+        player.swapAnim.phase = 'exit';
+        player.swapAnim.outgoingShip = player.ship;
+        player.swapAnim.outX = player.x;
+        player.swapAnim.outY = player.y;
+        player.swapAnim.targetX = Math.max(44, Math.min(W - 44, player.x));
+        player.swapAnim.targetY = Math.max(120, Math.min(H - 95, player.y));
+
+        player.ship = nextShip;
+        player.maxHp = nextShip.maxHp;
+        player.hp = Math.max(28, Math.round(nextShip.maxHp * hpRatio));
+        player.x = -55;
+
+        shipHudName.textContent = nextShip.name;
+        shipHudName.className = `${nextShip.hudColor} truncate max-w-[86px]`;
+        updateHUD();
+      } else {
+        player.ship = nextShip;
+        player.maxHp = nextShip.maxHp;
+        player.hp = nextShip.maxHp;
+        shipHudName.textContent = nextShip.name;
+        shipHudName.className = `${nextShip.hudColor} truncate max-w-[86px]`;
+      }
+
+      if (launchAfterSwap) {
+        hangarModal.classList.add('hidden');
+        advanceToNextWorld();
+      }
+    }
+
+    // =========================================================================
+    // 9. WORLD PROGRESSION (+25% LENGTH) & DISTINCTIVE CELESTIAL BACKGROUNDS
+    // =========================================================================
+    function getLevelQuota(levelIdx) {
+      const lvl = LEVELS_DATA[levelIdx];
+      if (lvl && lvl.isAsteroidWorld) {
+        return Math.round((26 + levelIdx * 2) * 1.25);
+      }
+      return Math.round((18 + levelIdx * 2) * 1.25);
+    }
+
+    function initSpace() {
+      stars = [];
+      for (let i = 0; i < 84; i++) {
+        const layer = i < 44 ? 1 : i < 70 ? 2 : 3;
+        stars.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          size: layer === 1 ? 1.2 : layer === 2 ? 2.1 : 2.9,
+          speed: layer === 1 ? 45 : layer === 2 ? 105 : 185,
+          phase: Math.random() * Math.PI * 2,
+          layer
+        });
+      }
+      nebulas = [
+        { x: 95, y: 200, r: 175, speed: 16 },
+        { x: 300, y: 540, r: 200, speed: 22 }
+      ];
+      shootingStars = [];
+    }
+
+    function applyLevelTheme(idx) {
+      const lvl = LEVELS_DATA[idx];
+      game.bgTop = lvl.bgTop;
+      game.bgBot = lvl.bgBot;
+      game.nebulaA = lvl.nebulaA;
+      game.nebulaB = lvl.nebulaB;
+      worldNameHud.textContent = lvl.world;
+      levelText.textContent = `MUNDO ${String(lvl.num).padStart(2, '0')}/13`;
+
+      celestialBody = {
+        style: lvl.planetStyle,
+        x: idx % 2 === 0 ? W * 0.72 : W * 0.28,
+        y: -110,
+        r: lvl.planetStyle === 'total_eclipse' ? 68 : 58,
+        speed: 14,
+        c1: lvl.planetColor1,
+        c2: lvl.planetColor2,
+        rot: 0
+      };
+
+      if (lvl.isAsteroidWorld) {
+        bossTitle.textContent = `☄️ ${lvl.world}`;
+        bossBarWrap.classList.remove('hidden');
+      } else {
+        bossBarWrap.classList.add('hidden');
+      }
+    }
+
+    function setupWorldState(idx) {
+      game.levelIndex = idx;
+      game.levelProgress = 0;
+      game.enemiesToBoss = getLevelQuota(idx);
+      game.bossSpawned = false;
+      game.shake = 0;
+      game.flashAlpha = 0;
+      game.lightningAlpha = 0;
+      game.floatingTexts = [];
+
+      bullets = [];
+      missiles = [];
+      enemyBullets = [];
+      bossLasers = [];
+      enemies = [];
+      asteroids = [];
+      powerups = [];
+      particles = [];
+      shockwaves = [];
+      boss = null;
+      spawnTimer = 0.45;
+
+      applyLevelTheme(idx);
+      updateHUD();
+    }
+
+    function resetGame() {
+      const chosenShip = SHIPS_CATALOG[game.selectedShipId] || SHIPS_CATALOG.xverde;
+      player.ship = chosenShip;
+      player.maxHp = chosenShip.maxHp;
+      player.hp = chosenShip.maxHp;
+      player.x = W / 2;
+      player.y = H - 140;
+      player.bombs = 2;
+      player.invuln = 0;
+      player.fireTimer = 0;
+      player.missileTimer = 0;
+      player.bank = 0;
+      player.buffs = { missiles: 0, shield: 0, wingman: 0, triple: 0 };
+      player.swapAnim.active = false;
+      player.swapAnim.phase = 'none';
+
+      shipHudName.textContent = chosenShip.name;
+      shipHudName.className = `${chosenShip.hudColor} truncate max-w-[86px]`;
+
+      game.score = 0;
+      bossDlgOverlay.classList.add('hidden');
+      hangarModal.classList.add('hidden');
+      convOverlay.classList.add('hidden');
+      infirmaryOverlay.classList.add('hidden');
+
+      setupWorldState(0);
+    }
+
+    function updateHUD() {
+      const pct = Math.max(0, Math.min(100, (player.hp / player.maxHp) * 100));
+      hpBar.style.width = `${pct}%`;
+      hpText.textContent = `${Math.ceil(player.hp)}/${player.maxHp}`;
+      scoreText.textContent = String(Math.floor(game.score)).padStart(6, '0');
+      bombCountEl.textContent = player.bombs;
+
+      const lvl = LEVELS_DATA[game.levelIndex];
+      if (lvl && lvl.isAsteroidWorld) {
+        const remPct = Math.max(0, Math.min(100, Math.round((1 - game.levelProgress / game.enemiesToBoss) * 100)));
+        bossHpFill.style.width = `${remPct}%`;
+        bossHpPct.textContent = `${remPct}%`;
+      } else if (boss) {
+        const bPct = Math.max(0, Math.min(100, (boss.hp / boss.maxHp) * 100));
+        bossHpFill.style.width = `${bPct}%`;
+        bossHpPct.textContent = `${Math.ceil(bPct)}%`;
+      }
+
+      const buffSpecs = [
+        { key: 'missiles', label: 'M MISILES', color: 'border-amber-400 text-amber-300 bg-amber-950/85' },
+        { key: 'shield', label: 'E ESCUDO', color: 'border-cyan-400 text-cyan-300 bg-cyan-950/85' },
+        { key: 'wingman', label: 'C ALIADO', color: 'border-fuchsia-400 text-fuchsia-300 bg-fuchsia-950/85' },
+        { key: 'triple', label: 'W TRIPLE', color: 'border-rose-400 text-rose-300 bg-rose-950/85' }
+      ];
+
+      let html = '';
+      buffSpecs.forEach(b => {
+        const rem = player.buffs[b.key];
+        if (rem > 0) {
+          html += `<span class="px-1.5 py-0.5 rounded-md border ${b.color} text-[9px] font-black tracking-tight">${b.label} ${rem.toFixed(1)}s</span>`;
+        }
+      });
+      activeBuffsHud.innerHTML = html;
+    }
+
+    function addFloatingText(x, y, text, color = '#fbbf24') {
+      if (game.floatingTexts.length > 14) game.floatingTexts.shift();
+      game.floatingTexts.push({ x, y, text, color, life: 1.15 });
+    }
+
+    // =========================================================================
+    // 10. WEAPONS, BOMBA SPECIAL EFFECT, POWER-UPS & EXPLOSIONS
+    // =========================================================================
+    function fireWeapons() {
+      if (player.swapAnim.active) return;
+
+      const ship = player.ship;
+      const hasTriple = player.buffs.triple > 0;
+      player.fireTimer = hasTriple ? ship.fireRate * 0.88 : ship.fireRate;
+
+      const noseY = player.y - 20;
+
+      if (hasTriple) {
+        [-0.21, 0, 0.21].forEach(ang => {
+          bullets.push({
+            x: player.x,
+            y: noseY,
+            vx: Math.sin(ang) * 700,
+            vy: -Math.cos(ang) * 700,
+            w: 5,
+            h: 18,
+            dmg: Math.round(ship.bulletDmg * 0.9),
+            color: ship.laserColor,
+            core: ship.laserCore
+          });
+        });
+      } else if (ship.twinBase) {
+        [-10, 10].forEach(ox => {
+          bullets.push({
+            x: player.x + ox,
+            y: noseY + 4,
+            vx: 0,
+            vy: -700,
+            w: 4.5,
+            h: 18,
+            dmg: ship.bulletDmg,
+            color: ship.laserColor,
+            core: ship.laserCore
+          });
+        });
+      } else {
+        bullets.push({
+          x: player.x,
+          y: noseY,
+          vx: 0,
+          vy: -690,
+          w: ship.id === 'elizdark' ? 6.5 : 5,
+          h: ship.id === 'elizdark' ? 22 : 18,
+          dmg: ship.bulletDmg,
+          color: ship.laserColor,
+          core: ship.laserCore
+        });
+      }
+
+      if (player.buffs.wingman > 0) {
+        const allyX = player.x + (player.x > W / 2 ? -34 : 34);
+        const allyY = player.y + 6;
+        bullets.push({
+          x: allyX,
+          y: allyY - 12,
+          vx: 0,
+          vy: -680,
+          w: 4,
+          h: 15,
+          dmg: 12,
+          color: '#e879f9',
+          core: '#fdf4ff'
+        });
+      }
+
+      audio.playShoot(ship.id);
+
+      if (player.buffs.missiles > 0 && player.missileTimer <= 0) {
+        player.missileTimer = 0.56;
+        [-16, 16].forEach(ox => {
+          missiles.push({
+            x: player.x + ox,
+            y: player.y,
+            vx: ox * 5,
+            vy: -250,
+            speed: 460,
+            dmg: 26,
+            life: 2.6
+          });
+        });
+        audio.playMissileLaunch();
+      }
+    }
+
+    /**
+     * BOMBA Special Activation:
+     * Multi-ring expanding shockwaves, bright screen flash, radial shock particles,
+     * and potent synthesized detonation sound.
+     */
+    function triggerBomba() {
+      if (game.status !== 'playing' || player.bombs <= 0) return;
+      player.bombs--;
+      audio.playBombaDetonation();
+      game.shake = 18;
+      game.flashAlpha = 0.82;
+      game.flashColor = '#fef08a';
+
+      // Multi-ring special BOMBA shockwaves centered on the player's ship
+      [
+        { r: 12, maxR: 380, color: '#fbbf24', sec: '#ffffff', speed: 460 },
+        { r: 6, maxR: 310, color: '#38bdf8', sec: '#f43f5e', speed: 360 },
+        { r: 2, maxR: 230, color: '#f43f5e', sec: '#fef08a', speed: 270 }
+      ].forEach(ring => {
+        shockwaves.push({
+          x: player.x,
+          y: player.y,
+          r: ring.r,
+          maxR: ring.maxR,
+          color: ring.color,
+          secondaryColor: ring.sec,
+          alpha: 1.0,
+          coreRadius: 28,
+          expandSpeed: ring.speed
+        });
+      });
+
+      // Radial golden/cyan plasma burst particles
+      for (let i = 0; i < 28; i++) {
+        if (particles.length >= 130) particles.shift();
+        const ang = (i / 28) * Math.PI * 2;
+        const spd = 190 + (i % 4) * 75;
+        particles.push({
+          x: player.x,
+          y: player.y,
+          vx: Math.cos(ang) * spd,
+          vy: Math.sin(ang) * spd,
+          size: 4.2,
+          isStreak: true,
+          color: i % 3 === 0 ? '#fbbf24' : i % 3 === 1 ? '#38bdf8' : '#ffffff',
+          life: 0.65,
+          maxLife: 0.65
+        });
+      }
+
+      enemyBullets = [];
+      bossLasers = [];
+
+      for (let i = enemies.length - 1; i >= 0; i--) {
+        const e = enemies[i];
+        e.hp -= 220;
+        if (e.hp <= 0) {
+          destroyMinionWithSpecialEffect(e, i);
+        }
+      }
+
+      for (let i = asteroids.length - 1; i >= 0; i--) {
+        const a = asteroids[i];
+        a.hp -= 240;
+        if (a.hp <= 0) {
+          destroyAsteroidWithSpecialEffect(a, i);
+        }
+      }
+
+      if (boss && !boss.defeated && !boss.exploding) {
+        if (!boss.introDone) {
+          addFloatingText(boss.x, boss.y + 30, 'ESPERANDO PRESENTACIÓN...', '#cbd5e1');
+        } else {
+          boss.hp -= 260;
+          spawnExplosion(boss.x, boss.y, ['#fbbf24', '#38bdf8', '#ffffff'], 1.8);
+          updateHUD();
+          if (boss.hp <= 0) {
+            openBossDefeatPortraitDialogue();
+          }
+        }
+      }
+
+      addFloatingText(W / 2, H * 0.48, '¡DETONACIÓN BOMBA!', '#fbbf24');
+      updateHUD();
+    }
+
+    function spawnExplosion(x, y, colors, scale = 1) {
+      if (shockwaves.length < 16) {
+        shockwaves.push({
+          x,
+          y,
+          r: 5,
+          maxR: 42 * scale,
+          color: colors[0],
+          secondaryColor: colors[1] || '#ffffff',
+          alpha: 0.95,
+          coreRadius: 14 * scale,
+          expandSpeed: 165
+        });
+      }
+
+      const maxParticles = 125;
+      const count = Math.min(16, Math.floor(13 * scale));
+      for (let i = 0; i < count; i++) {
+        if (particles.length >= maxParticles) particles.shift();
+        const ang = (i / count) * Math.PI * 2 + (Math.random() - 0.5) * 0.45;
+        const spd = (65 + Math.random() * 195) * Math.sqrt(scale);
+        particles.push({
+          x,
+          y,
+          vx: Math.cos(ang) * spd,
+          vy: Math.sin(ang) * spd,
+          size: (2.4 + Math.random() * 3.4) * Math.min(1.45, scale),
+          isStreak: i % 2 === 0,
+          color: colors[i % colors.length],
+          life: 0.34 + Math.random() * 0.28,
+          maxLife: 0.62
+        });
+      }
+    }
+
+    function destroyMinionWithSpecialEffect(e, idx) {
+      game.score += e.points;
+      if (!e.isBossSupply) {
+        game.levelProgress++;
+      }
+      audio.playExplosion(e.isCarrier || e.isBossSupply ? 1.3 : 1.05);
+      spawnExplosion(
+        e.x,
+        e.y,
+        [e.color1, e.color2, '#ffffff', '#fde047'],
+        e.isCarrier || e.isBossSupply ? 1.35 : 1.1
+      );
+      if (e.isBossSupply) {
+        spawnPowerup(e.x, e.y, 'life');
+      } else if (e.isCarrier) {
+        spawnPowerup(e.x, e.y);
+      }
+      enemies.splice(idx, 1);
+      updateHUD();
+    }
+
+    function destroyAsteroidWithSpecialEffect(a, idx) {
+      game.score += a.points;
+      game.levelProgress++;
+      audio.playExplosion(a.r > 24 ? 1.45 : 1.05);
+      spawnExplosion(
+        a.x,
+        a.y,
+        [a.color1, a.color2, '#ffffff', '#fbbf24'],
+        a.r > 24 ? 1.45 : 1.1
+      );
+      if (a.hasCapsule) {
+        spawnPowerup(a.x, a.y);
+      }
+      asteroids.splice(idx, 1);
+      updateHUD();
+    }
+
+    function spawnPowerup(x, y, forcedType = null) {
+      const lvlNum = game.levelIndex + 1;
+      const pool = lvlNum < 6
+        ? ['life', 'shield', 'missiles', 'bomb']
+        : ['missiles', 'shield', 'wingman', 'triple', 'bomb', 'life'];
+      const type = forcedType || pool[Math.floor(Math.random() * pool.length)];
+
+      // Companion lasts 25% shorter; missiles brief
+      const companionDur = lvlNum < 6 ? 6.0 : 7.5;
+      const missileDur = 6.5;
+      const baseDur = lvlNum < 6 ? 8.0 : 11.0;
+
+      const meta = {
+        missiles: { label: 'M', color: '#fbbf24', text: `MISILES ${missileDur}s`, dur: missileDur },
+        shield:   { label: 'E', color: '#22d3ee', text: `ESCUDO ${baseDur}s`, dur: baseDur },
+        wingman:  { label: 'C', color: '#e879f9', text: `ALIADO ${companionDur}s`, dur: companionDur },
+        triple:   { label: 'W', color: '#fb7185', text: `TRIPLE ${baseDur}s`, dur: baseDur },
+        bomb:     { label: 'B', color: '#fb923c', text: '+1 BOMBA', dur: 0 },
+        life:     { label: '+', color: '#34d399', text: lvlNum < 6 ? '+25% VIDA' : '+35% VIDA', dur: 0 }
+      }[type];
+
+      powerups.push({
+        x,
+        y,
+        vy: 125,
+        r: 14,
+        type,
+        label: meta.label,
+        color: meta.color,
+        text: meta.text,
+        dur: meta.dur,
+        pulse: 0
+      });
+    }
+
+    function applyPowerup(p) {
+      audio.playPowerup(p.type);
+      game.score += 250;
+      spawnExplosion(p.x, p.y, [p.color, '#ffffff'], 0.85);
+
+      const lvlNum = game.levelIndex + 1;
+      if (p.type === 'life') {
+        const healRatio = lvlNum < 6 ? 0.25 : 0.35;
+        player.hp = Math.min(player.maxHp, player.hp + Math.round(player.maxHp * healRatio));
+      } else if (p.type === 'bomb') {
+        player.bombs = Math.min(5, player.bombs + 1);
+      } else {
+        player.buffs[p.type] = p.dur;
+      }
+
+      addFloatingText(p.x, p.y - 18, p.text, p.color);
+      updateHUD();
+    }
+
+    function damagePlayer(amount) {
+      if (game.status !== 'playing' || player.swapAnim.active) return;
+
+      if (player.buffs.shield > 0) {
+        spawnExplosion(player.x, player.y, ['#22d3ee', '#ffffff'], 0.85);
+        addFloatingText(player.x, player.y - 28, '¡ESCUDO ABSORBE!', '#22d3ee');
+        return;
+      }
+
+      if (player.invuln > 0) return;
+
+      player.hp = Math.max(0, player.hp - amount);
+      player.invuln = 1.05;
+      game.shake = 10;
+      game.flashAlpha = 0.28;
+      game.flashColor = '#f43f5e';
+      audio.playDamage();
+      spawnExplosion(player.x, player.y, ['#f43f5e', '#fbbf24', '#ffffff'], 1.05);
+      addFloatingText(player.x, player.y - 24, `-${amount} HP`, '#fb7185');
+      updateHUD();
+
+      if (player.hp <= 0) {
+        openEmergencyInfirmaryChat();
+      }
+    }
+
+    // =========================================================================
+    // 11. BOSS PORTRAIT DIALOGUE, AGONY DEATH SOUND & GRAND EXPLOSION
+    // =========================================================================
+    function openBossPortraitDialogue(mode) {
+      if (!boss) return;
+      const lvl = LEVELS_DATA[game.levelIndex];
+
+      game.status = 'boss_dialogue';
+      controls.touchActive = false;
+      enemyBullets = [];
+      bossLasers = [];
+
+      bossDialogueState.mode = mode;
+      bossDialogueState.fullText = mode === 'arrival' ? lvl.arrivalQuote : lvl.defeatQuote;
+      bossDialogueState.charIndex = 0;
+      bossDialogueState.charTimer = 0.025;
+
+      const isInjured = mode === 'defeat';
+      drawBossPortrait(bossPortraitCanvas.getContext('2d'), lvl, isInjured, bossPortraitCanvas.width);
+
+      bossDlgName.textContent = lvl.bossName;
+      bossDlgText.textContent = '';
+      bossDlgHint.textContent = 'Transmisión en curso...';
+
+      if (mode === 'arrival') {
+        bossDlgBadge.textContent = `⚠️ ALERTA DE LEVIATÁN • MUNDO ${String(lvl.num).padStart(2, '0')}`;
+        bossDlgBadge.className = 'px-3 py-0.5 rounded-full bg-rose-500/20 border border-rose-400/60 text-rose-300 text-[9px] font-black tracking-widest uppercase mb-2.5';
+        bossDlgCard.className = 'flex flex-col items-center p-2.5 rounded-2xl bg-slate-900/95 border-2 border-rose-500/75 shadow-[0_0_28px_rgba(244,63,94,0.35)] speaker-active';
+        bossDlgStatus.textContent = 'Amenaza Detectada • Estado Óptimo';
+        bossDlgStatus.className = 'text-[9px] font-extrabold uppercase tracking-wider text-amber-300 mt-1.5';
+        bossDlgPhaseTag.textContent = 'JEFE DE SECTOR';
+      } else {
+        bossDlgBadge.textContent = `💥 NÚCLEO CRÍTICO • MUNDO ${String(lvl.num).padStart(2, '0')}`;
+        bossDlgBadge.className = 'px-3 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/60 text-amber-300 text-[9px] font-black tracking-widest uppercase mb-2.5';
+        bossDlgCard.className = 'flex flex-col items-center p-2.5 rounded-2xl bg-slate-900/95 border-2 border-amber-400/80 shadow-[0_0_28px_rgba(251,191,36,0.38)] speaker-active';
+        bossDlgStatus.textContent = 'Estado: Gravemente Dañado';
+        bossDlgStatus.className = 'text-[9px] font-extrabold uppercase tracking-wider text-rose-400 mt-1.5';
+        bossDlgPhaseTag.textContent = 'ÚLTIMAS PALABRAS';
+      }
+
+      bossDlgOverlay.classList.remove('hidden');
+      audio.startSeriousDialogueMusic();
+    }
+
+    function openBossDefeatPortraitDialogue() {
+      if (!boss || boss.defeated) return;
+      boss.defeated = true;
+      openBossPortraitDialogue('defeat');
+    }
+
+    function updateBossDialogueTypewriter(dt) {
+      if (game.status !== 'boss_dialogue') return;
+      if (bossDialogueState.charIndex < bossDialogueState.fullText.length) {
+        bossDialogueState.charTimer -= dt;
+        if (bossDialogueState.charTimer <= 0) {
+          bossDialogueState.charIndex++;
+          bossDlgText.textContent = bossDialogueState.fullText.slice(0, bossDialogueState.charIndex);
+          bossDialogueState.charTimer = 0.026;
+          if (bossDialogueState.charIndex % 3 === 0) {
+            audio.playTypeBlip(bossDialogueState.mode === 'arrival' ? 310 : 240);
+          }
+          if (bossDialogueState.charIndex >= bossDialogueState.fullText.length) {
+            bossDlgHint.textContent = bossDialogueState.mode === 'arrival'
+              ? 'Toca para iniciar combate ▶'
+              : 'Toca para detonar núcleo ▶';
+          }
+        }
+      }
+    }
+
+    function handleBossDialogueAdvance() {
+      if (game.status !== 'boss_dialogue') return;
+      if (bossDialogueState.charIndex < bossDialogueState.fullText.length) {
+        bossDialogueState.charIndex = bossDialogueState.fullText.length;
+        bossDlgText.textContent = bossDialogueState.fullText;
+        bossDlgHint.textContent = bossDialogueState.mode === 'arrival'
+          ? 'Toca para iniciar combate ▶'
+          : 'Toca para detonar núcleo ▶';
+        return;
+      }
+
+      bossDlgOverlay.classList.add('hidden');
+      if (bossDialogueState.mode === 'arrival') {
+        if (boss) boss.introDone = true;
+        game.status = 'playing';
+        audio.startBossMusic();
+      } else {
+        startGrandBossExplosion();
+      }
+    }
+
+    function startGrandBossExplosion() {
+      if (!boss) return;
+      game.status = 'playing';
+      boss.exploding = true;
+      boss.explodeTimer = 1.75;
+      boss.burstTick = 0;
+      audio.stopMusic();
+      audio.playBossAgonyDeath();
+      audio.playExplosion(2.2);
+      game.shake = 18;
+      game.flashAlpha = 0.48;
+      game.flashColor = '#fbbf24';
+    }
+
+    // =========================================================================
+    // 12. EMERGENCY INFIRMARY CHAT (INJURED PORTRAIT + SAD MUSIC + RETRY SAME WORLD)
+    // =========================================================================
+    function openEmergencyInfirmaryChat() {
+      game.status = 'infirmary';
+      controls.touchActive = false;
+      bossDlgOverlay.classList.add('hidden');
+      hangarModal.classList.add('hidden');
+      convOverlay.classList.add('hidden');
+      bossBarWrap.classList.add('hidden');
+
+      const shipCfg = player.ship;
+      const injCanvas = document.getElementById('injured-pilot-canvas');
+      drawPilotPortrait(injCanvas.getContext('2d'), shipCfg.id, true, injCanvas.width);
+
+      injuredPilotName.textContent = shipCfg.pilotName;
+      injuredPilotName.className = `text-sm font-black ${shipCfg.hudColor}`;
+      injuredPilotStatus.textContent = `Estado: Herido — Mundo ${String(game.levelIndex + 1).padStart(2, '0')}`;
+
+      infirmaryChatList.innerHTML = '';
+      btnInfirmaryRetry.classList.add('hidden');
+      infirmaryTypingIndicator.classList.remove('hidden');
+      infirmaryTypingIndicator.textContent = `${shipCfg.pilotName} está escribiendo en el canal de enfermería...`;
+
+      infirmaryState.messages = [...shipCfg.infirmaryLines];
+      infirmaryState.msgIndex = 0;
+      infirmaryState.charIndex = 0;
+      infirmaryState.charTimer = 0.25;
+      infirmaryState.activeBubbleEl = null;
+      infirmaryState.finished = false;
+
+      infirmaryOverlay.classList.remove('hidden');
+      audio.startSadInfirmaryMusic();
+    }
+
+    function updateInfirmaryChat(dt) {
+      if (infirmaryState.finished) return;
+
+      if (!infirmaryState.activeBubbleEl) {
+        if (infirmaryState.msgIndex >= infirmaryState.messages.length) {
+          infirmaryState.finished = true;
+          infirmaryTypingIndicator.classList.add('hidden');
+          btnInfirmaryRetry.classList.remove('hidden');
+          return;
+        }
+
+        const bubble = document.createElement('div');
+        bubble.className = 'bg-slate-900/95 border border-rose-500/45 rounded-2xl rounded-tl-sm p-2.5 text-xs text-slate-100 leading-snug shadow';
+        const header = document.createElement('div');
+        header.className = `text-[9px] font-black uppercase mb-0.5 ${player.ship.hudColor}`;
+        header.textContent = `${player.ship.pilotName} (Enfermería)`;
+        const body = document.createElement('p');
+        body.className = 'text-xs text-slate-100';
+        bubble.appendChild(header);
+        bubble.appendChild(body);
+        infirmaryChatList.appendChild(bubble);
+        infirmaryChatList.scrollTop = infirmaryChatList.scrollHeight;
+
+        infirmaryState.activeBubbleEl = body;
+        infirmaryState.charIndex = 0;
+        infirmaryState.charTimer = 0.03;
+      }
+
+      infirmaryState.charTimer -= dt;
+      if (infirmaryState.charTimer <= 0) {
+        const currentFull = infirmaryState.messages[infirmaryState.msgIndex];
+        infirmaryState.charIndex++;
+        infirmaryState.activeBubbleEl.textContent = currentFull.slice(0, infirmaryState.charIndex);
+        infirmaryChatList.scrollTop = infirmaryChatList.scrollHeight;
+
+        if (infirmaryState.charIndex % 3 === 0) {
+          audio.playTypeBlip(390);
+        }
+
+        if (infirmaryState.charIndex >= currentFull.length) {
+          infirmaryState.msgIndex++;
+          infirmaryState.activeBubbleEl = null;
+          infirmaryState.charTimer = 0.65;
+        } else {
+          infirmaryState.charTimer = 0.032;
+        }
+      }
+    }
+
+    /**
+     * Continues from the beginning of the SAME world where the player died (never resets to World 1)
+     */
+    function retryCurrentWorldFromInfirmary() {
+      audio.unlock();
+      audio.playSelect();
+      infirmaryOverlay.classList.add('hidden');
+
+      const chosenShip = player.ship;
+      player.maxHp = chosenShip.maxHp;
+      player.hp = chosenShip.maxHp;
+      player.x = W / 2;
+      player.y = H - 140;
+      player.bombs = Math.max(2, player.bombs);
+      player.invuln = 1.6;
+      player.fireTimer = 0;
+      player.missileTimer = 0;
+      player.bank = 0;
+      player.buffs = { missiles: 0, shield: 0, wingman: 0, triple: 0 };
+      player.swapAnim.active = false;
+      player.swapAnim.phase = 'none';
+
+      setupWorldState(game.levelIndex);
+      game.status = 'playing';
+      audio.startLevelMusic(game.levelIndex);
+    }
+
+    // =========================================================================
+    // 13. BETWEEN-WORLD CONVERSATIONS & SHIP SWITCH MODAL
+    // =========================================================================
+    function startBetweenWorldConversation(completedWorldNum) {
+      const script = BETWEEN_WORLD_DIALOGUES[completedWorldNum];
+      if (!script || script.length === 0) {
+        openBetweenWorldShipHangar(completedWorldNum);
+        return;
+      }
+
+      game.status = 'conversation';
+      controls.touchActive = false;
+      hangarModal.classList.add('hidden');
+
+      dialogueState.completedWorldNum = completedWorldNum;
+      dialogueState.lines = script;
+      dialogueState.lineIndex = 0;
+      dialogueState.charIndex = 0;
+      dialogueState.charTimer = 0.02;
+
+      convSectorLabel.textContent = `MUNDO ${String(completedWorldNum).padStart(2, '0')} → ${String(completedWorldNum + 1).padStart(2, '0')}`;
+      convOverlay.classList.remove('hidden');
+      audio.startSeriousDialogueMusic();
+      prepareDialogueLine();
+    }
+
+    function prepareDialogueLine() {
+      const lineObj = dialogueState.lines[dialogueState.lineIndex];
+      dialogueState.charIndex = 0;
+      dialogueState.charTimer = 0.028;
+
+      convSpeakerName.textContent = lineObj.name;
+      const colorMap = {
+        xverde: 'text-emerald-300',
+        adarapaz: 'text-pink-300',
+        elizdark: 'text-sky-300'
+      };
+      convSpeakerName.className = `text-xs font-black uppercase tracking-wider ${colorMap[lineObj.speaker] || 'text-cyan-300'}`;
+      convLineCounter.textContent = `${dialogueState.lineIndex + 1} / ${dialogueState.lines.length}`;
+      convTypewriterText.textContent = '';
+      convHint.textContent = 'Escribiendo mensaje...';
+
+      ['xverde', 'adarapaz', 'elizdark'].forEach(id => {
+        const slot = document.getElementById(`conv-slot-${id}`);
+        if (!slot) return;
+        const isSpeaking = id === lineObj.speaker;
+        slot.classList.toggle('speaker-active', isSpeaking);
+        slot.style.opacity = isSpeaking ? '1' : '0.45';
+        slot.style.borderColor = isSpeaking
+          ? (id === 'xverde' ? '#10b981' : id === 'adarapaz' ? '#f472b6' : '#38bdf8')
+          : 'rgba(51, 65, 85, 0.7)';
+      });
+    }
+
+    function updateConversationTypewriter(dt) {
+      if (game.status !== 'conversation') return;
+      const lineObj = dialogueState.lines[dialogueState.lineIndex];
+      if (!lineObj) return;
+
+      if (dialogueState.charIndex < lineObj.text.length) {
+        dialogueState.charTimer -= dt;
+        if (dialogueState.charTimer <= 0) {
+          dialogueState.charIndex++;
+          convTypewriterText.textContent = lineObj.text.slice(0, dialogueState.charIndex);
+          dialogueState.charTimer = 0.028;
+          if (dialogueState.charIndex % 3 === 0) {
+            audio.playTypeBlip(lineObj.speaker === 'adarapaz' ? 740 : lineObj.speaker === 'xverde' ? 560 : 480);
+          }
+          if (dialogueState.charIndex >= lineObj.text.length) {
+            convHint.textContent = dialogueState.lineIndex < dialogueState.lines.length - 1
+              ? 'Toca para siguiente mensaje ▶'
+              : 'Toca para elegir nave del siguiente mundo ▶';
+          }
+        }
+      }
+    }
+
+    function handleConversationTap() {
+      if (game.status !== 'conversation') return;
+      const lineObj = dialogueState.lines[dialogueState.lineIndex];
+      if (!lineObj) return;
+
+      if (dialogueState.charIndex < lineObj.text.length) {
+        dialogueState.charIndex = lineObj.text.length;
+        convTypewriterText.textContent = lineObj.text;
+        convHint.textContent = dialogueState.lineIndex < dialogueState.lines.length - 1
+          ? 'Toca para siguiente mensaje ▶'
+          : 'Toca para elegir nave del siguiente mundo ▶';
+      } else {
+        if (dialogueState.lineIndex < dialogueState.lines.length - 1) {
+          dialogueState.lineIndex++;
+          prepareDialogueLine();
+        } else {
+          convOverlay.classList.add('hidden');
+          openBetweenWorldShipHangar(dialogueState.completedWorldNum);
+        }
+      }
+    }
+
+    function openBetweenWorldShipHangar(completedWorldNum) {
+      const nextIdx = completedWorldNum;
+      if (nextIdx >= LEVELS_DATA.length) {
+        audio.playFanfare(true);
+        triggerEndScreen(true);
+        return;
+      }
+
+      game.status = 'hangar';
+      controls.touchActive = false;
+      const nextLvl = LEVELS_DATA[nextIdx];
+      hangarNextWorld.textContent = `Siguiente: Mundo ${String(nextLvl.num).padStart(2, '0')} - ${nextLvl.world}`;
+      document.querySelectorAll('.hangar-card').forEach(c => {
+        c.classList.toggle('selected', c.getAttribute('data-ship') === player.ship.id);
+      });
+      hangarModal.classList.remove('hidden');
+    }
+
+    function advanceToNextWorld() {
+      const nextIdx = game.levelIndex + 1;
+      if (nextIdx >= LEVELS_DATA.length) {
+        audio.playFanfare(true);
+        triggerEndScreen(true);
+        return;
+      }
+
+      setupWorldState(nextIdx);
+      game.status = 'playing';
+      audio.startLevelMusic(nextIdx);
+    }
+
+    // =========================================================================
+    // 14. ASTEROID BELTS (WORLDS 3, 6, 9), MINIONS, SUPPLY DRONE & 10 BOSSES
+    // =========================================================================
+    function spawnAsteroid() {
+      const lvl = LEVELS_DATA[game.levelIndex];
+      const theme = lvl.asteroidTheme || 'igneous';
+      const isLarge = Math.random() < 0.38;
+      const r = isLarge ? (26 + Math.random() * 10) : (14 + Math.random() * 8);
+
+      const verts = [];
+      const sides = isLarge ? 9 : 7;
+      for (let i = 0; i < sides; i++) {
+        const ang = (i / sides) * Math.PI * 2;
+        const dist = r * (0.76 + Math.random() * 0.34);
+        verts.push({ x: Math.cos(ang) * dist, y: Math.sin(ang) * dist });
+      }
+
+      const palette = theme === 'crystal'
+        ? { c1: '#22d3ee', c2: '#6366f1', rim: '#cffafe' }
+        : theme === 'iron'
+          ? { c1: '#64748b', c2: '#334155', rim: '#e2e8f0' }
+          : { c1: '#d97706', c2: '#78350f', rim: '#fde68a' };
+
+      asteroids.push({
+        x: 34 + Math.random() * (W - 68),
+        y: -45,
+        r,
+        vx: (Math.random() - 0.5) * 95,
+        vy: (isLarge ? 145 : 205) + game.levelIndex * 10,
+        rot: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random() - 0.5) * 3.8,
+        hp: isLarge ? 75 : 34,
+        maxHp: isLarge ? 75 : 34,
+        points: isLarge ? 260 : 140,
+        color1: palette.c1,
+        color2: palette.c2,
+        rim: palette.rim,
+        verts,
+        hasCapsule: Math.random() < 0.08 // 50% reduced drop frequency
+      });
+    }
+
+    function spawnEnemy(forceMinion = false) {
+      const lvl = game.levelIndex + 1;
+      const diffScale = 1 + (lvl - 1) * 0.14;
+
+      // 50% reduced power-up drop frequency across all worlds
+      const baseCarrierChance = lvl < 6
+        ? (0.11 + lvl * 0.01)
+        : Math.min(0.34, 0.22 + (lvl - 5) * 0.015);
+      const isCarrier = !forceMinion && Math.random() < baseCarrierChance * 0.5;
+      const roll = Math.random();
+
+      if (isCarrier) {
+        enemies.push({
+          kind: 'carrier',
+          x: 42 + Math.random() * (W - 84),
+          y: -30,
+          w: 34,
+          h: 30,
+          vx: (Math.random() - 0.5) * 115,
+          vy: 130 + lvl * 6,
+          hp: Math.round(36 * diffScale),
+          maxHp: Math.round(36 * diffScale),
+          color1: '#fbbf24',
+          color2: '#f97316',
+          points: 250,
+          isCarrier: true,
+          isBossSupply: false,
+          attackToggle: 0,
+          fireTimer: 1.5,
+          phase: Math.random() * 6
+        });
+        return;
+      }
+
+      if (roll < 0.36) {
+        enemies.push({
+          kind: 'stinger',
+          x: 48 + Math.random() * (W - 96),
+          y: -30,
+          baseX: 48 + Math.random() * (W - 96),
+          w: 28,
+          h: 24,
+          vx: 0,
+          vy: 155 + lvl * 8,
+          hp: Math.round(24 * diffScale),
+          maxHp: Math.round(24 * diffScale),
+          color1: '#38bdf8',
+          color2: '#818cf8',
+          points: 130,
+          isCarrier: false,
+          isBossSupply: false,
+          attackToggle: 0,
+          fireTimer: Math.max(0.95, 1.5 - lvl * 0.035),
+          phase: Math.random() * Math.PI * 2
+        });
+      } else if (roll < 0.70) {
+        enemies.push({
+          kind: 'nautilus',
+          x: 52 + Math.random() * (W - 104),
+          y: -35,
+          w: 34,
+          h: 30,
+          vx: (Math.random() - 0.5) * 85,
+          vy: 115 + lvl * 6,
+          hp: Math.round(42 * diffScale),
+          maxHp: Math.round(42 * diffScale),
+          color1: '#f43f5e',
+          color2: '#c084fc',
+          points: 220,
+          isCarrier: false,
+          isBossSupply: false,
+          attackToggle: 0,
+          fireTimer: Math.max(1.05, 1.6 - lvl * 0.035),
+          phase: 0
+        });
+      } else {
+        const startX = 38 + Math.random() * (W - 76);
+        const ang = Math.atan2(player.y - (-30), player.x - startX);
+        const spd = 225 + lvl * 9;
+        enemies.push({
+          kind: 'torpedo',
+          x: startX,
+          y: -30,
+          w: 26,
+          h: 32,
+          vx: Math.cos(ang) * spd * 0.7,
+          vy: Math.max(185, Math.sin(ang) * spd),
+          hp: Math.round(26 * diffScale),
+          maxHp: Math.round(26 * diffScale),
+          color1: '#fb923c',
+          color2: '#ef4444',
+          points: 180,
+          isCarrier: false,
+          isBossSupply: false,
+          attackToggle: 0,
+          fireTimer: 1.1,
+          phase: 0
+        });
+      }
+    }
+
+    /**
+     * Spawns a dedicated Support/Supply Drone carrying a Health Refill whenever a Final Boss arrives
+     */
+    function spawnBossSupportHealthDrone() {
+      const spawnX = player.x > W / 2 ? W * 0.28 : W * 0.72;
+      enemies.push({
+        kind: 'supply_drone',
+        x: spawnX,
+        y: -28,
+        w: 34,
+        h: 30,
+        vx: (W / 2 - spawnX) * 0.45,
+        vy: 135,
+        hp: 22,
+        maxHp: 22,
+        color1: '#34d399',
+        color2: '#10b981',
+        points: 300,
+        isCarrier: true,
+        isBossSupply: true,
+        attackToggle: 0,
+        fireTimer: 99,
+        phase: 0
+      });
+      addFloatingText(spawnX, 95, '¡DRON DE APOYO MÉDICO!', '#34d399');
+    }
+
+    function spawnLevelBoss() {
+      const lvl = LEVELS_DATA[game.levelIndex];
+      game.bossSpawned = true;
+
+      // Spawn the support enemy with a health refill right as the boss arrives
+      spawnBossSupportHealthDrone();
+
+      boss = {
+        name: lvl.bossName,
+        type: lvl.bossType,
+        x: W / 2,
+        y: -115,
+        targetY: 165,
+        w: 148,
+        h: 108,
+        hp: lvl.bossHp,
+        maxHp: lvl.bossHp,
+        color1: lvl.bossColor1,
+        color2: lvl.bossColor2,
+        arrivalDialogueOpened: false,
+        introDone: false,
+        defeated: false,
+        exploding: false,
+        explodeTimer: 0,
+        burstTick: 0,
+        vx: 105 + game.levelIndex * 6,
+        fireTimer: 1.25,
+        attackPattern: 0,
+        minionTimer: 5.5,
+        animPhase: 0,
+        shieldClosed: false,
+        enraged: false
+      };
+
+      bossTitle.textContent = boss.name;
+      bossBarWrap.classList.remove('hidden');
+      updateHUD();
+    }
+
+    function finalizeGrandBossExplosion() {
+      if (!boss) return;
+
+      audio.playExplosion(2.9);
+      game.shake = 22;
+      game.flashAlpha = 0.82;
+      game.flashColor = '#ffffff';
+      game.score += 1800 * (game.levelIndex + 1);
+
+      for (let i = 0; i < 10; i++) {
+        spawnExplosion(
+          boss.x + (Math.random() - 0.5) * 130,
+          boss.y + (Math.random() - 0.5) * 95,
+          [boss.color1, boss.color2, '#ffffff', '#fbbf24'],
+          2.0
+        );
+      }
+
+      const defeatedWorldNum = game.levelIndex + 1;
+      boss = null;
+      bossBarWrap.classList.add('hidden');
+      enemyBullets = [];
+      bossLasers = [];
+
+      if (game.levelIndex >= LEVELS_DATA.length - 1) {
+        audio.playFanfare(true);
+        triggerEndScreen(true);
+        return;
+      }
+
+      player.hp = Math.min(player.maxHp, player.hp + Math.round(player.maxHp * 0.20));
+      updateHUD();
+      startBetweenWorldConversation(defeatedWorldNum);
+    }
+
+    function completeAsteroidWorld() {
+      const completedWorldNum = game.levelIndex + 1;
+      asteroids = [];
+      enemyBullets = [];
+      bossBarWrap.classList.add('hidden');
+      game.score += 1200 * completedWorldNum;
+
+      audio.playFanfare(false);
+      player.hp = Math.min(player.maxHp, player.hp + Math.round(player.maxHp * 0.20));
+      updateHUD();
+      startBetweenWorldConversation(completedWorldNum);
+    }
+
+    function triggerEndScreen(isVictory) {
+      game.status = isVictory ? 'victory' : 'gameover';
+      audio.stopMusic();
+      bossDlgOverlay.classList.add('hidden');
+      hangarModal.classList.add('hidden');
+      convOverlay.classList.add('hidden');
+      infirmaryOverlay.classList.add('hidden');
+
+      if (game.score > game.bestScore) {
+        game.bestScore = Math.floor(game.score);
+        localStorage.setItem('alFenixNovaBest', game.bestScore);
+      }
+
+      const badge = document.getElementById('end-badge');
+      const title = document.getElementById('end-title');
+
+      if (isVictory) {
+        badge.textContent = '¡13 MUNDOS CONQUISTADOS!';
+        badge.className = 'text-[11px] font-extrabold tracking-widest text-amber-300 uppercase mb-1';
+        title.textContent = '¡VICTORIA SUPREMA!';
+      } else {
+        badge.textContent = 'NAVE DESTRUIDA';
+        badge.className = 'text-[11px] font-extrabold tracking-widest text-rose-400 uppercase mb-1';
+        title.textContent = 'FIN DEL JUEGO';
+      }
+
+      document.getElementById('end-ship').textContent = player.ship.name;
+      document.getElementById('end-score').textContent = String(Math.floor(game.score)).padStart(6, '0');
+      document.getElementById('end-level').textContent = `${String(game.levelIndex + 1).padStart(2, '0')} / 13`;
+      document.getElementById('end-best').textContent = String(game.bestScore).padStart(6, '0');
+
+      screenEnd.classList.remove('hidden');
+    }
+
+    // =========================================================================
+    // 15. PHYSICS & COMBAT UPDATE LOOP
+    // =========================================================================
+    function overlap(ax, ay, aw, ah, bx, by, bw, bh) {
+      return Math.abs(ax - bx) * 2 < aw + bw && Math.abs(ay - by) * 2 < ah + bh;
+    }
+
+    function updatePlayerMovement(dt) {
+      player.wingPhase += 13 * dt;
+
+      if (player.swapAnim.active) {
+        if (player.swapAnim.phase === 'exit') {
+          player.swapAnim.outX += 640 * dt;
+          if (player.swapAnim.outX > W + 65) {
+            player.swapAnim.phase = 'enter';
+          }
+        } else if (player.swapAnim.phase === 'enter') {
+          player.x += (player.swapAnim.targetX - player.x) * Math.min(1, 12 * dt);
+          player.y += (player.swapAnim.targetY - player.y) * Math.min(1, 12 * dt);
+          player.bank = 0.24;
+          if (Math.abs(player.x - player.swapAnim.targetX) < 4) {
+            player.x = player.swapAnim.targetX;
+            player.bank = 0;
+            player.swapAnim.active = false;
+            player.swapAnim.phase = 'none';
+          }
+        }
+        return;
+      }
+
+      const prevX = player.x;
+      let dx = 0;
+      let dy = 0;
+
+      if (controls.left) dx -= 1;
+      if (controls.right) dx += 1;
+      if (controls.up) dy -= 1;
+      if (controls.down) dy += 1;
+
+      if (dx !== 0 || dy !== 0) {
+        const len = Math.hypot(dx, dy);
+        player.x += (dx / len) * player.ship.speed * dt;
+        player.y += (dy / len) * player.ship.speed * dt;
+      }
+
+      if (controls.touchActive) {
+        player.x += (controls.touchX - player.x) * Math.min(1, 22 * dt);
+        player.y += (controls.touchY - player.y) * Math.min(1, 22 * dt);
+      }
+
+      player.x = Math.max(22, Math.min(W - 22, player.x));
+      player.y = Math.max(66, Math.min(H - 36, player.y));
+
+      const vx = (player.x - prevX) / Math.max(0.001, dt);
+      const targetBank = Math.max(-0.28, Math.min(0.28, vx * 0.0008));
+      player.bank += (targetBank - player.bank) * Math.min(1, 14 * dt);
+    }
+
+    function executeBossAttack(b) {
+      const lvlMult = (1 + game.levelIndex * 0.055) * (b.enraged ? 1.16 : 1.0);
+      const pattern = b.attackPattern % 2;
+      b.attackPattern++;
+
+      if (b.type === 'jellyfish') {
+        if (pattern === 0) {
+          [-42, 0, 42].forEach((ox, idx) => {
+            bossLasers.push({
+              x1: b.x + ox,
+              y1: b.y + 12,
+              x2: b.x + ox + (idx - 1) * 48,
+              y2: H,
+              width: 9,
+              life: 0.55,
+              maxLife: 0.55,
+              color: '#e879f9',
+              dmg: 18
+            });
+          });
+        } else {
+          [-0.55, -0.25, 0, 0.25, 0.55].forEach(ang => {
+            enemyBullets.push({
+              x: b.x,
+              y: b.y + 24,
+              vx: Math.sin(ang) * 245 * lvlMult,
+              vy: Math.cos(ang) * 245 * lvlMult,
+              r: 5.5,
+              dmg: 16,
+              color: '#2dd4bf'
+            });
+          });
+        }
+        return;
+      }
+
+      if (pattern === 0) {
+        if (b.type === 'octopus') {
+          [-0.4, -0.15, 0.15, 0.4].forEach(ang => {
+            enemyBullets.push({
+              x: b.x,
+              y: b.y + 28,
+              vx: Math.sin(ang) * 255 * lvlMult,
+              vy: Math.cos(ang) * 255 * lvlMult,
+              r: 5,
+              dmg: 16,
+              color: b.color1
+            });
+          });
+        } else if (b.type === 'megalodon' || b.type === 'narwhal') {
+          const baseAng = Math.atan2(player.y - b.y, player.x - b.x);
+          [-0.14, 0, 0.14].forEach(off => {
+            enemyBullets.push({
+              x: b.x,
+              y: b.y + 28,
+              vx: Math.cos(baseAng + off) * 315 * lvlMult,
+              vy: Math.sin(baseAng + off) * 315 * lvlMult,
+              r: 4.8,
+              dmg: 17,
+              color: b.color1
+            });
+          });
+        } else {
+          const spokes = b.enraged ? 10 : 8;
+          for (let k = 0; k < spokes; k++) {
+            const ang = b.animPhase + (k / spokes) * Math.PI * 2;
+            enemyBullets.push({
+              x: b.x,
+              y: b.y + 12,
+              vx: Math.cos(ang) * 225 * lvlMult,
+              vy: Math.sin(ang) * 225 * lvlMult,
+              r: 5,
+              dmg: 17,
+              color: b.color1
+            });
+          }
+        }
+      } else {
+        [-44, -15, 15, 44].forEach(ox => {
+          enemyBullets.push({
+            x: b.x + ox,
+            y: b.y + 30,
+            vx: ox * 1.45,
+            vy: 270 * lvlMult,
+            r: 5.2,
+            dmg: 17,
+            color: b.color2
+          });
+        });
+      }
+    }
+
+    function updateBoss(dt) {
+      if (!boss) return;
+
+      if (boss.exploding) {
+        boss.explodeTimer -= dt;
+        boss.burstTick -= dt;
+        game.shake = 15;
+        if (boss.burstTick <= 0) {
+          boss.burstTick = 0.22;
+          audio.playExplosion(1.65);
+          spawnExplosion(
+            boss.x + (Math.random() - 0.5) * 110,
+            boss.y + (Math.random() - 0.5) * 75,
+            [boss.color1, boss.color2, '#ffffff', '#fbbf24'],
+            1.75
+          );
+        }
+        if (boss.explodeTimer <= 0) {
+          finalizeGrandBossExplosion();
+        }
+        return;
+      }
+
+      if (boss.defeated) return;
+
+      if (!boss.enraged && boss.hp <= boss.maxHp * 0.4) {
+        boss.enraged = true;
+        game.shake = 9;
+        addFloatingText(boss.x, boss.y + 38, '¡MODO FURIA!', '#f43f5e');
+      }
+
+      const rageMult = boss.enraged ? 1.32 : 1.0;
+      boss.animPhase += 4.5 * rageMult * dt;
+
+      if (boss.y < boss.targetY) {
+        boss.y += 110 * dt;
+        if (boss.y >= boss.targetY && !boss.arrivalDialogueOpened) {
+          boss.y = boss.targetY;
+          boss.arrivalDialogueOpened = true;
+          openBossPortraitDialogue('arrival');
+        }
+        return;
+      }
+
+      if (!boss.introDone) return;
+
+      switch (boss.type) {
+        case 'octopus':
+          boss.x = W / 2 + Math.sin(boss.animPhase * 0.6) * 100;
+          boss.y = boss.targetY + Math.cos(boss.animPhase * 0.95) * 22;
+          break;
+        case 'megalodon':
+          boss.x += boss.vx * 1.45 * rageMult * dt;
+          if (boss.x < 75 || boss.x > W - 75) boss.vx *= -1;
+          boss.y = boss.targetY + Math.abs(Math.sin(boss.animPhase * 0.85)) * 68;
+          break;
+        case 'crocodile':
+          boss.x += boss.vx * 1.15 * rageMult * dt;
+          if (boss.x < 80 || boss.x > W - 80) boss.vx *= -1;
+          break;
+        case 'mantaray':
+          boss.x = W / 2 + Math.sin(boss.animPhase * 0.75) * 128;
+          boss.y = boss.targetY + Math.sin(boss.animPhase * 1.5) * 32;
+          break;
+        case 'crab':
+          boss.x += boss.vx * 1.15 * rageMult * dt;
+          if (boss.x < 82 || boss.x > W - 82) boss.vx *= -1;
+          boss.shieldClosed = Math.sin(boss.animPhase * 0.65) > 0.65;
+          break;
+        case 'jellyfish':
+          boss.x = W / 2 + Math.cos(boss.animPhase * 0.55) * 92;
+          boss.y = boss.targetY + Math.sin(boss.animPhase * 1.15) * 38;
+          break;
+        case 'narwhal':
+          boss.x = W / 2 + Math.sin(boss.animPhase * 1.2) * 124;
+          boss.y = boss.targetY + Math.cos(boss.animPhase * 1.2) * 48;
+          break;
+        case 'turtle':
+          boss.x = W / 2 + Math.sin(boss.animPhase * 0.45) * 72;
+          break;
+        case 'eel':
+          boss.x = W / 2 + Math.sin(boss.animPhase * 1.0) * 118;
+          boss.y = boss.targetY + Math.sin(boss.animPhase * 2.0) * 26;
+          break;
+        case 'whale':
+          boss.x = W / 2 + Math.sin(boss.animPhase * 0.55) * 95;
+          boss.y = boss.targetY + Math.cos(boss.animPhase * 0.75) * 24;
+          break;
+      }
+
+      boss.minionTimer -= dt;
+      if (boss.minionTimer <= 0) {
+        boss.minionTimer = boss.enraged ? 4.2 : 6.0;
+        if (enemies.length < 3) {
+          spawnEnemy(true);
+        }
+      }
+
+      boss.fireTimer -= dt;
+      if (boss.fireTimer <= 0) {
+        boss.fireTimer = Math.max(0.68, (1.35 - game.levelIndex * 0.03) / rageMult);
+        executeBossAttack(boss);
+      }
+
+      if (overlap(player.x, player.y, player.w * 0.7, player.h * 0.7, boss.x, boss.y, boss.w * 0.75, boss.h * 0.75)) {
+        damagePlayer(25);
+      }
+    }
+
+    function updateBackgroundEffects(dt) {
+      const currentLvl = LEVELS_DATA[game.levelIndex] || LEVELS_DATA[0];
+
+      stars.forEach(s => {
+        s.y += s.speed * dt;
+        if (currentLvl.num === 5) {
+          s.x += s.speed * 0.22 * dt;
+          if (s.x > W) s.x = 0;
+        }
+        s.phase += 3 * dt;
+        if (s.y > H) {
+          s.y = -4;
+          s.x = Math.random() * W;
+        }
+      });
+
+      nebulas.forEach(n => {
+        n.y += n.speed * dt;
+        if (n.y - n.r > H) {
+          n.y = -n.r;
+          n.x = Math.random() * W;
+        }
+      });
+
+      if (celestialBody) {
+        celestialBody.y += celestialBody.speed * dt;
+        celestialBody.rot += 0.15 * dt;
+        if (celestialBody.y - celestialBody.r > H + 40) {
+          celestialBody.y = -celestialBody.r - 40;
+          celestialBody.x = Math.random() > 0.5 ? W * 0.75 : W * 0.25;
+        }
+      }
+
+      if (Math.random() < 0.04) {
+        shootingStars.push({
+          x: Math.random() * W,
+          y: -10,
+          vx: (Math.random() - 0.5) * 180,
+          vy: 420 + Math.random() * 240,
+          life: 0.65
+        });
+      }
+      for (let i = shootingStars.length - 1; i >= 0; i--) {
+        const ss = shootingStars[i];
+        ss.x += ss.vx * dt;
+        ss.y += ss.vy * dt;
+        ss.life -= dt;
+        if (ss.life <= 0 || ss.y > H + 30) shootingStars.splice(i, 1);
+      }
+
+      if (currentLvl.num === 9 || currentLvl.num === 12) {
+        if (game.lightningAlpha > 0) {
+          game.lightningAlpha = Math.max(0, game.lightningAlpha - 2.8 * dt);
+        } else if (Math.random() < 0.008) {
+          game.lightningAlpha = 0.22;
+        }
+      }
+    }
+
+    function update(dt) {
+      updateBackgroundEffects(dt);
+
+      if (game.shake > 0) game.shake = Math.max(0, game.shake - 36 * dt);
+      if (game.flashAlpha > 0) game.flashAlpha = Math.max(0, game.flashAlpha - 2.2 * dt);
+
+      if (game.status === 'boss_dialogue') {
+        updateBossDialogueTypewriter(dt);
+        return;
+      }
+
+      if (game.status === 'conversation') {
+        updateConversationTypewriter(dt);
+        return;
+      }
+
+      if (game.status === 'infirmary') {
+        updateInfirmaryChat(dt);
+        return;
+      }
+
+      if (game.status !== 'playing') return;
+
+      updatePlayerMovement(dt);
+
+      if (player.invuln > 0) player.invuln -= dt;
+      if (player.fireTimer > 0) player.fireTimer -= dt;
+      if (player.missileTimer > 0) player.missileTimer -= dt;
+
+      let buffChanged = false;
+      Object.keys(player.buffs).forEach(k => {
+        if (player.buffs[k] > 0) {
+          player.buffs[k] = Math.max(0, player.buffs[k] - dt);
+          buffChanged = true;
+        }
+      });
+      if (buffChanged) updateHUD();
+
+      if (player.fireTimer <= 0 && (!boss || !boss.exploding)) {
+        fireWeapons();
+      }
+
+      const currentLvl = LEVELS_DATA[game.levelIndex];
+
+      // Player bullets
+      for (let i = bullets.length - 1; i >= 0; i--) {
+        const b = bullets[i];
+        b.x += b.vx * dt;
+        b.y += b.vy * dt;
+
+        if (b.y < -30 || b.x < -20 || b.x > W + 20) {
+          bullets.splice(i, 1);
+          continue;
+        }
+
+        let consumed = false;
+
+        // Check asteroids first
+        for (let k = asteroids.length - 1; k >= 0; k--) {
+          const a = asteroids[k];
+          if (Math.hypot(b.x - a.x, b.y - a.y) < a.r + 5) {
+            a.hp -= b.dmg;
+            consumed = true;
+            if (a.hp <= 0) {
+              destroyAsteroidWithSpecialEffect(a, k);
+            } else {
+              spawnExplosion(b.x, b.y, [a.rim, '#ffffff'], 0.28);
+            }
+            break;
+          }
+        }
+
+        if (consumed) {
+          bullets.splice(i, 1);
+          continue;
+        }
+
+        // Check enemies/minions
+        for (let j = enemies.length - 1; j >= 0; j--) {
+          const e = enemies[j];
+          if (overlap(b.x, b.y, b.w + 4, b.h, e.x, e.y, e.w, e.h)) {
+            e.hp -= b.dmg;
+            consumed = true;
+
+            if (e.hp <= 0) {
+              destroyMinionWithSpecialEffect(e, j);
+            }
+            break;
+          }
+        }
+
+        if (consumed) {
+          bullets.splice(i, 1);
+          continue;
+        }
+
+        // Check Boss (invulnerable before introDone; no hit blink)
+        if (boss && !boss.defeated && !boss.exploding && overlap(b.x, b.y, b.w + 4, b.h, boss.x, boss.y, boss.w * 0.85, boss.h * 0.8)) {
+          bullets.splice(i, 1);
+          if (!boss.introDone) {
+            spawnExplosion(b.x, b.y, ['#64748b', '#cbd5e1'], 0.3);
+          } else if (boss.type === 'crab' && boss.shieldClosed && b.y > boss.y + 10) {
+            spawnExplosion(b.x, b.y, ['#94a3b8'], 0.35);
+          } else {
+            boss.hp -= b.dmg;
+            updateHUD();
+            if (boss.hp <= 0) {
+              openBossDefeatPortraitDialogue();
+            }
+          }
+        }
+      }
+
+      // Homing missiles
+      for (let i = missiles.length - 1; i >= 0; i--) {
+        const m = missiles[i];
+        m.life -= dt;
+
+        const target = (boss && !boss.defeated && !boss.exploding) ? boss : (enemies[0] || asteroids[0]);
+        if (target) {
+          const ang = Math.atan2(target.y - m.y, target.x - m.x);
+          m.vx += Math.cos(ang) * 980 * dt;
+          m.vy += Math.sin(ang) * 980 * dt;
+          const spd = Math.hypot(m.vx, m.vy);
+          if (spd > m.speed) {
+            m.vx = (m.vx / spd) * m.speed;
+            m.vy = (m.vy / spd) * m.speed;
+          }
+        }
+
+        m.x += m.vx * dt;
+        m.y += m.vy * dt;
+
+        if (m.life <= 0 || m.y < -40) {
+          missiles.splice(i, 1);
+          continue;
+        }
+
+        let hit = false;
+        for (let k = asteroids.length - 1; k >= 0; k--) {
+          const a = asteroids[k];
+          if (Math.hypot(m.x - a.x, m.y - a.y) < a.r + 8) {
+            a.hp -= m.dmg;
+            hit = true;
+            spawnExplosion(m.x, m.y, ['#fbbf24', '#f97316'], 0.7);
+            if (a.hp <= 0) destroyAsteroidWithSpecialEffect(a, k);
+            break;
+          }
+        }
+
+        if (!hit) {
+          for (let j = enemies.length - 1; j >= 0; j--) {
+            const e = enemies[j];
+            if (overlap(m.x, m.y, 14, 14, e.x, e.y, e.w, e.h)) {
+              e.hp -= m.dmg;
+              hit = true;
+              spawnExplosion(m.x, m.y, ['#fbbf24', '#f97316'], 0.7);
+              if (e.hp <= 0) destroyMinionWithSpecialEffect(e, j);
+              break;
+            }
+          }
+        }
+
+        if (!hit && boss && !boss.defeated && !boss.exploding && overlap(m.x, m.y, 14, 14, boss.x, boss.y, boss.w * 0.85, boss.h * 0.8)) {
+          hit = true;
+          if (!boss.introDone) {
+            spawnExplosion(m.x, m.y, ['#64748b', '#cbd5e1'], 0.45);
+          } else {
+            boss.hp -= m.dmg;
+            spawnExplosion(m.x, m.y, ['#fbbf24', '#f43f5e'], 0.8);
+            updateHUD();
+            if (boss.hp <= 0) openBossDefeatPortraitDialogue();
+          }
+        }
+
+        if (hit) missiles.splice(i, 1);
+      }
+
+      // World Progression: Asteroid Belt World vs Standard Boss World
+      if (currentLvl.isAsteroidWorld) {
+        if (game.levelProgress >= game.enemiesToBoss && asteroids.length === 0) {
+          completeAsteroidWorld();
+          return;
+        } else if (game.levelProgress < game.enemiesToBoss) {
+          spawnTimer -= dt;
+          if (spawnTimer <= 0) {
+            spawnAsteroid();
+            if (Math.random() < 0.45) spawnAsteroid();
+            spawnTimer = Math.max(0.36, 0.72 - game.levelIndex * 0.03);
+          }
+        }
+      } else {
+        if (!game.bossSpawned) {
+          if (game.levelProgress >= game.enemiesToBoss && enemies.length === 0) {
+            spawnLevelBoss();
+          } else if (game.levelProgress < game.enemiesToBoss) {
+            spawnTimer -= dt;
+            if (spawnTimer <= 0) {
+              spawnEnemy();
+              if (Math.random() < 0.34 + game.levelIndex * 0.03) {
+                spawnEnemy();
+              }
+              spawnTimer = Math.max(0.46, 0.96 - game.levelIndex * 0.04);
+            }
+          }
+        }
+      }
+
+      // Update Asteroids
+      for (let k = asteroids.length - 1; k >= 0; k--) {
+        const a = asteroids[k];
+        a.x += a.vx * dt;
+        a.y += a.vy * dt;
+        a.rot += a.rotSpeed * dt;
+
+        if (a.x < a.r + 8 || a.x > W - a.r - 8) a.vx *= -1;
+
+        if (Math.hypot(player.x - a.x, player.y - a.y) < a.r + 14) {
+          if (player.buffs.shield > 0) {
+            destroyAsteroidWithSpecialEffect(a, k);
+            continue;
+          } else {
+            damagePlayer(24);
+            destroyAsteroidWithSpecialEffect(a, k);
+            continue;
+          }
+        }
+
+        if (a.y > H + 50) {
+          game.levelProgress++;
+          updateHUD();
+          asteroids.splice(k, 1);
+        }
+      }
+
+      // Update Regular Enemies & Boss Supply Drones
+      for (let i = enemies.length - 1; i >= 0; i--) {
+        const e = enemies[i];
+        e.phase += 4.5 * dt;
+
+        if (e.kind === 'stinger') {
+          e.x = e.baseX + Math.sin(e.phase) * 56;
+          e.x = Math.max(24, Math.min(W - 24, e.x));
+        } else {
+          e.x += e.vx * dt;
+          if (e.x < 26 || e.x > W - 26) e.vx *= -1;
+        }
+        e.y += e.vy * dt;
+
+        e.fireTimer -= dt;
+        if (e.fireTimer <= 0 && e.y > 40 && e.y < H - 150) {
+          e.fireTimer = Math.max(1.25, 1.95 - game.levelIndex * 0.04);
+          const ang = Math.atan2(player.y - e.y, player.x - e.x);
+          const spd = 235 + game.levelIndex * 8;
+          const mode = e.attackToggle % 2;
+          e.attackToggle++;
+
+          if (mode === 0) {
+            enemyBullets.push({
+              x: e.x,
+              y: e.y + 12,
+              vx: Math.cos(ang) * spd,
+              vy: Math.max(195, Math.sin(ang) * spd),
+              r: 4.2,
+              dmg: 14,
+              color: '#fb7185'
+            });
+          } else {
+            [-0.2, 0.2].forEach(off => {
+              enemyBullets.push({
+                x: e.x,
+                y: e.y + 12,
+                vx: Math.cos(ang + off) * spd * 0.92,
+                vy: Math.max(185, Math.sin(ang + off) * spd * 0.92),
+                r: 4.0,
+                dmg: 14,
+                color: '#e879f9'
+              });
+            });
+          }
+        }
+
+        if (overlap(player.x, player.y, player.w * 0.78, player.h * 0.78, e.x, e.y, e.w * 0.85, e.h * 0.85)) {
+          if (e.isBossSupply || player.buffs.shield > 0) {
+            destroyMinionWithSpecialEffect(e, i);
+            continue;
+          } else {
+            damagePlayer(22);
+            destroyMinionWithSpecialEffect(e, i);
+            continue;
+          }
+        }
+
+        if (e.y > H + 40) {
+          enemies.splice(i, 1);
+        }
+      }
+
+      updateBoss(dt);
+
+      // Boss lasers
+      for (let i = bossLasers.length - 1; i >= 0; i--) {
+        const bl = bossLasers[i];
+        bl.life -= dt;
+        if (bl.life <= 0) {
+          bossLasers.splice(i, 1);
+          continue;
+        }
+        if (player.y > bl.y1 && player.y < bl.y2) {
+          const t = (player.y - bl.y1) / Math.max(1, bl.y2 - bl.y1);
+          const lx = bl.x1 + (bl.x2 - bl.x1) * t;
+          if (Math.abs(player.x - lx) < bl.width * 0.5 + 14) {
+            damagePlayer(bl.dmg);
+          }
+        }
+      }
+
+      for (let i = enemyBullets.length - 1; i >= 0; i--) {
+        const eb = enemyBullets[i];
+        eb.x += eb.vx * dt;
+        eb.y += eb.vy * dt;
+
+        if (eb.y > H + 20 || eb.y < -20 || eb.x < -20 || eb.x > W + 20) {
+          enemyBullets.splice(i, 1);
+          continue;
+        }
+
+        if (overlap(player.x, player.y, player.w * 0.6, player.h * 0.6, eb.x, eb.y, eb.r * 1.5, eb.r * 1.5)) {
+          damagePlayer(eb.dmg);
+          enemyBullets.splice(i, 1);
+        }
+      }
+
+      for (let i = powerups.length - 1; i >= 0; i--) {
+        const p = powerups[i];
+        p.y += p.vy * dt;
+        p.pulse += 7 * dt;
+
+        if (overlap(player.x, player.y, player.w + 14, player.h + 14, p.x, p.y, p.r * 2, p.r * 2)) {
+          applyPowerup(p);
+          powerups.splice(i, 1);
+          continue;
+        }
+
+        if (p.y > H + 30) powerups.splice(i, 1);
+      }
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const pt = particles[i];
+        pt.x += pt.vx * dt;
+        pt.y += pt.vy * dt;
+        pt.life -= dt;
+        if (pt.life <= 0) particles.splice(i, 1);
+      }
+
+      for (let i = shockwaves.length - 1; i >= 0; i--) {
+        const sw = shockwaves[i];
+        sw.r += (sw.expandSpeed || 165) * dt;
+        sw.alpha -= 2.1 * dt;
+        sw.coreRadius = Math.max(0, sw.coreRadius - 48 * dt);
+        if (sw.alpha <= 0 || sw.r >= sw.maxR) shockwaves.splice(i, 1);
+      }
+
+      for (let i = game.floatingTexts.length - 1; i >= 0; i--) {
+        const ft = game.floatingTexts[i];
+        ft.y -= 28 * dt;
+        ft.life -= dt;
+        if (ft.life <= 0) game.floatingTexts.splice(i, 1);
+      }
+    }
+
+    // =========================================================================
+    // 16. DISTINCTIVE PLANETS & COMBAT RENDERING
+    // =========================================================================
+    function drawCelestialBackground() {
+      if (!celestialBody) return;
+      const cb = celestialBody;
+      ctx.save();
+      ctx.translate(cb.x, cb.y);
+      ctx.globalAlpha = 0.42;
+
+      const grad = ctx.createRadialGradient(-cb.r * 0.25, -cb.r * 0.25, cb.r * 0.1, 0, 0, cb.r);
+      grad.addColorStop(0, cb.c1);
+      grad.addColorStop(0.75, cb.c2);
+      grad.addColorStop(1, 'rgba(2, 6, 23, 0.9)');
+
+      if (cb.style === 'total_eclipse') {
+        ctx.strokeStyle = cb.c1;
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.arc(0, 0, cb.r + 4, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.fillStyle = '#020105';
+        ctx.beginPath();
+        ctx.arc(0, 0, cb.r, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(0, 0, cb.r, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (cb.style === 'ocean_ring' || cb.style === 'ice_ring' || cb.style === 'multi_ring') {
+          ctx.strokeStyle = cb.c1;
+          ctx.lineWidth = cb.style === 'multi_ring' ? 3 : 4;
+          ctx.beginPath();
+          ctx.ellipse(0, 0, cb.r * 1.65, cb.r * 0.34, -0.25, 0, Math.PI * 2);
+          ctx.stroke();
+        } else if (cb.style === 'twin_planets') {
+          ctx.fillStyle = cb.c2;
+          ctx.beginPath();
+          ctx.arc(cb.r * 1.25, -cb.r * 0.65, cb.r * 0.42, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (cb.style === 'cracked_moon' || cb.style === 'lava_fractured') {
+          ctx.strokeStyle = cb.style === 'lava_fractured' ? '#fef08a' : '#e9d5ff';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(-cb.r * 0.5, -cb.r * 0.2);
+          ctx.lineTo(0, cb.r * 0.1);
+          ctx.lineTo(cb.r * 0.45, -cb.r * 0.35);
+          ctx.stroke();
+        }
+      }
+
+      ctx.restore();
+    }
+
+    function drawAquaticBoss(b) {
+      ctx.save();
+      ctx.translate(b.x, b.y);
+
+      const c1 = b.color1;
+      const c2 = b.color2;
+      const wave = Math.sin(b.animPhase);
+
+      if (b.enraged) {
+        ctx.strokeStyle = 'rgba(244, 63, 94, 0.35)';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(0, 0, 74 + wave * 4, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      switch (b.type) {
+        case 'octopus': {
+          ctx.strokeStyle = c2;
+          ctx.lineWidth = 7;
+          ctx.lineCap = 'round';
+          for (let i = -2.5; i <= 2.5; i += 1) {
+            ctx.beginPath();
+            ctx.moveTo(i * 18, 12);
+            ctx.quadraticCurveTo(i * 22 + wave * 14, 34, i * 16 - wave * 12, 54);
+            ctx.stroke();
+          }
+          ctx.fillStyle = c1;
+          ctx.beginPath();
+          ctx.ellipse(0, -6, 44, 34, 0, 0, Math.PI * 2);
+          ctx.fill();
+          break;
+        }
+        case 'megalodon': {
+          ctx.fillStyle = c2;
+          ctx.beginPath();
+          ctx.moveTo(-68, 4);
+          ctx.lineTo(0, -24);
+          ctx.lineTo(68, 4);
+          ctx.lineTo(0, 16);
+          ctx.closePath();
+          ctx.fill();
+
+          ctx.fillStyle = c1;
+          ctx.beginPath();
+          ctx.moveTo(0, 48);
+          ctx.lineTo(34, -28);
+          ctx.lineTo(-34, -28);
+          ctx.closePath();
+          ctx.fill();
+
+          ctx.fillStyle = '#0f172a';
+          ctx.beginPath();
+          ctx.arc(0, 18, 18, 0, Math.PI);
+          ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          for (let tx = -12; tx <= 12; tx += 6) {
+            ctx.fillRect(tx - 1.5, 18, 3, 6);
+          }
+          break;
+        }
+        case 'crocodile': {
+          ctx.fillStyle = c2;
+          ctx.fillRect(-52, -16, 104, 24);
+          ctx.fillStyle = c1;
+          ctx.beginPath();
+          ctx.moveTo(-26, -32);
+          ctx.lineTo(26, -32);
+          ctx.lineTo(18, 48);
+          ctx.lineTo(-18, 48);
+          ctx.closePath();
+          ctx.fill();
+          ctx.fillStyle = '#fef08a';
+          for (let sy = -20; sy <= 25; sy += 14) {
+            ctx.fillRect(-5, sy, 10, 6);
+          }
+          break;
+        }
+        case 'mantaray': {
+          const wingY = wave * 12;
+          ctx.fillStyle = c1;
+          ctx.beginPath();
+          ctx.moveTo(0, 34);
+          ctx.lineTo(76, -10 + wingY);
+          ctx.lineTo(0, -30);
+          ctx.lineTo(-76, -10 + wingY);
+          ctx.closePath();
+          ctx.fill();
+
+          ctx.fillStyle = c2;
+          ctx.beginPath();
+          ctx.ellipse(0, 0, 22, 26, 0, 0, Math.PI * 2);
+          ctx.fill();
+          break;
+        }
+        case 'crab': {
+          ctx.fillStyle = c1;
+          ctx.beginPath();
+          ctx.ellipse(0, -4, 48, 30, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          const clawOffset = b.shieldClosed ? 16 : 44;
+          ctx.fillStyle = c2;
+          [-clawOffset, clawOffset].forEach(cx => {
+            ctx.beginPath();
+            ctx.arc(cx, 24, 18, 0, Math.PI * 2);
+            ctx.fill();
+          });
+          break;
+        }
+        case 'jellyfish': {
+          const rX = 48 + wave * 6;
+          ctx.fillStyle = c1;
+          ctx.beginPath();
+          ctx.arc(0, 0, rX, Math.PI, 0);
+          ctx.quadraticCurveTo(0, 14, -rX, 0);
+          ctx.fill();
+
+          ctx.strokeStyle = c2;
+          ctx.lineWidth = 4;
+          for (let fx = -30; fx <= 30; fx += 15) {
+            ctx.beginPath();
+            ctx.moveTo(fx, 4);
+            ctx.lineTo(fx + wave * 10, 48);
+            ctx.stroke();
+          }
+          break;
+        }
+        case 'narwhal': {
+          ctx.fillStyle = c1;
+          ctx.beginPath();
+          ctx.ellipse(0, -8, 34, 34, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = c2;
+          ctx.beginPath();
+          ctx.moveTo(-6, 22);
+          ctx.lineTo(6, 22);
+          ctx.lineTo(0, 64);
+          ctx.closePath();
+          ctx.fill();
+          break;
+        }
+        case 'turtle': {
+          ctx.fillStyle = c2;
+          ctx.fillRect(-62, -18, 124, 14);
+          ctx.fillRect(-56, 12, 112, 14);
+
+          ctx.fillStyle = c1;
+          ctx.beginPath();
+          ctx.arc(0, 0, 42, 0, Math.PI * 2);
+          ctx.fill();
+          break;
+        }
+        case 'eel': {
+          for (let s = 4; s >= 0; s--) {
+            const sx = Math.sin(b.animPhase + s * 0.8) * 26;
+            const sy = -28 + s * 16;
+            ctx.fillStyle = s % 2 === 0 ? c1 : c2;
+            ctx.beginPath();
+            ctx.arc(sx, sy, 26 - s * 2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          break;
+        }
+        case 'whale': {
+          ctx.fillStyle = c2;
+          ctx.beginPath();
+          ctx.moveTo(-78, -14);
+          ctx.lineTo(78, -14);
+          ctx.lineTo(54, 32);
+          ctx.lineTo(-54, 32);
+          ctx.closePath();
+          ctx.fill();
+
+          ctx.fillStyle = c1;
+          ctx.beginPath();
+          ctx.ellipse(0, 0, 46, 36, 0, 0, Math.PI * 2);
+          ctx.fill();
+          break;
+        }
+      }
+
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(-14, 6, 5, 0, Math.PI * 2);
+      ctx.arc(14, 6, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = b.enraged ? '#fbbf24' : '#ef4444';
+      ctx.beginPath();
+      ctx.arc(-14, 7, 2.5, 0, Math.PI * 2);
+      ctx.arc(14, 7, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    function draw() {
+      ctx.save();
+
+      if (game.shake > 0) {
+        ctx.translate(
+          (Math.random() - 0.5) * game.shake,
+          (Math.random() - 0.5) * game.shake
+        );
+      }
+
+      const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+      bgGrad.addColorStop(0, game.bgTop);
+      bgGrad.addColorStop(1, game.bgBot);
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, W, H);
+
+      nebulas.forEach((n, idx) => {
+        const g = ctx.createRadialGradient(n.x, n.y, 10, n.x, n.y, n.r);
+        g.addColorStop(0, idx % 2 === 0 ? game.nebulaA : game.nebulaB);
+        g.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      drawCelestialBackground();
+
+      const currentLvl = LEVELS_DATA[game.levelIndex] || LEVELS_DATA[0];
+      stars.forEach(s => {
+        ctx.globalAlpha = 0.55 + Math.sin(s.phase) * 0.45;
+        ctx.fillStyle = s.layer === 3 ? currentLvl.starTint : '#cbd5e1';
+        ctx.fillRect(s.x - s.size * 0.5, s.y - s.size * 0.5, s.size, s.size);
+      });
+      ctx.globalAlpha = 1;
+
+      shootingStars.forEach(ss => {
+        ctx.globalAlpha = Math.max(0, ss.life);
+        ctx.strokeStyle = currentLvl.starTint;
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.moveTo(ss.x, ss.y);
+        ctx.lineTo(ss.x - ss.vx * 0.06, ss.y - ss.vy * 0.06);
+        ctx.stroke();
+      });
+      ctx.globalAlpha = 1;
+
+      if (game.lightningAlpha > 0) {
+        ctx.fillStyle = '#e0f2fe';
+        ctx.globalAlpha = game.lightningAlpha;
+        ctx.fillRect(0, 0, W, H);
+        ctx.globalAlpha = 1;
+      }
+
+      powerups.forEach(p => {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        const s = 1 + Math.sin(p.pulse) * 0.12;
+        ctx.scale(s, s);
+
+        ctx.fillStyle = '#090d1f';
+        ctx.strokeStyle = p.color;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(0, 0, p.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = p.color;
+        ctx.font = '900 13px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(p.label, 0, 1);
+        ctx.restore();
+      });
+
+      bullets.forEach(b => {
+        ctx.fillStyle = b.color;
+        ctx.fillRect(b.x - b.w * 0.5, b.y - b.h * 0.5, b.w, b.h);
+        ctx.fillStyle = b.core || '#ffffff';
+        ctx.fillRect(b.x - b.w * 0.25, b.y - b.h * 0.4, b.w * 0.5, b.h * 0.8);
+      });
+
+      missiles.forEach(m => {
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.moveTo(m.x, m.y - 10);
+        ctx.lineTo(m.x + 4, m.y + 6);
+        ctx.lineTo(m.x - 4, m.y + 6);
+        ctx.closePath();
+        ctx.fill();
+      });
+
+      // Asteroids (Worlds 3, 6, 9)
+      asteroids.forEach(a => {
+        ctx.save();
+        ctx.translate(a.x, a.y);
+        ctx.rotate(a.rot);
+
+        ctx.fillStyle = a.color2;
+        ctx.strokeStyle = a.rim;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        a.verts.forEach((v, idx) => {
+          if (idx === 0) ctx.moveTo(v.x, v.y);
+          else ctx.lineTo(v.x, v.y);
+        });
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = a.color1;
+        ctx.beginPath();
+        ctx.arc(-a.r * 0.22, -a.r * 0.18, a.r * 0.28, 0, Math.PI * 2);
+        ctx.arc(a.r * 0.25, a.r * 0.2, a.r * 0.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+      });
+
+      // Enemies & Boss Supply Drones
+      enemies.forEach(e => {
+        ctx.save();
+        ctx.translate(e.x, e.y);
+
+        ctx.fillStyle = e.color2;
+        ctx.beginPath();
+        ctx.moveTo(0, 14);
+        ctx.lineTo(e.w * 0.5, -6);
+        ctx.lineTo(0, -14);
+        ctx.lineTo(-e.w * 0.5, -6);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = e.color1;
+        ctx.beginPath();
+        ctx.arc(0, 0, 8, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (e.isBossSupply) {
+          ctx.strokeStyle = '#6ee7b7';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.arc(0, 0, e.w * 0.68, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(-5, -1.5, 10, 3);
+          ctx.fillRect(-1.5, -5, 3, 10);
+        } else if (e.isCarrier) {
+          ctx.strokeStyle = '#fef08a';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(0, 0, e.w * 0.62, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+        ctx.restore();
+      });
+
+      if (boss) drawAquaticBoss(boss);
+
+      bossLasers.forEach(bl => {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0.2, bl.life / bl.maxLife);
+        ctx.strokeStyle = bl.color;
+        ctx.lineWidth = bl.width;
+        ctx.beginPath();
+        ctx.moveTo(bl.x1, bl.y1);
+        ctx.lineTo(bl.x2, bl.y2);
+        ctx.stroke();
+
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = bl.width * 0.35;
+        ctx.beginPath();
+        ctx.moveTo(bl.x1, bl.y1);
+        ctx.lineTo(bl.x2, bl.y2);
+        ctx.stroke();
+        ctx.restore();
+      });
+
+      enemyBullets.forEach(eb => {
+        ctx.fillStyle = eb.color;
+        ctx.beginPath();
+        ctx.arc(eb.x, eb.y, eb.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(eb.x, eb.y, eb.r * 0.45, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      if (player.swapAnim.active && player.swapAnim.phase === 'exit' && player.swapAnim.outgoingShip) {
+        renderShipModel(ctx, player.swapAnim.outgoingShip, player.swapAnim.outX, player.swapAnim.outY, 1, player.wingPhase, 0.28);
+      }
+
+      if (game.status !== 'gameover' && game.status !== 'victory' && game.status !== 'infirmary') {
+        const showMainShip = !player.swapAnim.active || player.swapAnim.phase === 'enter';
+        if (showMainShip && !(player.invuln > 0 && Math.floor(player.invuln * 18) % 2 === 0)) {
+          renderShipModel(ctx, player.ship, player.x, player.y, 1, player.wingPhase, player.bank);
+        }
+
+        if (player.buffs.shield > 0 && showMainShip) {
+          ctx.strokeStyle = '#22d3ee';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.arc(player.x, player.y, 29 + Math.sin(performance.now() * 0.01) * 2, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+
+        if (player.buffs.wingman > 0 && showMainShip) {
+          const allyX = player.x + (player.x > W / 2 ? -34 : 34);
+          const allyY = player.y + 6;
+          renderShipModel(ctx, player.ship, allyX, allyY, 0.6, player.wingPhase, 0);
+        }
+      }
+
+      // Special Explosion Rings & BOMBA Shockwaves
+      shockwaves.forEach(sw => {
+        ctx.globalAlpha = Math.max(0, sw.alpha);
+        if (sw.coreRadius > 0) {
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(sw.x, sw.y, sw.coreRadius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.strokeStyle = sw.color;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(sw.x, sw.y, sw.r, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.strokeStyle = sw.secondaryColor;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(sw.x, sw.y, sw.r * 0.68, 0, Math.PI * 2);
+        ctx.stroke();
+      });
+
+      particles.forEach(pt => {
+        ctx.globalAlpha = Math.max(0, pt.life / pt.maxLife);
+        if (pt.isStreak) {
+          ctx.strokeStyle = pt.color;
+          ctx.lineWidth = Math.max(1.5, pt.size * 0.65);
+          ctx.beginPath();
+          ctx.moveTo(pt.x, pt.y);
+          ctx.lineTo(pt.x - pt.vx * 0.045, pt.y - pt.vy * 0.045);
+          ctx.stroke();
+        } else {
+          ctx.fillStyle = pt.color;
+          ctx.fillRect(pt.x - pt.size * 0.5, pt.y - pt.size * 0.5, pt.size, pt.size);
+        }
+      });
+      ctx.globalAlpha = 1;
+
+      game.floatingTexts.forEach(ft => {
+        ctx.globalAlpha = Math.min(1, ft.life * 1.25);
+        ctx.fillStyle = '#020617';
+        ctx.font = '900 11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(ft.text, ft.x + 1, ft.y + 1);
+        ctx.fillStyle = ft.color;
+        ctx.fillText(ft.text, ft.x, ft.y);
+      });
+      ctx.globalAlpha = 1;
+
+      if (game.flashAlpha > 0) {
+        ctx.fillStyle = game.flashColor;
+        ctx.globalAlpha = game.flashAlpha;
+        ctx.fillRect(0, 0, W, H);
+        ctx.globalAlpha = 1;
+      }
+
+      ctx.restore();
+    }
+
+    // =========================================================================
+    // 17. MAIN LOOP & TOUCH / KEYBOARD CONTROLS
+    // =========================================================================
+    function loop(ts) {
+      if (!game.lastTime) game.lastTime = ts;
+      const dt = Math.min(0.05, (ts - game.lastTime) / 1000);
+      game.lastTime = ts;
+
+      update(dt);
+      draw();
+
+      requestAnimationFrame(loop);
+    }
+
+    function toCanvasCoords(clientX, clientY) {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: ((clientX - rect.left) / rect.width) * W,
+        y: ((clientY - rect.top) / rect.height) * H
+      };
+    }
+
+    canvas.addEventListener('pointerdown', e => {
+      audio.unlock();
+      if (game.status === 'start' && audio.currentTrack !== 'title') {
+        audio.startTitleMusic();
+      }
+      if (game.status !== 'playing') return;
+      const pt = toCanvasCoords(e.clientX, e.clientY);
+      controls.touchActive = true;
+      controls.touchX = pt.x;
+      controls.touchY = Math.max(66, Math.min(H - 36, pt.y - 34));
+    });
+
+    canvas.addEventListener('pointermove', e => {
+      if (!controls.touchActive) return;
+      const pt = toCanvasCoords(e.clientX, e.clientY);
+      controls.touchX = pt.x;
+      controls.touchY = Math.max(66, Math.min(H - 36, pt.y - 34));
+    });
+
+    window.addEventListener('pointerup', () => { controls.touchActive = false; });
+    window.addEventListener('pointercancel', () => { controls.touchActive = false; });
+
+    document.querySelectorAll('#screen-start .ship-card').forEach(card => {
+      card.addEventListener('click', () => {
+        audio.unlock();
+        if (audio.currentTrack !== 'title') audio.startTitleMusic();
+        audio.playSelect();
+        triggerShipSwitch(card.getAttribute('data-ship'), false);
+      });
+    });
+
+    document.querySelectorAll('.hangar-card').forEach(card => {
+      card.addEventListener('click', () => {
+        audio.unlock();
+        audio.playSelect();
+        const chosen = card.getAttribute('data-ship');
+        document.querySelectorAll('.hangar-card').forEach(c => {
+          c.classList.toggle('selected', c.getAttribute('data-ship') === chosen);
+        });
+        game.selectedShipId = chosen;
+      });
+    });
+
+    document.getElementById('btn-hangar-continue').addEventListener('click', () => {
+      audio.unlock();
+      audio.playSelect();
+      triggerShipSwitch(game.selectedShipId, true);
+    });
+
+    document.getElementById('boss-dlg-box').addEventListener('click', e => {
+      if (e.target.id === 'btn-boss-dlg-skip') return;
+      audio.unlock();
+      handleBossDialogueAdvance();
+    });
+
+    document.getElementById('btn-boss-dlg-skip').addEventListener('click', e => {
+      e.stopPropagation();
+      audio.unlock();
+      bossDialogueState.charIndex = bossDialogueState.fullText.length;
+      handleBossDialogueAdvance();
+    });
+
+    document.getElementById('conv-box').addEventListener('click', e => {
+      if (e.target.id === 'btn-conv-skip') return;
+      audio.unlock();
+      handleConversationTap();
+    });
+
+    document.getElementById('btn-conv-skip').addEventListener('click', e => {
+      e.stopPropagation();
+      audio.unlock();
+      convOverlay.classList.add('hidden');
+      openBetweenWorldShipHangar(dialogueState.completedWorldNum);
+    });
+
+    btnInfirmaryRetry.addEventListener('click', () => {
+      retryCurrentWorldFromInfirmary();
+    });
+
+    document.getElementById('btn-start-audio').addEventListener('click', () => {
+      audio.unlock();
+      audio.startTitleMusic();
+    });
+
+    document.getElementById('btn-bomb').addEventListener('click', () => {
+      audio.unlock();
+      triggerBomba();
+    });
+
+    document.getElementById('btn-mute').addEventListener('click', () => {
+      audio.unlock();
+      const muted = audio.toggleMute();
+      document.getElementById('mute-icon').textContent = muted ? '🔇' : '🔊';
+    });
+
+    function togglePause() {
+      if (game.status === 'playing') {
+        game.status = 'paused';
+        screenPause.classList.remove('hidden');
+      } else if (game.status === 'paused') {
+        game.status = 'playing';
+        game.lastTime = performance.now();
+        screenPause.classList.add('hidden');
+      }
+    }
+
+    document.getElementById('btn-pause').addEventListener('click', togglePause);
+    document.getElementById('btn-resume').addEventListener('click', togglePause);
+
+    function startMission() {
+      audio.unlock();
+      resetGame();
+      game.status = 'playing';
+      audio.startLevelMusic(0);
+      screenStart.classList.add('hidden');
+      screenPause.classList.add('hidden');
+      screenEnd.classList.add('hidden');
+    }
+
+    function returnToShipMenu() {
+      audio.unlock();
+      game.status = 'start';
+      bossDlgOverlay.classList.add('hidden');
+      hangarModal.classList.add('hidden');
+      convOverlay.classList.add('hidden');
+      infirmaryOverlay.classList.add('hidden');
+      screenPause.classList.add('hidden');
+      screenEnd.classList.add('hidden');
+      screenStart.classList.remove('hidden');
+      audio.startTitleMusic();
+    }
+
+    document.getElementById('btn-start').addEventListener('click', startMission);
+    document.getElementById('btn-replay').addEventListener('click', startMission);
+    document.getElementById('btn-change-ship').addEventListener('click', returnToShipMenu);
+    document.getElementById('btn-menu-end').addEventListener('click', returnToShipMenu);
+
+    window.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') controls.left = true;
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') controls.right = true;
+      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') controls.up = true;
+      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') controls.down = true;
+      if (e.key === 'b' || e.key === 'B' || e.key === ' ') {
+        if (game.status === 'boss_dialogue') handleBossDialogueAdvance();
+        else if (game.status === 'conversation') handleConversationTap();
+        else {
+          audio.unlock();
+          triggerBomba();
+        }
+      }
+      if (e.key === 'p' || e.key === 'P') togglePause();
+    });
+
+    window.addEventListener('keyup', e => {
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') controls.left = false;
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') controls.right = false;
+      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') controls.up = false;
+      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') controls.down = false;
+    });
+
+    window.onload = function () {
+      initSpace();
+      drawShipPreviews();
+      renderAllPortraits();
+      applyLevelTheme(0);
+      requestAnimationFrame(loop);
+    };
+  </script>
+</body>
+</html>
