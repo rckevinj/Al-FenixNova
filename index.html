@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>AL-FENIX NOVA - 13 Mundos Arcade</title>
+  <title>AL-FENIX NOVA - 14 Mundos Arcade</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     /* Global touch lock and zero-scroll mobile container */
@@ -111,10 +111,10 @@
     }
 
     .bomb-pill {
-      height: 38px;
-      padding: 0 13px;
+      height: 28px;
+      padding: 0 10px;
       border-radius: 9999px;
-      font-size: 11px;
+      font-size: 9px;
       font-weight: 900;
       letter-spacing: 0.05em;
     }
@@ -199,7 +199,7 @@
         <!-- World & Level Indicator (MUNDO 01/13 to 13/13) -->
         <div class="px-1.5 py-0.5 rounded-lg bg-slate-900/85 border border-cyan-400/35 text-center shrink-0">
           <span id="world-name-hud" class="text-[7px] uppercase tracking-wider text-cyan-300 block leading-tight truncate max-w-[88px]">FOSA ESMERALDA</span>
-          <span id="level-text" class="text-[10px] font-black text-amber-300 leading-none">MUNDO 01/13</span>
+          <span id="level-text" class="text-[10px] font-black text-amber-300 leading-none">MUNDO 01/14</span>
         </div>
 
         <!-- Score + Mute + Pause -->
@@ -234,9 +234,14 @@
 
     <!-- BOTTOM-RIGHT BOMBA BUTTON -->
     <div class="hud-bottom-right" id="bottom-hud">
-      <button id="btn-bomb" class="ctrl-btn bomb-pill border-amber-400/70 text-amber-300" aria-label="Bomba">
-        <span>💥 BOMBA: <strong id="bomb-count" class="text-white">2</strong></span>
-      </button>
+      <div class="flex items-center gap-1.5">
+        <button id="btn-help" class="ctrl-btn bomb-pill border-yellow-300/70 text-yellow-300" aria-label="Ayuda">
+          <span id="help-label">🛸 AYUDA</span>
+        </button>
+        <button id="btn-bomb" class="ctrl-btn bomb-pill border-amber-400/70 text-amber-300" aria-label="Bomba">
+          <span>💥 BOMBA: <strong id="bomb-count" class="text-white">2</strong></span>
+        </button>
+      </div>
     </div>
 
     <!-- BOSS PORTRAIT DIALOGUE OVERLAY (ARRIVAL NORMAL PORTRAIT & DEFEAT INJURED PORTRAIT) -->
@@ -381,7 +386,7 @@
     <div id="screen-start" class="absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-950/92 px-4 text-center overflow-y-auto py-4">
       <div class="flex items-center gap-2 mb-1.5">
         <span class="px-3 py-0.5 rounded-full bg-cyan-500/15 border border-cyan-400/40 text-cyan-300 text-[9px] font-extrabold tracking-widest uppercase">
-          13 Mundos • 10 Leviatanes • 3 Asteroides
+          14 Mundos • 10 Leviatanes • 4 Asteroides
         </span>
         <button id="btn-start-audio" class="px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/50 text-amber-300 text-[9px] font-extrabold uppercase cursor-pointer">
           🎵 Tema Inicio
@@ -393,7 +398,7 @@
       </h1>
 
       <p class="text-[11px] text-slate-300 leading-snug max-w-[325px] mb-2.5">
-        Vuela libremente por toda la pantalla, supera 13 mundos con cinturones de asteroides y cambia de nave tras cada sector.
+        Vuela libremente por toda la pantalla, supera 14 mundos con cinturones de asteroides y cambia de nave tras cada sector.
       </p>
 
       <!-- 3 SHIPS & PILOTS SELECTOR (+15% BASE HP) -->
@@ -507,7 +512,7 @@
         </div>
         <div class="flex justify-between items-center text-xs">
           <span class="text-slate-400">Mundo Alcanzado</span>
-          <span id="end-level" class="font-black text-sm text-cyan-300">13 / 13</span>
+          <span id="end-level" class="font-black text-sm text-cyan-300">14 / 14</span>
         </div>
         <div class="flex justify-between items-center text-xs border-t border-slate-800 pt-2">
           <span class="text-slate-400">Récord Histórico</span>
@@ -934,6 +939,35 @@
         harmony: [0, 0, 2, 4, 3, 2, 0, 2, 1, 3, 4, 3, 2, 0, 0, 2],
         arp:     [0, 2, 4, 5, 7, 5, 4, 2, 1, 3, 5, 6, 7, 5, 3, 2],
         bass:    [0, 4, 0, 4, 5, 5, 2, 5, 3, 6, 3, 6, 4, 4, 1, 4]
+      },
+      {
+        num: 14,
+        world: 'LLUVIA DE METEORITOS',
+        isAsteroidWorld: true,
+        meteorShower: true,
+        macaFinale: true,
+        asteroidTheme: 'meteor',
+        bgTop: '#14051f',
+        bgBot: '#030208',
+        nebulaA: 'rgba(249, 115, 22, 0.22)',
+        nebulaB: 'rgba(168, 85, 247, 0.20)',
+        planetStyle: 'lava_fractured',
+        planetColor1: '#f97316',
+        planetColor2: '#7e22ce',
+        starTint: '#fed7aa',
+        bossName: 'MACA, EL TRAIDOR',
+        bossType: 'maca',
+        bossHp: 8200,
+        bossColor1: '#facc15',
+        bossColor2: '#dc2626',
+        arrivalQuote: '',
+        defeatQuote: '',
+        tempo: 184,
+        scale: [196.00, 207.65, 246.94, 261.63, 293.66, 392.00, 415.30, 493.88],
+        lead:    [0, 2, 4, 5, 7, 5, 4, 2, 3, 4, 6, 7, 6, 4, 3, 1],
+        harmony: [0, 0, 2, 3, 4, 3, 2, 0, 1, 2, 4, 5, 4, 2, 1, 0],
+        arp:     [0, 3, 5, 7, 5, 3, 2, 4, 1, 4, 6, 7, 6, 4, 2, 1],
+        bass:    [0, 0, 2, 0, 3, 3, 4, 3, 1, 1, 2, 1, 5, 5, 4, 3]
       }
     ];
 
@@ -998,12 +1032,197 @@
         { speaker: 'xverde', name: 'XVERDE', text: 'Doce mundos superados... si llegamos hasta aquí es porque nadie ha dado un paso atrás.' },
         { speaker: 'adarapaz', name: 'ADA-Ra-Paz', text: 'El sensor está volviéndose loco... ¡es gigantesco! ¡Parece una ballena con varias cabezas!' },
         { speaker: 'elizdark', name: 'Eliz-Dark-Abeth', text: 'Es la Ballena Hidra Suprema. El destino de toda la galaxia se decide aquí. ¡Tengan máximo cuidado y vamos con todo!' }
+      ],
+      13: [
+        { speaker: 'xverde', name: 'XVERDE', text: 'La Ballena Hidra cayó... pero el radar marca algo enorme: una lluvia de meteoritos viene directo hacia nosotros.' },
+        { speaker: 'adarapaz', name: 'ADA-Ra-Paz', text: '¡Son distintos a los asteroides de antes! Brillan, dejan cola de fuego y los grandes se parten en pedazos al destruirlos.' },
+        { speaker: 'elizdark', name: 'Eliz-Dark-Abeth', text: 'Disparen con cuidado y esquiven los fragmentos. Si cruzamos esta lluvia, la galaxia estará a salvo. ¡Con todo!' }
       ]
     };
 
     // =========================================================================
     // 3. FIVE-CHANNEL SYNTHESIZED CHIPTUNE & SCENE MUSIC ENGINE
     // =========================================================================
+    // ---------------------------------------------------------------------
+    // Definiciones de pistas (frecuencias en Hz por paso de 16avo)
+    // ---------------------------------------------------------------------
+    function musicScaleFreq(S, i) {
+      const n = S.length;
+      return S[((i % n) + n) % n] * Math.pow(2, Math.floor(i / n));
+    }
+
+    function musicTriad(S, d) {
+      return [musicScaleFreq(S, d), musicScaleFreq(S, d + 2), musicScaleFreq(S, d + 4)];
+    }
+
+    const MUSIC_CHORD_SETS = [[0, 5, 3, 4], [0, 4, 5, 3], [0, 3, 5, 4], [0, 2, 3, 4]];
+
+    function titleMusicDef() {
+      const S = [220.00, 246.94, 261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25];
+      const lead = [7, 4, 7, 9, 8, 7, 6, 4, 5, 7, 9, 7, 6, 4, 6, 4];
+      const arp = [0, 2, 4, 7, 0, 2, 4, 7, 5, 7, 9, 7, 6, 8, 9, 4];
+      const bass = [0, 0, 4, 0, 0, 0, 4, 0, 5, 5, 6, 6, 4, 4, 4, 4];
+      return {
+        bpm: 86,
+        noIntro: true,
+        chords: [0, 5, 3, 4].map(d => musicTriad(S, d)),
+        bass: bass.map(i => musicScaleFreq(S, i) * 0.25),
+        lead: lead.map((i, k) => (k % 2 === 0 || k % 4 === 3) ? musicScaleFreq(S, i) : 0),
+        arp: arp.map(i => musicScaleFreq(S, i) * 2),
+        drums: { kick: [0, 8], snare: [4, 12], hat: true, open: [14] },
+        padType: 'sawtooth',
+        padVol: 0.018,
+        leadVol: 0.034,
+        leadVib: 5.5,
+      };
+    }
+
+    const MUSIC_MODES = {
+      dorian: [0, 2, 3, 5, 7, 9, 10],
+      phrygian: [0, 1, 3, 5, 7, 8, 10],
+      lydian: [0, 2, 4, 6, 7, 9, 11],
+      minor: [0, 2, 3, 5, 7, 8, 10],
+      harmMinor: [0, 2, 3, 5, 7, 8, 11],
+      mixo: [0, 2, 4, 5, 7, 9, 10],
+      pentMinor: [0, 3, 5, 7, 10],
+      blues: [0, 3, 5, 6, 7, 10]
+    };
+    const MUSIC_MODE_ORDER = ['dorian', 'phrygian', 'lydian', 'minor', 'harmMinor', 'mixo', 'pentMinor', 'blues'];
+    const MUSIC_PROGS = [[0, 5, 3, 4], [0, 3, 6, 2], [0, 4, 5, 3], [0, 2, 5, 4], [0, 6, 3, 4], [0, 5, 1, 4], [0, 1, 5, 4]];
+    const MUSIC_GROOVES = [
+      { kick: [0, 10], snare: [4, 12], clap: [], hat: 'even', open: [14] },
+      { kick: [0, 4, 8, 12], snare: [], clap: [4, 12], hat: 'odd', open: [] },
+      { kick: [0, 11], snare: [8], clap: [], hat: 'even', open: [15] },
+      { kick: [0, 7, 10], snare: [4, 12, 15], clap: [], hat: 'even', open: [] },
+      { kick: [0, 6, 8], snare: [], clap: [4, 12], hat: 'all', open: [] }
+    ];
+    const MUSIC_RHYTHMS = [
+      [1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0],
+      [1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1],
+      [1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1],
+      [1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0],
+      [1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0]
+    ];
+
+    function musicRng(seed) {
+      let s = (seed >>> 0) || 1;
+      return () => {
+        s ^= s << 13; s >>>= 0;
+        s ^= s >>> 17;
+        s ^= s << 5; s >>>= 0;
+        return s / 4294967296;
+      };
+    }
+
+    function musicMidiHz(m) {
+      return 440 * Math.pow(2, (m - 69) / 12);
+    }
+
+    // Cada mundo tiene modo, raíz, progresión, groove, ritmo de melodía y tempo propios
+    function levelMusicDef(lvl, idx, boss, evil = false) {
+      const r = musicRng(7919 * (idx + 1) + (boss ? 104729 : 0) + (evil ? 15485863 : 0));
+      const modeName = MUSIC_MODE_ORDER[(idx + (boss ? 3 : 0) + (evil ? 5 : 0)) % MUSIC_MODE_ORDER.length];
+      const iv = MUSIC_MODES[modeName];
+      const root = [45, 48, 50, 52, 53, 55, 47, 43, 46, 49, 51, 44, 41, 54][idx % 14] + (evil ? -2 : 0);
+      const sm = [];
+      for (let o = 0; o < 3; o++) iv.forEach(i => sm.push(root + 12 * o + i));
+
+      const prog = MUSIC_PROGS[(idx * 2 + (boss ? 1 : 0) + (evil ? 3 : 0)) % MUSIC_PROGS.length];
+      const gr = MUSIC_GROOVES[(idx + (boss ? 2 : 0) + (evil ? 1 : 0)) % MUSIC_GROOVES.length];
+      const rhythm = MUSIC_RHYTHMS[(idx + (boss ? 1 : 0)) % MUSIC_RHYTHMS.length];
+      const bpm = evil ? 102 : boss ? 106 + (idx % 3) * 4 : 84 + (idx % 6) * 4;
+      const useArp = boss || r() < 0.55;
+
+      const chordIdx = prog.map(d => [d, d + 2, d + 4]);
+      const chords = chordIdx.map(ix => ix.map(k => musicMidiHz(sm[k])));
+      const leadBars = [];
+      const bassBars = [];
+      const arpBars = [];
+      let cur = 3 + Math.floor(r() * 3);
+
+      for (let b = 0; b < 4; b++) {
+        const ct = chordIdx[b];
+        const lp = new Array(16).fill(0);
+        const bp = new Array(16).fill(0);
+        const ap = new Array(16).fill(0);
+        for (let n = 0; n < 16; n++) {
+          if (rhythm[n]) {
+            if (n % 4 === 0) cur = ct[Math.floor(r() * 3)];
+            else cur = Math.max(0, Math.min(sm.length - 1, cur + (r() < 0.5 ? -1 : 1) * (1 + Math.floor(r() * 2))));
+            lp[n] = musicMidiHz(sm[cur] + 12 + (boss ? 12 : 0));
+          }
+          if (n % 4 === 0 || (n % 2 === 0 && r() < 0.35)) bp[n] = musicMidiHz(sm[ct[0]] - 12);
+          if (useArp && (boss || n % 2 === 0)) ap[n] = musicMidiHz(sm[ct[(n >> 1) % 3]] + 24);
+        }
+        leadBars.push(lp);
+        bassBars.push(bp);
+        arpBars.push(ap);
+      }
+
+      const types = ['sawtooth', 'square', 'triangle'];
+      return {
+        bpm,
+        noIntro: boss,
+        chords,
+        bass: null,
+        bassBars,
+        lead: null,
+        leadBars,
+        arp: null,
+        arpBars: useArp ? arpBars : null,
+        drums: { kick: gr.kick, snare: gr.snare, clap: boss && !gr.clap.length ? [12] : gr.clap, hat: gr.hat, open: gr.open },
+        padType: boss ? 'square' : types[(idx + (evil ? 1 : 0)) % 3],
+        padVol: boss ? 0.013 : 0.016,
+        bassVol: boss ? 0.11 : 0.09,
+        leadVol: boss ? 0.034 : 0.032,
+        leadType: types[(idx * 2 + 1) % 3],
+        leadVib: boss ? 7 : 4.5 + (idx % 3),
+        kickVol: boss ? 1.15 : 1,
+        arpVol: boss ? 0.02 : 0.015
+      };
+    }
+
+    function dialogueMusicDef() {
+      const bass = [73.42, 0, 0, 0, 73.42, 0, 0, 0, 69.30, 0, 0, 0, 65.41, 0, 0, 0];
+      const lead = [293.66, 0, 0, 0, 261.63, 0, 0, 0, 220.00, 0, 0, 0, 196.00, 0, 0, 0];
+      return {
+        bpm: 72,
+        noIntro: true,
+        chords: [[146.83, 174.61, 220], [164.81, 196, 246.94], [130.81, 164.81, 196], [146.83, 196, 246.94]],
+        bass: bass.map(f => f * 1),
+        lead: lead.map(f => f),
+        arp: null,
+        drums: { kick: [0], snare: [], hat: false },
+        padType: 'sawtooth',
+        padVol: 0.012,
+        bassVol: 0.07,
+        leadVol: 0.028,
+        leadType: 'triangle',
+        leadVib: 4,
+        kickVol: 0.45,
+      };
+    }
+
+    function infirmaryMusicDef() {
+      const sadMelody = [293.66, 261.63, 220.00, 196.00, 220.00, 174.61, 196.00, 164.81];
+      const sadBass = [146.83, 130.81, 110.00, 98.00, 110.00, 87.31, 98.00, 82.41];
+      return {
+        bpm: 64,
+        noIntro: true,
+        chords: [[146.83, 174.61, 220], [130.81, 164.81, 196], [110, 130.81, 164.81], [98, 123.47, 146.83]],
+        bass: Array.from({ length: 16 }, (_, n) => (n % 2 === 0 ? sadBass[(n / 2) % 8] : 0)),
+        lead: Array.from({ length: 16 }, (_, n) => (n % 2 === 0 ? sadMelody[(n / 2) % 8] : 0)),
+        arp: null,
+        drums: { kick: [], snare: [], hat: false },
+        padType: 'sine',
+        padVol: 0.014,
+        bassVol: 0.06,
+        leadVol: 0.03,
+        leadType: 'triangle',
+        leadVib: 4.5,
+      };
+    }
+
     class MegaPhoenixSymphonyEngine {
       constructor() {
         this.ctx = null;
@@ -1028,6 +1247,7 @@
               }
             }
           }
+          if (this.ctx && !this.musicBus) this.buildMusicFx();
           if (this.ctx && this.ctx.state === 'suspended') {
             this.ctx.resume();
           }
@@ -1093,268 +1313,273 @@
       }
 
       startTitleMusic() {
-        this.stopMusic();
-        this.currentTrack = 'title';
-        this.step = 0;
-
-        const scale = [220.00, 246.94, 261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25];
-        const lead =    [7, 4, 7, 9, 8, 7, 6, 4, 5, 7, 9, 7, 6, 4, 6, 4];
-        const harmony = [4, 2, 4, 7, 6, 4, 3, 2, 3, 5, 7, 5, 4, 2, 4, 2];
-        const arp =     [0, 2, 4, 7, 0, 2, 4, 7, 5, 7, 9, 7, 6, 8, 9, 4];
-        const bass =    [0, 0, 4, 0, 0, 0, 4, 0, 5, 5, 6, 6, 4, 4, 4, 4];
-
-        const stepMs = 175;
-        const stepSec = stepMs / 1000;
-
-        this.musicTimer = setInterval(() => {
-          if (this.muted || !this.ctx || game.status !== 'start') return;
-          const now = this.ctx.currentTime;
-          const idx = this.step % 16;
-
-          const osc1 = this.ctx.createOscillator();
-          const g1 = this.ctx.createGain();
-          osc1.type = 'square';
-          osc1.frequency.setValueAtTime(scale[lead[idx]], now);
-          g1.gain.setValueAtTime(0.024, now);
-          g1.gain.exponentialRampToValueAtTime(0.001, now + stepSec * 0.9);
-          osc1.connect(g1);
-          g1.connect(this.ctx.destination);
-          osc1.start(now);
-          osc1.stop(now + stepSec * 0.92);
-
-          const osc2 = this.ctx.createOscillator();
-          const g2 = this.ctx.createGain();
-          osc2.type = 'sawtooth';
-          osc2.frequency.setValueAtTime(scale[harmony[idx]] * 0.5, now);
-          g2.gain.setValueAtTime(0.015, now);
-          g2.gain.exponentialRampToValueAtTime(0.001, now + stepSec * 0.85);
-          osc2.connect(g2);
-          g2.connect(this.ctx.destination);
-          osc2.start(now);
-          osc2.stop(now + stepSec * 0.88);
-
-          const osc3 = this.ctx.createOscillator();
-          const g3 = this.ctx.createGain();
-          osc3.type = 'triangle';
-          osc3.frequency.setValueAtTime(scale[arp[idx]] * 2, now);
-          g3.gain.setValueAtTime(0.013, now);
-          g3.gain.exponentialRampToValueAtTime(0.001, now + stepSec * 0.65);
-          osc3.connect(g3);
-          g3.connect(this.ctx.destination);
-          osc3.start(now);
-          osc3.stop(now + stepSec * 0.7);
-
-          const osc4 = this.ctx.createOscillator();
-          const g4 = this.ctx.createGain();
-          osc4.type = 'triangle';
-          osc4.frequency.setValueAtTime(scale[bass[idx]] * 0.25, now);
-          g4.gain.setValueAtTime(0.052, now);
-          g4.gain.exponentialRampToValueAtTime(0.001, now + stepSec * 0.95);
-          osc4.connect(g4);
-          g4.connect(this.ctx.destination);
-          osc4.start(now);
-          osc4.stop(now + stepSec * 0.96);
-
-          if (idx % 4 === 0) this.playDrumKit(now, 'kick');
-          else if (idx % 4 === 2) this.playDrumKit(now, 'snare');
-          else this.playDrumKit(now, 'hat');
-
-          this.step++;
-        }, stepMs);
+        this.startMusicTrack('title', titleMusicDef(), () => game.status === 'start');
       }
 
       startLevelMusic(levelIdx) {
         const idxLvl = Math.max(0, Math.min(LEVELS_DATA.length - 1, levelIdx));
-        this.stopMusic();
-        this.currentTrack = `level_${idxLvl}`;
-        this.step = 0;
-
         const lvl = LEVELS_DATA[idxLvl];
-        const stepMs = Math.round((60 / lvl.tempo / 2) * 1000);
-        const stepSec = stepMs / 1000;
-
-        this.musicTimer = setInterval(() => {
-          if (this.muted || !this.ctx || game.status !== 'playing') return;
-          const now = this.ctx.currentTime;
-          const idx = this.step % 16;
-
-          const leadFreq = lvl.scale[lvl.lead[idx] % lvl.scale.length];
-          const osc1 = this.ctx.createOscillator();
-          const gain1 = this.ctx.createGain();
-          osc1.type = 'square';
-          osc1.frequency.setValueAtTime(leadFreq, now);
-          gain1.gain.setValueAtTime(0.023, now);
-          gain1.gain.exponentialRampToValueAtTime(0.001, now + stepSec * 0.88);
-          osc1.connect(gain1);
-          gain1.connect(this.ctx.destination);
-          osc1.start(now);
-          osc1.stop(now + stepSec * 0.9);
-
-          const harmFreq = lvl.scale[lvl.harmony[idx] % lvl.scale.length] * 0.5;
-          const osc2 = this.ctx.createOscillator();
-          const gain2 = this.ctx.createGain();
-          osc2.type = 'square';
-          osc2.frequency.setValueAtTime(harmFreq, now);
-          gain2.gain.setValueAtTime(0.013, now);
-          gain2.gain.exponentialRampToValueAtTime(0.001, now + stepSec * 0.82);
-          osc2.connect(gain2);
-          gain2.connect(this.ctx.destination);
-          osc2.start(now);
-          osc2.stop(now + stepSec * 0.85);
-
-          const arpFreq = lvl.scale[lvl.arp[idx] % lvl.scale.length] * 2;
-          const osc3 = this.ctx.createOscillator();
-          const gain3 = this.ctx.createGain();
-          osc3.type = 'triangle';
-          osc3.frequency.setValueAtTime(arpFreq, now);
-          gain3.gain.setValueAtTime(0.011, now);
-          gain3.gain.exponentialRampToValueAtTime(0.001, now + stepSec * 0.6);
-          osc3.connect(gain3);
-          gain3.connect(this.ctx.destination);
-          osc3.start(now);
-          osc3.stop(now + stepSec * 0.64);
-
-          const bassFreq = lvl.scale[lvl.bass[idx] % lvl.scale.length] * 0.25;
-          const osc4 = this.ctx.createOscillator();
-          const gain4 = this.ctx.createGain();
-          osc4.type = 'triangle';
-          osc4.frequency.setValueAtTime(bassFreq, now);
-          gain4.gain.setValueAtTime(0.055, now);
-          gain4.gain.exponentialRampToValueAtTime(0.001, now + stepSec * 0.92);
-          osc4.connect(gain4);
-          gain4.connect(this.ctx.destination);
-          osc4.start(now);
-          osc4.stop(now + stepSec * 0.95);
-
-          if (idx % 4 === 0) this.playDrumKit(now, 'kick');
-          else if (idx % 4 === 2) this.playDrumKit(now, 'snare');
-          else this.playDrumKit(now, 'hat');
-
-          this.step++;
-        }, stepMs);
+        this.startMusicTrack(`level_${idxLvl}`, levelMusicDef(lvl, idxLvl, false), () => game.status === 'playing');
       }
 
       startBossMusic() {
-        this.stopMusic();
-        this.currentTrack = 'boss';
-        this.step = 0;
-        const bossNotes = [146.83, 155.56, 146.83, 174.61, 146.83, 155.56, 196.00, 185.00];
-
-        this.musicTimer = setInterval(() => {
-          if (this.muted || !this.ctx || game.status !== 'playing') return;
-          const now = this.ctx.currentTime;
-          const idx = this.step % bossNotes.length;
-          const freq = bossNotes[idx];
-
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(freq, now);
-          gain.gain.setValueAtTime(0.032, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start(now);
-          osc.stop(now + 0.14);
-
-          const bass = this.ctx.createOscillator();
-          const bGain = this.ctx.createGain();
-          bass.type = 'triangle';
-          bass.frequency.setValueAtTime(freq * 0.5, now);
-          bGain.gain.setValueAtTime(0.05, now);
-          bGain.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
-          bass.connect(bGain);
-          bGain.connect(this.ctx.destination);
-          bass.start(now);
-          bass.stop(now + 0.14);
-
-          this.playDrumKit(now, idx % 2 === 0 ? 'kick' : 'snare');
-          this.step++;
-        }, 142);
+        const lvl = LEVELS_DATA[game.levelIndex] || LEVELS_DATA[0];
+        const isMaca = lvl.bossType === 'maca';
+        this.startMusicTrack('boss', levelMusicDef(lvl, game.levelIndex, true, isMaca), () => game.status === 'playing');
       }
 
-      // Low, serious, tense music during between-world conversations & boss cutscenes
+      // Tensa y grave: conversaciones entre mundos y presentaciones de jefes
       startSeriousDialogueMusic() {
-        this.stopMusic();
-        this.currentTrack = 'dialogue';
-        this.step = 0;
-        const lowNotes = [73.42, 73.42, 69.30, 65.41, 73.42, 82.41, 69.30, 65.41];
-        const tensePad = [146.83, 174.61, 164.81, 130.81, 146.83, 196.00, 164.81, 130.81];
-
-        this.musicTimer = setInterval(() => {
-          if (this.muted || !this.ctx || (game.status !== 'conversation' && game.status !== 'boss_dialogue')) return;
-          const now = this.ctx.currentTime;
-          const idx = this.step % lowNotes.length;
-
-          const sub = this.ctx.createOscillator();
-          const sGain = this.ctx.createGain();
-          sub.type = 'triangle';
-          sub.frequency.setValueAtTime(lowNotes[idx], now);
-          sGain.gain.setValueAtTime(0.048, now);
-          sGain.gain.exponentialRampToValueAtTime(0.002, now + 0.36);
-          sub.connect(sGain);
-          sGain.connect(this.ctx.destination);
-          sub.start(now);
-          sub.stop(now + 0.38);
-
-          if (idx % 2 === 0) {
-            const pad = this.ctx.createOscillator();
-            const pGain = this.ctx.createGain();
-            pad.type = 'sine';
-            pad.frequency.setValueAtTime(tensePad[idx], now);
-            pGain.gain.setValueAtTime(0.018, now);
-            pGain.gain.exponentialRampToValueAtTime(0.001, now + 0.72);
-            pad.connect(pGain);
-            pGain.connect(this.ctx.destination);
-            pad.start(now);
-            pad.stop(now + 0.74);
-          }
-
-          if (idx % 4 === 0) {
-            this.playDrumKit(now, 'kick', 0.45);
-          }
-
-          this.step++;
-        }, 380);
+        this.startMusicTrack('dialogue', dialogueMusicDef(), () => game.status === 'conversation' || game.status === 'boss_dialogue');
       }
 
-      // Sad, melancholic music when ship explodes & opens emergency infirmary chat
+      // Melancólica: nave destruida y chat de enfermería
       startSadInfirmaryMusic() {
+        this.startMusicTrack('infirmary', infirmaryMusicDef(), () => game.status === 'infirmary');
+      }
+
+      // ---------------------------------------------------------------
+      // Motor de música estilo SNES: voces con desafinación y filtro,
+      // reverb de sala, eco rítmico y pistas organizadas por compases.
+      // ---------------------------------------------------------------
+      buildMusicFx() {
+        const c = this.ctx;
+        this.musicBus = c.createGain();
+        this.musicBus.gain.value = 0.85;
+
+        const comp = c.createDynamicsCompressor();
+        comp.threshold.value = -16;
+        comp.ratio.value = 3;
+        comp.attack.value = 0.005;
+        comp.release.value = 0.2;
+        this.musicBus.connect(comp);
+        comp.connect(c.destination);
+
+        const len = Math.floor(c.sampleRate * 2.2);
+        const imp = c.createBuffer(2, len, c.sampleRate);
+        for (let ch = 0; ch < 2; ch++) {
+          const d = imp.getChannelData(ch);
+          for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
+        }
+        this.reverb = c.createConvolver();
+        this.reverb.buffer = imp;
+        this.reverbSend = c.createGain();
+        this.reverbSend.gain.value = 0.3;
+        this.reverbSend.connect(this.reverb);
+        this.reverb.connect(this.musicBus);
+
+        this.delay = c.createDelay(1.0);
+        this.delay.delayTime.value = 0.3;
+        const fb = c.createGain();
+        fb.gain.value = 0.34;
+        const dLp = c.createBiquadFilter();
+        dLp.type = 'lowpass';
+        dLp.frequency.value = 2600;
+        this.delaySend = c.createGain();
+        this.delaySend.gain.value = 0.18;
+        this.delaySend.connect(this.delay);
+        this.delay.connect(dLp);
+        dLp.connect(fb);
+        fb.connect(this.delay);
+        dLp.connect(this.musicBus);
+      }
+
+      musicVoice(t, freq, dur, o = {}) {
+        if (!this.ctx || !this.musicBus || !freq) return;
+        const c = this.ctx;
+        const vol = o.vol ?? 0.04;
+        const a = o.a ?? 0.01;
+        const r = o.r ?? 0.12;
+        const sus = o.sus ?? 0.6;
+
+        const g = c.createGain();
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.linearRampToValueAtTime(vol, t + a);
+        g.gain.linearRampToValueAtTime(vol * sus, t + Math.max(a + 0.01, dur * 0.4));
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur + r);
+
+        const f = c.createBiquadFilter();
+        f.type = 'lowpass';
+        f.Q.value = o.q ?? 0.9;
+        f.frequency.setValueAtTime(o.cut0 ?? 2400, t);
+        f.frequency.exponentialRampToValueAtTime(o.cut1 ?? 900, t + dur + r);
+        f.connect(g);
+        g.connect(this.musicBus);
+        if (o.reverb !== false) g.connect(this.reverbSend);
+        if (o.echo) g.connect(this.delaySend);
+
+        (o.detune ?? [-6, 6]).forEach(d => {
+          const osc = c.createOscillator();
+          osc.type = o.type ?? 'sawtooth';
+          osc.frequency.setValueAtTime(freq, t);
+          osc.detune.setValueAtTime(d, t);
+          if (o.vib) {
+            const lfo = c.createOscillator();
+            const lg = c.createGain();
+            lfo.frequency.value = o.vib;
+            lg.gain.setValueAtTime(0, t);
+            lg.gain.linearRampToValueAtTime(o.vibDepth ?? 12, t + 0.3);
+            lfo.connect(lg);
+            lg.connect(osc.detune);
+            lfo.start(t);
+            lfo.stop(t + dur + r + 0.05);
+          }
+          osc.connect(f);
+          osc.start(t);
+          osc.stop(t + dur + r + 0.05);
+        });
+      }
+
+      musicDrum(t, kind, vol = 1) {
+        const c = this.ctx;
+        if (!c || !this.musicBus || !this.noiseBuffer) return;
+
+        if (kind === 'kick') {
+          const o = c.createOscillator();
+          const g = c.createGain();
+          o.type = 'sine';
+          o.frequency.setValueAtTime(160, t);
+          o.frequency.exponentialRampToValueAtTime(42, t + 0.12);
+          g.gain.setValueAtTime(0.42 * vol, t);
+          g.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+          o.connect(g);
+          g.connect(this.musicBus);
+          o.start(t);
+          o.stop(t + 0.24);
+          return;
+        }
+
+        const src = c.createBufferSource();
+        src.buffer = this.noiseBuffer;
+        const f = c.createBiquadFilter();
+        const g = c.createGain();
+        let dur = 0.04;
+        let peak = 0.05;
+        if (kind === 'snare') { f.type = 'bandpass'; f.frequency.value = 1900; f.Q.value = 0.9; dur = 0.18; peak = 0.22; }
+        else if (kind === 'clap') { f.type = 'bandpass'; f.frequency.value = 1300; f.Q.value = 1.2; dur = 0.14; peak = 0.2; }
+        else if (kind === 'openhat') { f.type = 'highpass'; f.frequency.value = 7000; dur = 0.22; peak = 0.06; }
+        else { f.type = 'highpass'; f.frequency.value = 8500; }
+
+        g.gain.setValueAtTime(peak * vol, t);
+        g.gain.exponentialRampToValueAtTime(0.0008, t + dur);
+        src.connect(f);
+        f.connect(g);
+        g.connect(this.musicBus);
+        if (kind === 'snare' || kind === 'clap') {
+          g.connect(this.reverbSend);
+          this.musicVoice(t, 190, 0.07, { type: 'triangle', vol: 0.08, a: 0.002, r: 0.05, reverb: false });
+        }
+        src.start(t);
+        src.stop(t + dur + 0.02);
+      }
+
+      playThunder() {
+        if (this.muted || !this.ctx || !this.noiseBuffer) return;
+        const c = this.ctx;
+        const t = c.currentTime;
+        const src = c.createBufferSource();
+        src.buffer = this.noiseBuffer;
+        src.loop = true;
+        const lp = c.createBiquadFilter();
+        lp.type = 'lowpass';
+        lp.frequency.setValueAtTime(420, t);
+        lp.frequency.exponentialRampToValueAtTime(90, t + 1.6);
+        const g = c.createGain();
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.linearRampToValueAtTime(0.5, t + 0.03);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 1.8);
+        src.connect(lp);
+        lp.connect(g);
+        g.connect(this.musicBus || c.destination);
+        src.start(t);
+        src.stop(t + 1.9);
+      }
+
+      startMusicTrack(name, def, gate) {
         this.stopMusic();
-        this.currentTrack = 'infirmary';
+        this.currentTrack = name;
         this.step = 0;
-        const sadMelody = [293.66, 261.63, 220.00, 196.00, 220.00, 174.61, 196.00, 164.81];
-        const sadBass =   [146.83, 130.81, 110.00, 98.00,  110.00, 87.31,  98.00,  82.41];
-
+        const stepSec = 60 / def.bpm / 4;
+        let nextT = this.ctx ? this.ctx.currentTime + 0.05 : 0;
         this.musicTimer = setInterval(() => {
-          if (this.muted || !this.ctx || game.status !== 'infirmary') return;
+          if (this.muted || !this.ctx || !this.musicBus || !gate()) return;
           const now = this.ctx.currentTime;
-          const idx = this.step % sadMelody.length;
+          if (nextT < now) nextT = now + 0.03;
+          while (nextT < now + 0.14) {
+            this.scheduleMusicStep(def, this.step, nextT, stepSec);
+            this.step++;
+            nextT += stepSec;
+          }
+        }, 25);
+      }
 
-          const mel = this.ctx.createOscillator();
-          const mGain = this.ctx.createGain();
-          mel.type = 'triangle';
-          mel.frequency.setValueAtTime(sadMelody[idx], now);
-          mGain.gain.setValueAtTime(0.028, now);
-          mGain.gain.exponentialRampToValueAtTime(0.001, now + 0.48);
-          mel.connect(mGain);
-          mGain.connect(this.ctx.destination);
-          mel.start(now);
-          mel.stop(now + 0.5);
+      scheduleMusicStep(def, s, t, sec) {
+        const n = s % 16;
+        const bar = Math.floor(s / 16);
+        const cyc = bar % 8;
+        const intro = !def.noIntro && cyc < 2;
+        const brk = !def.noIntro && cyc >= 6;
+        const phrase = Math.floor(bar / 2) % 4;
+        const tr = phrase === 2 ? Math.pow(2, 2 / 12) : 1;
+        const chord = def.chords[bar % def.chords.length];
 
-          const bs = this.ctx.createOscillator();
-          const bGain = this.ctx.createGain();
-          bs.type = 'sine';
-          bs.frequency.setValueAtTime(sadBass[idx], now);
-          bGain.gain.setValueAtTime(0.036, now);
-          bGain.gain.exponentialRampToValueAtTime(0.001, now + 0.52);
-          bs.connect(bGain);
-          bGain.connect(this.ctx.destination);
-          bs.start(now);
-          bs.stop(now + 0.54);
+        if (n === 0) {
+          chord.forEach((f, i) => this.musicVoice(t, f, sec * 15, {
+            type: def.padType || 'sawtooth',
+            vol: def.padVol ?? 0.016,
+            a: 0.5, r: 0.8, sus: 0.8,
+            cut0: 1100, cut1: 1500,
+            detune: i === 1 ? [-9, 9] : [-5, 5]
+          }));
+        }
 
-          this.step++;
-        }, 520);
+        const bassPat = def.bassBars ? def.bassBars[bar % def.bassBars.length] : def.bass;
+        const bf = bassPat[n];
+        if (bf) {
+          this.musicVoice(t, bf, sec * 1.7, {
+            type: 'sawtooth', vol: def.bassVol ?? 0.09,
+            a: 0.004, r: 0.08, sus: 0.5, cut0: 650, cut1: 260,
+            detune: [0], reverb: false
+          });
+        }
+
+        const leadPat = def.leadBars ? def.leadBars[bar % def.leadBars.length] : def.lead;
+        if (!intro && leadPat) {
+          const lf = leadPat[n];
+          if (lf) {
+            this.musicVoice(t, lf * tr, sec * 1.1, {
+              type: def.leadType || 'sawtooth', vol: def.leadVol ?? 0.032,
+              a: 0.02, r: 0.25, sus: 0.75, cut0: 3000, cut1: 1600,
+              detune: [-8, 8], vib: def.leadVib ?? 5.5, vibDepth: 10, echo: true
+            });
+          }
+        }
+
+        const arpPat = def.arpBars ? def.arpBars[bar % def.arpBars.length] : def.arp;
+        if (!intro && arpPat) {
+          const af = arpPat[n];
+          if (af) {
+            this.musicVoice(t, af * tr, sec * 0.9, {
+              type: 'square', vol: def.arpVol ?? 0.016,
+              a: 0.003, r: 0.1, sus: 0.4, cut0: 2500, cut1: 1200,
+              detune: [0], echo: true
+            });
+          }
+        }
+
+        if (!intro && def.drums) {
+          const d = def.drums;
+          if (brk) {
+            if (n === 0 || n === 8) this.musicDrum(t, 'kick', 0.8);
+          } else {
+            if (d.kick.includes(n)) this.musicDrum(t, 'kick', def.kickVol ?? 1);
+            if (d.snare.includes(n)) this.musicDrum(t, 'snare', 1);
+            if (d.clap && d.clap.includes(n)) this.musicDrum(t, 'clap', 1);
+            if (d.open && d.open.includes(n)) this.musicDrum(t, 'openhat', 1);
+            const h = d.hat;
+            if (((h === true || h === 'even') && n % 2 === 0) || (h === 'odd' && n % 4 === 2) || h === 'all') this.musicDrum(t, 'hat', 1);
+          }
+        }
       }
 
       /**
@@ -2431,7 +2656,15 @@
     // 9. WORLD PROGRESSION (+25% LENGTH) & DISTINCTIVE CELESTIAL BACKGROUNDS
     // =========================================================================
     function getLevelQuota(levelIdx) {
+      const base = getBaseLevelQuota(levelIdx);
+      // Mundos 1 a 5: +10% de recorrido; del mundo 6 en adelante: +5%
+      const factor = levelIdx <= 4 ? 1.10 : 1.05;
+      return Math.round(base * factor);
+    }
+
+    function getBaseLevelQuota(levelIdx) {
       const lvl = LEVELS_DATA[levelIdx];
+      if (lvl && lvl.meteorShower) return 44;
       if (lvl && lvl.isAsteroidWorld) {
         return Math.round((26 + levelIdx * 2) * 1.25);
       }
@@ -2465,7 +2698,7 @@
       game.nebulaA = lvl.nebulaA;
       game.nebulaB = lvl.nebulaB;
       worldNameHud.textContent = lvl.world;
-      levelText.textContent = `MUNDO ${String(lvl.num).padStart(2, '0')}/13`;
+      levelText.textContent = `MUNDO ${String(lvl.num).padStart(2, '0')}/14`;
 
       celestialBody = {
         style: lvl.planetStyle,
@@ -2484,6 +2717,15 @@
       } else {
         bossBarWrap.classList.add('hidden');
       }
+    }
+
+    function applyWorldHpScaling(idx) {
+      const mult = idx >= 4 ? 1.15 : 1;
+      const target = Math.round(player.ship.maxHp * mult);
+      const diff = target - player.maxHp;
+      player.maxHp = target;
+      if (diff > 0) player.hp = Math.min(target, player.hp + diff);
+      else player.hp = Math.min(player.hp, target);
     }
 
     function setupWorldState(idx) {
@@ -2507,8 +2749,14 @@
       shockwaves = [];
       boss = null;
       spawnTimer = 0.45;
+      scenery = [];
+      sceneryTimer = 6;
+      sceneryBolts = [];
+      boltTimer = 1.2;
+      resetMacaAlly();
 
       applyLevelTheme(idx);
+      applyWorldHpScaling(idx);
       updateHUD();
     }
 
@@ -2532,6 +2780,8 @@
       shipHudName.className = `${chosenShip.hudColor} truncate max-w-[86px]`;
 
       game.score = 0;
+      maca.timesCalled = 0;
+      maca.usedWorldIdx = -1;
       bossDlgOverlay.classList.add('hidden');
       hangarModal.classList.add('hidden');
       convOverlay.classList.add('hidden');
@@ -2548,7 +2798,7 @@
       bombCountEl.textContent = player.bombs;
 
       const lvl = LEVELS_DATA[game.levelIndex];
-      if (lvl && lvl.isAsteroidWorld) {
+      if (lvl && lvl.isAsteroidWorld && !boss) {
         const remPct = Math.max(0, Math.min(100, Math.round((1 - game.levelProgress / game.enemiesToBoss) * 100)));
         bossHpFill.style.width = `${remPct}%`;
         bossHpPct.textContent = `${remPct}%`;
@@ -2734,7 +2984,7 @@
         const a = asteroids[i];
         a.hp -= 240;
         if (a.hp <= 0) {
-          destroyAsteroidWithSpecialEffect(a, i);
+          destroyAsteroidWithSpecialEffect(a, i, true);
         }
       }
 
@@ -2811,9 +3061,9 @@
       updateHUD();
     }
 
-    function destroyAsteroidWithSpecialEffect(a, idx) {
+    function destroyAsteroidWithSpecialEffect(a, idx, noFragments = false) {
       game.score += a.points;
-      game.levelProgress++;
+      if (!a.isFragment) game.levelProgress++;
       audio.playExplosion(a.r > 24 ? 1.45 : 1.05);
       spawnExplosion(
         a.x,
@@ -2824,6 +3074,7 @@
       if (a.hasCapsule) {
         spawnPowerup(a.x, a.y);
       }
+      if (!noFragments) spawnMeteorFragments(a);
       asteroids.splice(idx, 1);
       updateHUD();
     }
@@ -2873,7 +3124,7 @@
         const healRatio = lvlNum < 6 ? 0.25 : 0.35;
         player.hp = Math.min(player.maxHp, player.hp + Math.round(player.maxHp * healRatio));
       } else if (p.type === 'bomb') {
-        player.bombs = Math.min(5, player.bombs + 1);
+        player.bombs = Math.min(3, player.bombs + 1);
       } else {
         player.buffs[p.type] = p.dur;
       }
@@ -2955,6 +3206,10 @@
     function openBossDefeatPortraitDialogue() {
       if (!boss || boss.defeated) return;
       boss.defeated = true;
+      if (boss.type === 'maca') {
+        openMacaDefeatDialogue();
+        return;
+      }
       openBossPortraitDialogue('defeat');
     }
 
@@ -2967,12 +3222,10 @@
           bossDlgText.textContent = bossDialogueState.fullText.slice(0, bossDialogueState.charIndex);
           bossDialogueState.charTimer = 0.026;
           if (bossDialogueState.charIndex % 3 === 0) {
-            audio.playTypeBlip(bossDialogueState.mode === 'arrival' ? 310 : 240);
+            audio.playTypeBlip(bossDlgBlipPitch());
           }
           if (bossDialogueState.charIndex >= bossDialogueState.fullText.length) {
-            bossDlgHint.textContent = bossDialogueState.mode === 'arrival'
-              ? 'Toca para iniciar combate ▶'
-              : 'Toca para detonar núcleo ▶';
+            bossDlgHint.textContent = bossDlgDoneHint();
           }
         }
       }
@@ -2980,6 +3233,10 @@
 
     function handleBossDialogueAdvance() {
       if (game.status !== 'boss_dialogue') return;
+      if (bossDialogueState.mode === 'maca') {
+        advanceMacaDialogue();
+        return;
+      }
       if (bossDialogueState.charIndex < bossDialogueState.fullText.length) {
         bossDialogueState.charIndex = bossDialogueState.fullText.length;
         bossDlgText.textContent = bossDialogueState.fullText;
@@ -3018,6 +3275,7 @@
     // =========================================================================
     function openEmergencyInfirmaryChat() {
       game.status = 'infirmary';
+      resetMacaAlly();
       controls.touchActive = false;
       bossDlgOverlay.classList.add('hidden');
       hangarModal.classList.add('hidden');
@@ -3259,6 +3517,10 @@
     // =========================================================================
     function spawnAsteroid() {
       const lvl = LEVELS_DATA[game.levelIndex];
+      if (lvl.meteorShower) {
+        spawnMeteor();
+        return;
+      }
       const theme = lvl.asteroidTheme || 'igneous';
       const isLarge = Math.random() < 0.38;
       const r = isLarge ? (26 + Math.random() * 10) : (14 + Math.random() * 8);
@@ -3513,6 +3775,7 @@
 
     function triggerEndScreen(isVictory) {
       game.status = isVictory ? 'victory' : 'gameover';
+      resetMacaAlly();
       audio.stopMusic();
       bossDlgOverlay.classList.add('hidden');
       hangarModal.classList.add('hidden');
@@ -3528,7 +3791,7 @@
       const title = document.getElementById('end-title');
 
       if (isVictory) {
-        badge.textContent = '¡13 MUNDOS CONQUISTADOS!';
+        badge.textContent = '¡14 MUNDOS CONQUISTADOS!';
         badge.className = 'text-[11px] font-extrabold tracking-widest text-amber-300 uppercase mb-1';
         title.textContent = '¡VICTORIA SUPREMA!';
       } else {
@@ -3539,10 +3802,1267 @@
 
       document.getElementById('end-ship').textContent = player.ship.name;
       document.getElementById('end-score').textContent = String(Math.floor(game.score)).padStart(6, '0');
-      document.getElementById('end-level').textContent = `${String(game.levelIndex + 1).padStart(2, '0')} / 13`;
+      document.getElementById('end-level').textContent = `${String(game.levelIndex + 1).padStart(2, '0')} / 14`;
       document.getElementById('end-best').textContent = String(game.bestScore).padStart(6, '0');
 
       screenEnd.classList.remove('hidden');
+    }
+
+    // =========================================================================
+    // 14B. MACA: AYUDA ALIADA (NAVE AMARILLA), MUNDO 14 DE METEORITOS Y JEFE FINAL
+    // =========================================================================
+    const MACA_HELP_COOLDOWN = 30;
+    const MACA_FIGHT_TIME = 3.5;
+    const BOSS_DLG_NAME_CLS = 'text-xs font-black uppercase tracking-wider text-rose-400';
+    const BOSS_DLG_TAG_CLS = 'text-[9px] font-extrabold uppercase px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-500/40';
+
+    const maca = {
+      active: false,
+      phase: 'none', // 'enter' | 'talk' | 'fight' | 'exit'
+      x: -70,
+      y: 0,
+      t: 0,
+      startX: 0,
+      startY: 0,
+      bank: 0,
+      exitVX: 0,
+      spin: 0,
+      fireT: 0,
+      aimT: 0,
+      ringT: 0,
+      missT: 0,
+      sfxT: 0,
+      cooldown: 0,
+      timesCalled: 0,
+      usedWorldIdx: -1
+    };
+
+    const macaDlg = { lines: [], idx: 0, onDone: null, endHint: 'Toca para continuar ▶' };
+
+    function macaClamp(v, lo, hi) {
+      return Math.max(lo, Math.min(hi, v));
+    }
+
+    // ---------------------------------------------------------------------
+    // Botón AYUDA (etiqueta y recarga)
+    // ---------------------------------------------------------------------
+    let helpLabelCache = '';
+    function updateHelpButton(force = false) {
+      const btn = document.getElementById('btn-help');
+      const label = document.getElementById('help-label');
+      if (!btn || !label) return;
+      const locked = !!(boss && boss.type === 'maca');
+      let text = '🛸 AYUDA';
+      let dim = false;
+      if (locked) {
+        text = '🔒 AYUDA';
+        dim = true;
+      } else if (maca.active) {
+        text = '🛸 EN CAMINO';
+        dim = true;
+      } else if (maca.usedWorldIdx === game.levelIndex) {
+        text = '🛸 USADA';
+        dim = true;
+      }
+      const key = text + (dim ? '|d' : '');
+      if (!force && key === helpLabelCache) return;
+      helpLabelCache = key;
+      label.textContent = text;
+      btn.style.opacity = dim ? '0.55' : '1';
+    }
+
+    function resetMacaAlly() {
+      maca.active = false;
+      maca.phase = 'none';
+      maca.cooldown = 0;
+      maca.t = 0;
+      maca.bank = 0;
+      updateHelpButton(true);
+    }
+
+    // ---------------------------------------------------------------------
+    // Nave amarilla de Maca (mismo tamaño que la del jugador a escala 1)
+    // ---------------------------------------------------------------------
+    function renderMacaShip(tc, x, y, scale = 1, wingPhase = 0, bankAngle = 0, evil = false) {
+      tc.save();
+      tc.translate(x, y);
+      tc.scale(scale, scale);
+      tc.rotate(bankAngle);
+
+      const flap = Math.sin(wingPhase) * 3;
+
+      tc.fillStyle = evil ? '#be123c' : '#ea580c';
+      tc.beginPath();
+      tc.moveTo(-8, 15);
+      tc.lineTo(0, 31 + flap);
+      tc.lineTo(8, 15);
+      tc.closePath();
+      tc.fill();
+
+      tc.fillStyle = evil ? '#fda4af' : '#fde047';
+      tc.beginPath();
+      tc.moveTo(-4, 15);
+      tc.lineTo(0, 23 + flap * 0.6);
+      tc.lineTo(4, 15);
+      tc.closePath();
+      tc.fill();
+
+      // Alas
+      tc.fillStyle = evil ? '#7f1d1d' : '#a16207';
+      tc.beginPath();
+      tc.moveTo(0, -12);
+      tc.lineTo(24, 14 - flap * 0.4);
+      tc.lineTo(15, 19);
+      tc.lineTo(0, 8);
+      tc.lineTo(-15, 19);
+      tc.lineTo(-24, 14 - flap * 0.4);
+      tc.closePath();
+      tc.fill();
+
+      // Fuselaje
+      tc.fillStyle = '#facc15';
+      tc.beginPath();
+      tc.moveTo(0, -24);
+      tc.lineTo(11, 12);
+      tc.lineTo(0, 6);
+      tc.lineTo(-11, 12);
+      tc.closePath();
+      tc.fill();
+      tc.strokeStyle = evil ? '#fca5a5' : '#fef9c3';
+      tc.lineWidth = 1.5;
+      tc.stroke();
+
+      // Aletas de cola
+      tc.fillStyle = evil ? '#ef4444' : '#f59e0b';
+      tc.beginPath();
+      tc.moveTo(-18, 6);
+      tc.lineTo(-23, 20);
+      tc.lineTo(-14, 16);
+      tc.closePath();
+      tc.fill();
+      tc.beginPath();
+      tc.moveTo(18, 6);
+      tc.lineTo(23, 20);
+      tc.lineTo(14, 16);
+      tc.closePath();
+      tc.fill();
+
+      // Cabina
+      tc.fillStyle = '#0f172a';
+      tc.beginPath();
+      tc.ellipse(0, -4, 4.6, 7.4, 0, 0, Math.PI * 2);
+      tc.fill();
+      tc.fillStyle = evil ? '#f87171' : '#67e8f9';
+      tc.beginPath();
+      tc.ellipse(-1, -6, 1.8, 3.2, 0, 0, Math.PI * 2);
+      tc.fill();
+
+      // Luces de punta de ala
+      tc.fillStyle = evil ? '#fecaca' : '#ffffff';
+      tc.fillRect(-24, 12, 3, 3);
+      tc.fillRect(21, 12, 3, 3);
+
+      tc.restore();
+    }
+
+    // ---------------------------------------------------------------------
+    // Retrato de Maca (chico de piel oscura, pelo corto oscuro)
+    // ---------------------------------------------------------------------
+    function drawMacaPortrait(pCtx, mood = 'friendly', size = 116) {
+      pCtx.clearRect(0, 0, size, size);
+      const s = size / 116;
+      pCtx.save();
+      pCtx.scale(s, s);
+
+      const evil = mood === 'evil';
+      const hurt = mood === 'hurt';
+
+      const bg = pCtx.createRadialGradient(58, 54, 8, 58, 58, 68);
+      bg.addColorStop(0, hurt ? '#4c0519' : evil ? '#7f1d1d' : '#a16207');
+      bg.addColorStop(0.65, '#0f172a');
+      bg.addColorStop(1, '#020617');
+      pCtx.fillStyle = bg;
+      pCtx.fillRect(0, 0, 116, 116);
+
+      pCtx.strokeStyle = evil || hurt ? 'rgba(244, 63, 94, 0.2)' : 'rgba(250, 204, 21, 0.16)';
+      pCtx.lineWidth = 1;
+      for (let g = 16; g < 116; g += 20) {
+        pCtx.beginPath();
+        pCtx.moveTo(g, 0);
+        pCtx.lineTo(g, 116);
+        pCtx.moveTo(0, g);
+        pCtx.lineTo(116, g);
+        pCtx.stroke();
+      }
+
+      pCtx.save();
+      pCtx.translate(58, 62);
+      if (hurt) pCtx.rotate(-0.08);
+
+      // Traje de vuelo amarillo
+      pCtx.fillStyle = hurt ? '#a16207' : '#eab308';
+      pCtx.beginPath();
+      pCtx.moveTo(-48, 60);
+      pCtx.quadraticCurveTo(-44, 30, -16, 26);
+      pCtx.lineTo(16, 26);
+      pCtx.quadraticCurveTo(44, 30, 48, 60);
+      pCtx.closePath();
+      pCtx.fill();
+      pCtx.fillStyle = '#fef08a';
+      pCtx.beginPath();
+      pCtx.moveTo(-15, 26);
+      pCtx.lineTo(0, 42);
+      pCtx.lineTo(15, 26);
+      pCtx.lineTo(9, 24);
+      pCtx.lineTo(0, 33);
+      pCtx.lineTo(-9, 24);
+      pCtx.closePath();
+      pCtx.fill();
+
+      // Cuello
+      pCtx.fillStyle = '#3b2316';
+      pCtx.fillRect(-9, 14, 18, 14);
+
+      // Orejas
+      pCtx.fillStyle = '#4f3020';
+      pCtx.beginPath();
+      pCtx.ellipse(-24, -2, 4, 7, 0, 0, Math.PI * 2);
+      pCtx.ellipse(24, -2, 4, 7, 0, 0, Math.PI * 2);
+      pCtx.fill();
+
+      // Cabeza (piel oscura)
+      pCtx.fillStyle = '#5a3825';
+      pCtx.beginPath();
+      pCtx.ellipse(0, -4, 24, 28, 0, 0, Math.PI * 2);
+      pCtx.fill();
+      pCtx.fillStyle = 'rgba(40, 22, 12, 0.35)';
+      pCtx.beginPath();
+      pCtx.ellipse(10, 0, 14, 26, 0, 0, Math.PI * 2);
+      pCtx.fill();
+      pCtx.fillStyle = 'rgba(133, 84, 52, 0.55)';
+      pCtx.beginPath();
+      pCtx.ellipse(-9, 8, 7, 5, 0, 0, Math.PI * 2);
+      pCtx.fill();
+
+      // Pelo corto oscuro
+      pCtx.fillStyle = '#0d0a09';
+      pCtx.beginPath();
+      pCtx.moveTo(-25, -8);
+      pCtx.quadraticCurveTo(-28, -37, 0, -36);
+      pCtx.quadraticCurveTo(28, -37, 25, -8);
+      pCtx.quadraticCurveTo(22, -22, 0, -24);
+      pCtx.quadraticCurveTo(-22, -22, -25, -8);
+      pCtx.closePath();
+      pCtx.fill();
+
+      // Auricular y micrófono amarillos
+      pCtx.fillStyle = '#facc15';
+      pCtx.beginPath();
+      pCtx.arc(-25, 1, 5, 0, Math.PI * 2);
+      pCtx.fill();
+      pCtx.strokeStyle = '#facc15';
+      pCtx.lineWidth = 2;
+      pCtx.beginPath();
+      pCtx.moveTo(-25, 5);
+      pCtx.quadraticCurveTo(-23, 22, -11, 22);
+      pCtx.stroke();
+      pCtx.beginPath();
+      pCtx.arc(-10, 22, 2.3, 0, Math.PI * 2);
+      pCtx.fill();
+
+      // Cejas
+      pCtx.strokeStyle = '#0d0a09';
+      pCtx.lineWidth = 3;
+      pCtx.lineCap = 'round';
+      pCtx.beginPath();
+      if (evil) {
+        pCtx.moveTo(-17, -13);
+        pCtx.lineTo(-5, -6);
+        pCtx.moveTo(5, -6);
+        pCtx.lineTo(17, -13);
+      } else if (hurt) {
+        pCtx.moveTo(-16, -7);
+        pCtx.lineTo(-5, -9);
+        pCtx.moveTo(5, -6);
+        pCtx.lineTo(16, -11);
+      } else {
+        pCtx.moveTo(-16, -8);
+        pCtx.quadraticCurveTo(-10, -12, -5, -9);
+        pCtx.moveTo(5, -9);
+        pCtx.quadraticCurveTo(10, -12, 16, -8);
+      }
+      pCtx.stroke();
+
+      // Ojos
+      pCtx.fillStyle = '#f8fafc';
+      pCtx.beginPath();
+      pCtx.ellipse(-10, -2, 5.2, 3.8, 0, 0, Math.PI * 2);
+      pCtx.ellipse(10, -2, 5.2, 3.8, 0, 0, Math.PI * 2);
+      pCtx.fill();
+      if (evil) {
+        pCtx.fillStyle = 'rgba(239, 68, 68, 0.35)';
+        pCtx.beginPath();
+        pCtx.arc(-10, -2, 8, 0, Math.PI * 2);
+        pCtx.arc(10, -2, 8, 0, Math.PI * 2);
+        pCtx.fill();
+        pCtx.fillStyle = '#ef4444';
+      } else {
+        pCtx.fillStyle = '#1c1008';
+      }
+      pCtx.beginPath();
+      pCtx.arc(-10, -2, 2.7, 0, Math.PI * 2);
+      pCtx.arc(10, -2, 2.7, 0, Math.PI * 2);
+      pCtx.fill();
+      pCtx.fillStyle = '#ffffff';
+      pCtx.fillRect(-11.2, -3.4, 1.4, 1.4);
+      pCtx.fillRect(8.8, -3.4, 1.4, 1.4);
+
+      // Nariz
+      pCtx.fillStyle = '#2b180d';
+      pCtx.beginPath();
+      pCtx.ellipse(-3, 9, 2, 1.2, 0, 0, Math.PI * 2);
+      pCtx.ellipse(3, 9, 2, 1.2, 0, 0, Math.PI * 2);
+      pCtx.fill();
+      pCtx.strokeStyle = 'rgba(30, 16, 8, 0.55)';
+      pCtx.lineWidth = 1.6;
+      pCtx.beginPath();
+      pCtx.moveTo(-1, 0);
+      pCtx.quadraticCurveTo(-4, 6, -3, 8);
+      pCtx.stroke();
+
+      // Boca
+      pCtx.strokeStyle = '#2a120a';
+      pCtx.lineWidth = 2.4;
+      if (evil) {
+        pCtx.beginPath();
+        pCtx.moveTo(-10, 20);
+        pCtx.quadraticCurveTo(0, 19, 11, 13);
+        pCtx.stroke();
+        pCtx.fillStyle = '#f8fafc';
+        pCtx.beginPath();
+        pCtx.moveTo(3, 17.5);
+        pCtx.lineTo(7, 15);
+        pCtx.lineTo(6, 20.5);
+        pCtx.closePath();
+        pCtx.fill();
+      } else if (hurt) {
+        pCtx.beginPath();
+        pCtx.moveTo(-9, 20);
+        pCtx.lineTo(-3, 18);
+        pCtx.lineTo(3, 21);
+        pCtx.lineTo(9, 18);
+        pCtx.stroke();
+      } else {
+        pCtx.beginPath();
+        pCtx.moveTo(-10, 17);
+        pCtx.quadraticCurveTo(0, 27, 10, 17);
+        pCtx.stroke();
+        pCtx.fillStyle = '#f8fafc';
+        pCtx.beginPath();
+        pCtx.moveTo(-8, 18);
+        pCtx.quadraticCurveTo(0, 24.5, 8, 18);
+        pCtx.quadraticCurveTo(0, 20.5, -8, 18);
+        pCtx.closePath();
+        pCtx.fill();
+      }
+
+      if (hurt) {
+        // Venda y rasguño
+        pCtx.save();
+        pCtx.translate(13, -19);
+        pCtx.rotate(0.45);
+        pCtx.fillStyle = '#e2e8f0';
+        pCtx.fillRect(-9, -4, 18, 8);
+        pCtx.strokeStyle = '#94a3b8';
+        pCtx.lineWidth = 1;
+        pCtx.beginPath();
+        pCtx.moveTo(-3, -4);
+        pCtx.lineTo(-3, 4);
+        pCtx.moveTo(3, -4);
+        pCtx.lineTo(3, 4);
+        pCtx.stroke();
+        pCtx.restore();
+        pCtx.strokeStyle = '#dc2626';
+        pCtx.lineWidth = 1.8;
+        pCtx.beginPath();
+        pCtx.moveTo(-17, 6);
+        pCtx.lineTo(-8, 12);
+        pCtx.stroke();
+      }
+
+      pCtx.restore();
+      pCtx.restore();
+    }
+
+    // ---------------------------------------------------------------------
+    // Diálogo de Maca (reutiliza el panel de diálogo de jefe, sin cambiar su diseño)
+    // ---------------------------------------------------------------------
+    function bossDlgBlipPitch() {
+      if (bossDialogueState.mode === 'maca') {
+        const ln = macaDlg.lines[macaDlg.idx];
+        return ln && (ln.theme === 'evil' || ln.theme === 'hurt') ? 190 : 470;
+      }
+      return bossDialogueState.mode === 'arrival' ? 310 : 240;
+    }
+
+    function bossDlgDoneHint() {
+      if (bossDialogueState.mode === 'maca') {
+        return macaDlg.idx < macaDlg.lines.length - 1 ? 'Toca para continuar ▶' : macaDlg.endHint;
+      }
+      return bossDialogueState.mode === 'arrival'
+        ? 'Toca para iniciar combate ▶'
+        : 'Toca para detonar núcleo ▶';
+    }
+
+    function openMacaDialogue(lines, onDone, endHint, clearShots = false) {
+      game.status = 'boss_dialogue';
+      controls.touchActive = false;
+      if (clearShots) {
+        enemyBullets = [];
+        bossLasers = [];
+      }
+      macaDlg.lines = lines;
+      macaDlg.idx = 0;
+      macaDlg.onDone = onDone;
+      macaDlg.endHint = endHint || 'Toca para continuar ▶';
+      bossDialogueState.mode = 'maca';
+      showMacaLine();
+      bossDlgOverlay.classList.remove('hidden');
+      audio.startSeriousDialogueMusic();
+    }
+
+    function showMacaLine() {
+      const ln = macaDlg.lines[macaDlg.idx];
+      if (!ln) return;
+      bossDialogueState.mode = 'maca';
+      bossDialogueState.fullText = ln.text;
+      bossDialogueState.charIndex = 0;
+      bossDialogueState.charTimer = 0.025;
+
+      drawMacaPortrait(bossPortraitCanvas.getContext('2d'), ln.mood || 'friendly', bossPortraitCanvas.width);
+
+      bossDlgName.textContent = 'MACA';
+      bossDlgText.textContent = '';
+      bossDlgHint.textContent = 'Transmisión en curso...';
+
+      const num = String(LEVELS_DATA[game.levelIndex].num).padStart(2, '0');
+      const yellowName = 'text-xs font-black uppercase tracking-wider text-yellow-300';
+      const yellowTag = 'text-[9px] font-extrabold uppercase px-2 py-0.5 rounded bg-yellow-950 text-yellow-200 border border-yellow-400/40';
+      const yellowBadge = 'px-3 py-0.5 rounded-full bg-yellow-500/20 border border-yellow-300/60 text-yellow-200 text-[9px] font-black tracking-widest uppercase mb-2.5';
+      const yellowCard = 'flex flex-col items-center p-2.5 rounded-2xl bg-slate-900/95 border-2 border-yellow-300/80 shadow-[0_0_28px_rgba(250,204,21,0.38)] speaker-active';
+
+      if (ln.theme === 'ally') {
+        bossDlgBadge.textContent = '🛸 REFUERZO ALIADO • NAVE AMARILLA';
+        bossDlgBadge.className = yellowBadge;
+        bossDlgCard.className = yellowCard;
+        bossDlgStatus.textContent = 'Aliado • Piloto de la Flota Amarilla';
+        bossDlgStatus.className = 'text-[9px] font-extrabold uppercase tracking-wider text-emerald-300 mt-1.5';
+        bossDlgName.className = yellowName;
+        bossDlgPhaseTag.textContent = 'REFUERZO';
+        bossDlgPhaseTag.className = yellowTag;
+      } else if (ln.theme === 'trust') {
+        bossDlgBadge.textContent = `📡 SEÑAL DE MACA • MUNDO ${num}`;
+        bossDlgBadge.className = yellowBadge;
+        bossDlgCard.className = yellowCard;
+        bossDlgStatus.textContent = 'Aliado • Señal Entrante';
+        bossDlgStatus.className = 'text-[9px] font-extrabold uppercase tracking-wider text-emerald-300 mt-1.5';
+        bossDlgName.className = yellowName;
+        bossDlgPhaseTag.textContent = 'MACA';
+        bossDlgPhaseTag.className = yellowTag;
+      } else if (ln.theme === 'evil') {
+        bossDlgBadge.textContent = `⚠️ TRAICIÓN REVELADA • MUNDO ${num}`;
+        bossDlgBadge.className = 'px-3 py-0.5 rounded-full bg-rose-500/20 border border-rose-400/60 text-rose-300 text-[9px] font-black tracking-widest uppercase mb-2.5';
+        bossDlgCard.className = 'flex flex-col items-center p-2.5 rounded-2xl bg-slate-900/95 border-2 border-rose-500/75 shadow-[0_0_28px_rgba(244,63,94,0.35)] speaker-active';
+        bossDlgStatus.textContent = 'Enemigo Final • Estado Óptimo';
+        bossDlgStatus.className = 'text-[9px] font-extrabold uppercase tracking-wider text-amber-300 mt-1.5';
+        bossDlgName.className = BOSS_DLG_NAME_CLS;
+        bossDlgPhaseTag.textContent = 'JEFE FINAL';
+        bossDlgPhaseTag.className = BOSS_DLG_TAG_CLS;
+      } else {
+        bossDlgBadge.textContent = `💥 NÚCLEO CRÍTICO • MUNDO ${num}`;
+        bossDlgBadge.className = 'px-3 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/60 text-amber-300 text-[9px] font-black tracking-widest uppercase mb-2.5';
+        bossDlgCard.className = 'flex flex-col items-center p-2.5 rounded-2xl bg-slate-900/95 border-2 border-amber-400/80 shadow-[0_0_28px_rgba(251,191,36,0.38)] speaker-active';
+        bossDlgStatus.textContent = 'Estado: Gravemente Dañado';
+        bossDlgStatus.className = 'text-[9px] font-extrabold uppercase tracking-wider text-rose-400 mt-1.5';
+        bossDlgName.className = BOSS_DLG_NAME_CLS;
+        bossDlgPhaseTag.textContent = 'ÚLTIMAS PALABRAS';
+        bossDlgPhaseTag.className = BOSS_DLG_TAG_CLS;
+      }
+
+      // Efectos dramáticos por línea
+      if (ln.fx === 'reveal') {
+        game.flashAlpha = 0.75;
+        game.flashColor = '#ef4444';
+        game.shake = 18;
+        audio.playExplosion(1.4);
+        audio.playDamage();
+      } else if (ln.fx === 'hurt') {
+        game.flashAlpha = 0.45;
+        game.flashColor = '#fbbf24';
+        game.shake = 12;
+        audio.playExplosion(1.2);
+      }
+    }
+
+    function advanceMacaDialogue() {
+      if (bossDialogueState.charIndex < bossDialogueState.fullText.length) {
+        bossDialogueState.charIndex = bossDialogueState.fullText.length;
+        bossDlgText.textContent = bossDialogueState.fullText;
+        bossDlgHint.textContent = bossDlgDoneHint();
+        return;
+      }
+      if (macaDlg.idx < macaDlg.lines.length - 1) {
+        macaDlg.idx++;
+        showMacaLine();
+      } else {
+        finishMacaDialogue();
+      }
+    }
+
+    function finishMacaDialogue() {
+      bossDlgOverlay.classList.add('hidden');
+      bossDlgName.className = BOSS_DLG_NAME_CLS;
+      bossDlgPhaseTag.className = BOSS_DLG_TAG_CLS;
+      const cb = macaDlg.onDone;
+      macaDlg.onDone = null;
+      if (cb) cb();
+    }
+
+    // ---------------------------------------------------------------------
+    // MACA ALIADO: llega, se presenta, dispara 3.5 s desde todos los ángulos y se va a la derecha
+    // ---------------------------------------------------------------------
+    function triggerMacaHelp() {
+      if (game.status !== 'playing' || player.swapAnim.active) return;
+      if (maca.active) return;
+
+      if (boss && boss.type === 'maca') {
+        addFloatingText(W / 2, H * 0.48, '¡MACA YA NO ES TU ALIADO!', '#fca5a5');
+        return;
+      }
+      if (boss && (!boss.introDone || boss.exploding || boss.defeated)) {
+        addFloatingText(W / 2, H * 0.48, 'ESPERA LA PRESENTACIÓN...', '#cbd5e1');
+        return;
+      }
+      if (maca.usedWorldIdx === game.levelIndex) {
+        addFloatingText(W / 2, H * 0.48, 'AYUDA YA USADA EN ESTE MUNDO', '#cbd5e1');
+        return;
+      }
+
+      maca.active = true;
+      maca.usedWorldIdx = game.levelIndex;
+      maca.phase = 'enter';
+      maca.t = 0;
+      maca.x = -70;
+      maca.y = H * 0.36;
+      maca.bank = 0.28;
+      maca.spin = 0;
+      maca.timesCalled++;
+      audio.playPowerup('wingman');
+      addFloatingText(W / 2, H * 0.3, '¡SEÑAL ALIADA ENTRANTE!', '#fde047');
+      updateHelpButton();
+    }
+
+    function macaTrail(x, y) {
+      for (let i = 0; i < 2; i++) {
+        if (particles.length >= 130) particles.shift();
+        particles.push({
+          x: x + (Math.random() - 0.5) * 8,
+          y: y + 22,
+          vx: (Math.random() - 0.5) * 30,
+          vy: 70 + Math.random() * 40,
+          size: 3,
+          color: i % 2 === 0 ? '#fde047' : '#fb923c',
+          life: 0.35,
+          maxLife: 0.35
+        });
+      }
+    }
+
+    function startMacaAllyDialogue() {
+      const intro = [
+        { theme: 'ally', mood: 'friendly', text: '¡Hola, piloto! Soy Maca, de la Flota Amarilla. Andaba de patrulla y capté tu señal de auxilio.' },
+        { theme: 'ally', mood: 'friendly', text: 'No te preocupes, te ayudaré. ¡Quédate atrás y mira cómo limpio el cielo!' }
+      ];
+      const repeats = [
+        '¡Maca al rescate otra vez! No te preocupes, te ayudaré.',
+        '¡Aquí estoy de nuevo, piloto! Yo me encargo de ellos.',
+        'Tranquilo, te ayudaré. ¡Que se preparen!'
+      ];
+      const lines = maca.timesCalled <= 1
+        ? intro
+        : [{ theme: 'ally', mood: 'friendly', text: repeats[Math.floor(Math.random() * repeats.length)] }];
+
+      openMacaDialogue(lines, () => {
+        game.status = 'playing';
+        maca.phase = 'fight';
+        maca.t = 0;
+        maca.startX = maca.x;
+        maca.startY = maca.y;
+        maca.fireT = 0;
+        maca.aimT = 0.1;
+        maca.ringT = 0.05;
+        maca.missT = 0.25;
+        maca.sfxT = 0;
+        game.flashAlpha = 0.25;
+        game.flashColor = '#fef08a';
+        game.shake = 6;
+        if (boss && boss.introDone) audio.startBossMusic();
+        else audio.startLevelMusic(game.levelIndex);
+      }, 'Toca para iniciar la ayuda ▶');
+    }
+
+    function macaPickTarget() {
+      if (boss && !boss.defeated && !boss.exploding && boss.introDone) return boss;
+      let best = null;
+      let bestD = 1e9;
+      enemies.forEach(e => {
+        const d = Math.hypot(e.x - maca.x, e.y - maca.y);
+        if (d < bestD) { bestD = d; best = e; }
+      });
+      asteroids.forEach(a => {
+        const d = Math.hypot(a.x - maca.x, a.y - maca.y);
+        if (d < bestD) { bestD = d; best = a; }
+      });
+      return best;
+    }
+
+    function macaAllyBullet(x, y, ang, speed, dmg, w = 5, h = 15) {
+      bullets.push({
+        x,
+        y,
+        vx: Math.cos(ang) * speed,
+        vy: Math.sin(ang) * speed,
+        w,
+        h,
+        dmg,
+        color: '#facc15',
+        core: '#fff7ed',
+        ally: true
+      });
+    }
+
+    function updateMacaAlly(dt) {
+      if (maca.cooldown > 0 && !maca.active) {
+        maca.cooldown = Math.max(0, maca.cooldown - dt);
+      }
+      if (!maca.active) {
+        updateHelpButton();
+        return;
+      }
+
+      if (maca.phase === 'enter') {
+        maca.t += dt;
+        const tx = W / 2;
+        const ty = H * 0.36;
+        maca.x += (tx - maca.x) * Math.min(1, 5 * dt);
+        maca.y += (ty - maca.y) * Math.min(1, 5 * dt);
+        maca.bank = macaClamp((tx - maca.x) / 480, 0, 0.28);
+        macaTrail(maca.x, maca.y);
+        if (maca.t > 0.35 && Math.abs(tx - maca.x) < 8) {
+          maca.x = tx;
+          maca.y = ty;
+          maca.bank = 0;
+          maca.phase = 'talk';
+          startMacaAllyDialogue();
+        }
+      } else if (maca.phase === 'fight') {
+        maca.t += dt;
+        const T = maca.t;
+
+        // Trayectoria que cubre toda la pantalla (todos los ángulos)
+        const px = W / 2 + Math.sin(T * 2.3) * (W / 2 - 46);
+        const py = H * 0.4 + Math.sin(T * 1.7 + 0.8) * (H * 0.27);
+        const k = Math.min(1, T / 0.45);
+        const nx = maca.startX + (px - maca.startX) * k;
+        const ny = maca.startY + (py - maca.startY) * k;
+        const vx = (nx - maca.x) / Math.max(0.001, dt);
+        maca.bank += (macaClamp(vx * 0.0008, -0.3, 0.3) - maca.bank) * Math.min(1, 12 * dt);
+        maca.x = nx;
+        maca.y = ny;
+        macaTrail(maca.x, maca.y);
+
+        maca.spin += dt * 8;
+
+        // Torbellino: dos flujos opuestos girando
+        maca.fireT -= dt;
+        while (maca.fireT <= 0) {
+          maca.fireT += 0.055;
+          macaAllyBullet(maca.x, maca.y, maca.spin, 560, 12);
+          macaAllyBullet(maca.x, maca.y, maca.spin + Math.PI, 560, 12);
+        }
+
+        // Disparos dirigidos al objetivo más cercano
+        maca.aimT -= dt;
+        if (maca.aimT <= 0) {
+          maca.aimT += 0.22;
+          const tg = macaPickTarget();
+          const ang = tg ? Math.atan2(tg.y - maca.y, tg.x - maca.x) : -Math.PI / 2;
+          [-0.07, 0.07].forEach(off => macaAllyBullet(maca.x, maca.y, ang + off, 700, 20, 5, 18));
+        }
+
+        // Anillo de plasma 360°
+        maca.ringT -= dt;
+        if (maca.ringT <= 0) {
+          maca.ringT += 0.7;
+          for (let i = 0; i < 16; i++) {
+            macaAllyBullet(maca.x, maca.y, (i / 16) * Math.PI * 2 + maca.spin * 0.3, 430, 12);
+          }
+          if (shockwaves.length < 16) {
+            shockwaves.push({
+              x: maca.x,
+              y: maca.y,
+              r: 6,
+              maxR: 160,
+              color: '#facc15',
+              secondaryColor: '#ffffff',
+              alpha: 1.0,
+              coreRadius: 12,
+              expandSpeed: 320
+            });
+          }
+          audio.playMissileLaunch();
+        }
+
+        // Misiles buscadores
+        maca.missT -= dt;
+        if (maca.missT <= 0) {
+          maca.missT += 0.5;
+          [-14, 14].forEach(ox => {
+            missiles.push({
+              x: maca.x + ox,
+              y: maca.y,
+              vx: ox * 9,
+              vy: -110,
+              speed: 470,
+              dmg: 34,
+              life: 2.2
+            });
+          });
+        }
+
+        maca.sfxT -= dt;
+        if (maca.sfxT <= 0) {
+          maca.sfxT = 0.11;
+          audio.playShoot('xverde');
+        }
+
+        if (T >= MACA_FIGHT_TIME) {
+          maca.phase = 'exit';
+          maca.t = 0;
+          maca.exitVX = 160;
+          addFloatingText(maca.x, maca.y - 36, '¡Suerte, piloto!', '#fde047');
+        }
+      } else if (maca.phase === 'exit') {
+        maca.t += dt;
+        maca.exitVX = Math.min(640, maca.exitVX + 700 * dt);
+        maca.x += maca.exitVX * dt;
+        maca.y += Math.sin(maca.t * 6) * 10 * dt;
+        maca.bank = 0.28;
+        macaTrail(maca.x, maca.y);
+        if (maca.x > W + 70) {
+          maca.active = false;
+          maca.phase = 'none';
+        }
+      }
+
+      updateHelpButton();
+    }
+
+    // ---------------------------------------------------------------------
+    // MUNDO 14: LLUVIA DE METEORITOS DISTINTIVOS (SE FRAGMENTAN)
+    // ---------------------------------------------------------------------
+    const METEOR_STYLES = {
+      magma: { c1: '#f97316', c2: '#4a1d12', rim: '#fdba74', glow: '#fb923c' },
+      ion:   { c1: '#22d3ee', c2: '#3b1d7a', rim: '#e0f2fe', glow: '#67e8f9' },
+      gold:  { c1: '#fde047', c2: '#a16207', rim: '#fef9c3', glow: '#facc15' }
+    };
+
+    function buildMeteor(kind, tier, x, y, vx, vy, isFragment) {
+      const st = METEOR_STYLES[kind];
+      const r = tier === 2 ? 32 + Math.random() * 8 : tier === 1 ? 17 + Math.random() * 5 : 9 + Math.random() * 3;
+      const sides = tier === 2 ? 11 : tier === 1 ? 8 : 6;
+      const verts = [];
+      for (let i = 0; i < sides; i++) {
+        const ang = (i / sides) * Math.PI * 2;
+        const dist = r * (kind === 'ion' ? (i % 2 === 0 ? 1.12 : 0.62) : (0.74 + Math.random() * 0.36));
+        verts.push({ x: Math.cos(ang) * dist, y: Math.sin(ang) * dist });
+      }
+      const hpTable = { magma: [24, 58, 150], ion: [20, 40, 40], gold: [60, 90, 90] };
+      const ptsTable = [90, 180, 320];
+      const cracks = [];
+      if (kind === 'magma' && tier >= 1) {
+        const n = tier === 2 ? 4 : 2;
+        for (let i = 0; i < n; i++) {
+          const a0 = Math.random() * Math.PI * 2;
+          cracks.push({
+            x1: Math.cos(a0) * r * 0.15,
+            y1: Math.sin(a0) * r * 0.15,
+            x2: Math.cos(a0 + 0.5) * r * 0.78,
+            y2: Math.sin(a0 + 0.5) * r * 0.78
+          });
+        }
+      }
+      const hp = hpTable[kind][tier];
+      return {
+        meteor: true,
+        kind,
+        tier,
+        isFragment,
+        x,
+        y,
+        r,
+        vx,
+        vy,
+        rot: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random() - 0.5) * (tier === 0 ? 7 : 3.2),
+        hp,
+        maxHp: hp,
+        points: ptsTable[tier] + (kind === 'ion' ? 30 : 0) + (kind === 'gold' ? 200 : 0),
+        color1: st.c1,
+        color2: st.c2,
+        rim: st.rim,
+        glow: st.glow,
+        verts,
+        cracks,
+        hasCapsule: kind === 'gold' || (!isFragment && Math.random() < 0.06)
+      };
+    }
+
+    function spawnMeteor() {
+      if (asteroids.length > 30) return;
+      const roll = Math.random();
+      const kind = roll < 0.08 ? 'gold' : roll < 0.40 ? 'ion' : 'magma';
+      const x = 40 + Math.random() * (W - 80);
+      const wob = Math.random() - 0.5;
+      if (kind === 'magma') {
+        const tier = Math.random() < 0.55 ? 2 : 1;
+        asteroids.push(buildMeteor('magma', tier, x, -60, wob * 90, (tier === 2 ? 118 : 165) + Math.random() * 28, false));
+      } else if (kind === 'ion') {
+        const dir = x < W / 2 ? 1 : -1;
+        asteroids.push(buildMeteor('ion', 1, x, -50, dir * (70 + Math.random() * 90), 270 + Math.random() * 70, false));
+      } else {
+        asteroids.push(buildMeteor('gold', 1, x, -50, wob * 70, 150, false));
+      }
+    }
+
+    function spawnMeteorFragments(a) {
+      if (!a.meteor || a.tier <= 0 || a.kind === 'gold') return;
+      if (asteroids.length > 46) return;
+      const count = a.tier === 2 ? 3 : 2;
+      const childTier = a.tier - 1;
+      const base = Math.random() * Math.PI * 2;
+      for (let i = 0; i < count; i++) {
+        const ang = base + (i / count) * Math.PI * 2;
+        const spd = 105 + Math.random() * 70;
+        asteroids.push(buildMeteor(
+          a.kind,
+          childTier,
+          a.x + Math.cos(ang) * a.r * 0.45,
+          a.y + Math.sin(ang) * a.r * 0.45,
+          Math.cos(ang) * spd + a.vx * 0.35,
+          Math.max(75, Math.sin(ang) * spd + a.vy * 0.65),
+          true
+        ));
+      }
+      if (a.tier === 2) addFloatingText(a.x, a.y - a.r - 6, '¡SE FRAGMENTA!', a.glow);
+      if (shockwaves.length < 16) {
+        shockwaves.push({
+          x: a.x,
+          y: a.y,
+          r: a.r * 0.5,
+          maxR: a.r * 2.6,
+          color: a.glow,
+          secondaryColor: '#ffffff',
+          alpha: 0.9,
+          coreRadius: a.r * 0.4,
+          expandSpeed: 240
+        });
+      }
+    }
+
+    function drawMeteor(a) {
+      const spd = Math.hypot(a.vx, a.vy) || 1;
+      const dx = -a.vx / spd;
+      const dy = -a.vy / spd;
+      const nx = -dy;
+      const ny = dx;
+      const tail = a.r * (a.kind === 'ion' ? 5.4 : a.kind === 'gold' ? 3.2 : 3.6);
+      const hw = a.r * (a.kind === 'ion' ? 0.5 : 0.85);
+
+      ctx.save();
+
+      // Cola ardiente
+      const tg = ctx.createLinearGradient(a.x, a.y, a.x + dx * tail, a.y + dy * tail);
+      tg.addColorStop(0, a.glow);
+      tg.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.globalAlpha = 0.6;
+      ctx.fillStyle = tg;
+      ctx.beginPath();
+      ctx.moveTo(a.x + nx * hw, a.y + ny * hw);
+      ctx.lineTo(a.x + dx * tail, a.y + dy * tail);
+      ctx.lineTo(a.x - nx * hw, a.y - ny * hw);
+      ctx.closePath();
+      ctx.fill();
+
+      // Aura
+      ctx.globalAlpha = 0.35;
+      const gg = ctx.createRadialGradient(a.x, a.y, a.r * 0.3, a.x, a.y, a.r * 1.7);
+      gg.addColorStop(0, a.glow);
+      gg.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = gg;
+      ctx.beginPath();
+      ctx.arc(a.x, a.y, a.r * 1.7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      // Cuerpo
+      ctx.translate(a.x, a.y);
+      ctx.rotate(a.rot);
+      ctx.fillStyle = a.color2;
+      ctx.strokeStyle = a.rim;
+      ctx.lineWidth = a.tier === 2 ? 2.4 : 1.8;
+      ctx.beginPath();
+      a.verts.forEach((v, idx) => {
+        if (idx === 0) ctx.moveTo(v.x, v.y);
+        else ctx.lineTo(v.x, v.y);
+      });
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      if (a.kind === 'magma') {
+        ctx.strokeStyle = '#fde047';
+        ctx.lineWidth = 1.8;
+        a.cracks.forEach(c => {
+          ctx.beginPath();
+          ctx.moveTo(c.x1, c.y1);
+          ctx.lineTo(c.x2, c.y2);
+          ctx.stroke();
+        });
+        ctx.fillStyle = a.color1;
+        ctx.beginPath();
+        ctx.arc(-a.r * 0.24, -a.r * 0.2, a.r * 0.2, 0, Math.PI * 2);
+        ctx.arc(a.r * 0.26, a.r * 0.22, a.r * 0.14, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (a.kind === 'ion') {
+        ctx.fillStyle = a.color1;
+        ctx.beginPath();
+        ctx.arc(0, 0, a.r * 0.34, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(0, 0, a.r * 0.16, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        ctx.fillStyle = a.color1;
+        ctx.beginPath();
+        ctx.moveTo(0, -a.r * 0.55);
+        ctx.lineTo(a.r * 0.4, 0);
+        ctx.lineTo(0, a.r * 0.55);
+        ctx.lineTo(-a.r * 0.4, 0);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.moveTo(-a.r * 0.2, -a.r * 0.1);
+        ctx.lineTo(a.r * 0.05, -a.r * 0.3);
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    }
+
+    // ---------------------------------------------------------------------
+    // JEFE FINAL: MACA (nave amarilla del doble de tamaño, se revela como el enemigo)
+    // ---------------------------------------------------------------------
+    function spawnMacaBoss() {
+      const lvl = LEVELS_DATA[game.levelIndex];
+      game.bossSpawned = true;
+      spawnBossSupportHealthDrone();
+
+      game.flashAlpha = 0.55;
+      game.flashColor = '#fde047';
+      game.shake = 14;
+      audio.playFanfare(false);
+
+      boss = {
+        name: 'MACA',
+        type: 'maca',
+        x: W / 2,
+        y: -140,
+        targetY: 170,
+        w: 84,
+        h: 94,
+        hp: lvl.bossHp,
+        maxHp: lvl.bossHp,
+        color1: lvl.bossColor1,
+        color2: lvl.bossColor2,
+        arrivalDialogueOpened: false,
+        introDone: false,
+        defeated: false,
+        exploding: false,
+        explodeTimer: 0,
+        burstTick: 0,
+        vx: 0,
+        fireTimer: 1.4,
+        attackPattern: 0,
+        minionTimer: 5.0,
+        animPhase: 0,
+        shieldClosed: false,
+        enraged: false,
+        t: 0,
+        bank: 0,
+        dashState: 'none',
+        dashTimer: 7.5,
+        dashT: 0,
+        dashVX: 0,
+        dashVY: 0,
+        dashTX: 0,
+        dashTY: 0,
+        delayed: []
+      };
+
+      bossTitle.textContent = 'MACA • JEFE FINAL';
+      bossBarWrap.classList.remove('hidden');
+      updateHUD();
+      updateHelpButton(true);
+    }
+
+    function openMacaArrivalDialogue() {
+      openMacaDialogue([
+        { theme: 'trust', mood: 'friendly', text: '¡Lo lograste, piloto! Cruzaste toda la lluvia de meteoritos. Sabía que podías.' },
+        { theme: 'trust', mood: 'friendly', text: 'Qué orgulloso estoy de haberte ayudado en el camino... ja... ja... ja...' },
+        { theme: 'evil', mood: 'evil', fx: 'reveal', text: 'Ja... nunca pensé que llegarías tan lejos. Cada vez que te ayudé, solo medía tus fuerzas.' },
+        { theme: 'evil', mood: 'evil', text: 'Yo soy el verdadero enemigo. El jefe final de esta galaxia. ¡Aquí termina tu viaje, y nadie sobrevivirá a mi venganza!' }
+      ], () => {
+        if (boss) boss.introDone = true;
+        game.status = 'playing';
+        audio.startBossMusic();
+        spawnEnemy(true);
+        spawnEnemy(true);
+        addFloatingText(W / 2, H * 0.5, '¡MACA, JEFE FINAL!', '#fca5a5');
+        updateHelpButton(true);
+      }, 'Toca para iniciar combate ▶', true);
+    }
+
+    function openMacaDefeatDialogue() {
+      openMacaDialogue([
+        { theme: 'hurt', mood: 'hurt', fx: 'hurt', text: 'Imposible... ¡me venciste! ¿A mí, que te vi crecer en cada mundo?' },
+        { theme: 'hurt', mood: 'hurt', text: 'Esto no se queda así. Volveré de entre las cenizas... ¡y la galaxia entera pagará por esto!' }
+      ], () => {
+        startGrandBossExplosion();
+      }, 'Toca para detonar núcleo ▶', true);
+    }
+
+    function macaBossShot(x, y, ang, speed, dmg, color, r = 5.2) {
+      enemyBullets.push({
+        x,
+        y,
+        vx: Math.cos(ang) * speed,
+        vy: Math.sin(ang) * speed,
+        r,
+        dmg,
+        color
+      });
+    }
+
+    // 3 ataques distintivos: RÁFAGA DORADA, CORTINA SOLAR y ESPIRAL CARMESÍ
+    function executeMacaAttack(b) {
+      const idx = b.attackPattern % 3;
+      b.attackPattern++;
+      const mult = b.enraged ? 1.16 : 1.0;
+
+      if (idx === 0) {
+        addFloatingText(b.x, b.y + 66, 'RÁFAGA DORADA', '#fde047');
+        const base = Math.atan2(player.y - b.y, player.x - b.x);
+        const offs = b.enraged
+          ? [-0.54, -0.36, -0.18, 0, 0.18, 0.36, 0.54]
+          : [-0.36, -0.18, 0, 0.18, 0.36];
+        offs.forEach(o => macaBossShot(b.x, b.y + 34, base + o, 320 * mult, 17, '#facc15'));
+        audio.playShoot('elizdark');
+      } else if (idx === 1) {
+        addFloatingText(b.x, b.y + 66, 'CORTINA SOLAR', '#fb923c');
+        const offsets = b.enraged ? [-150, -50, 50, 150] : [-100, 0, 100];
+        const bx = b.x;
+        const by = b.y + 38;
+        const tx = player.x;
+        offsets.forEach(off => {
+          const x2 = macaClamp(tx + off, 24, W - 24);
+          // Aviso fino (sin daño) y luego el rayo real
+          bossLasers.push({ x1: bx, y1: by, x2, y2: H, width: 4, life: 0.55, maxLife: 0.55, color: '#fecaca', dmg: 0 });
+          b.delayed.push({
+            t: 0.55,
+            fn: () => {
+              if (!boss || boss !== b || b.exploding || b.defeated) return;
+              bossLasers.push({ x1: bx, y1: by, x2, y2: H, width: 12, life: 0.5, maxLife: 0.5, color: '#fb923c', dmg: 22 });
+              audio.playExplosion(0.6);
+            }
+          });
+        });
+      } else {
+        addFloatingText(b.x, b.y + 66, 'ESPIRAL CARMESÍ', '#f87171');
+        const waves = b.enraged ? 4 : 3;
+        const spokes = b.enraged ? 14 : 12;
+        for (let w = 0; w < waves; w++) {
+          b.delayed.push({
+            t: w * 0.26,
+            fn: () => {
+              if (!boss || boss !== b || b.exploding || b.defeated) return;
+              const off = w * (Math.PI / spokes) + b.animPhase;
+              for (let k = 0; k < spokes; k++) {
+                macaBossShot(
+                  b.x,
+                  b.y + 20,
+                  off + (k / spokes) * Math.PI * 2,
+                  205 * mult,
+                  16,
+                  w % 2 ? '#fb7185' : '#ef4444',
+                  5
+                );
+              }
+              audio.playMissileLaunch();
+            }
+          });
+        }
+      }
+    }
+
+    function updateMacaBoss(b, dt) {
+      if (!b.enraged && b.hp <= b.maxHp * 0.4) {
+        b.enraged = true;
+        game.shake = 12;
+        game.flashAlpha = 0.4;
+        game.flashColor = '#f43f5e';
+        addFloatingText(b.x, b.y + 80, '¡MACA ENFURECE!', '#f43f5e');
+        addFloatingText(W / 2, H * 0.46, '“¡NO ME VENCERÁS!”', '#fca5a5');
+      }
+
+      const rage = b.enraged ? 1.32 : 1.0;
+      b.animPhase += 4.5 * rage * dt;
+
+      // Llegada desde arriba
+      if (b.y < b.targetY) {
+        b.y += 120 * dt;
+        if (b.y >= b.targetY && !b.arrivalDialogueOpened) {
+          b.y = b.targetY;
+          b.arrivalDialogueOpened = true;
+          openMacaArrivalDialogue();
+        }
+        return;
+      }
+
+      if (!b.introDone) return;
+
+      b.t += dt;
+      const topY = 96;
+      const botY = H * 0.5; // se mueve por todos los ángulos hasta la mitad de la pantalla
+
+      if (b.dashState === 'none') {
+        b.dashTimer -= dt;
+        const tx = macaClamp(player.x + Math.sin(b.t * 1.7) * 90, 56, W - 56);
+        const ty = macaClamp(player.y * 0.5 - 40 + Math.sin(b.t * 1.15) * 48, topY, botY);
+        const maxSpd = 200 * rage;
+        const vx = macaClamp((tx - b.x) * 2.4, -maxSpd, maxSpd);
+        const vy = macaClamp((ty - b.y) * 2.4, -maxSpd, maxSpd);
+        b.x += vx * dt;
+        b.y += vy * dt;
+        b.bank += (macaClamp(vx * 0.0014, -0.3, 0.3) - b.bank) * Math.min(1, 10 * dt);
+        if (b.dashTimer <= 0) {
+          b.dashState = 'prep';
+          b.dashT = 0.75;
+          b.dashTX = player.x;
+          b.dashTY = macaClamp(player.y, topY, botY);
+          addFloatingText(b.x, b.y + 66, '¡EMBESTIDA!', '#fca5a5');
+        }
+      } else if (b.dashState === 'prep') {
+        b.dashT -= dt;
+        b.x += (Math.random() - 0.5) * 3;
+        if (b.dashT <= 0) {
+          const ang = Math.atan2(b.dashTY - b.y, b.dashTX - b.x);
+          b.dashState = 'charge';
+          b.dashT = 0.5;
+          b.dashVX = Math.cos(ang) * 600 * rage;
+          b.dashVY = Math.sin(ang) * 600 * rage;
+          audio.playExplosion(0.8);
+        }
+      } else if (b.dashState === 'charge') {
+        b.dashT -= dt;
+        b.x = macaClamp(b.x + b.dashVX * dt, 50, W - 50);
+        b.y = macaClamp(b.y + b.dashVY * dt, topY, botY);
+        if (b.dashT <= 0) {
+          b.dashState = 'none';
+          b.dashTimer = 8.5 / rage;
+        }
+      }
+
+      // Acciones retrasadas (rayos y oleadas)
+      for (let i = b.delayed.length - 1; i >= 0; i--) {
+        const d = b.delayed[i];
+        d.t -= dt;
+        if (d.t <= 0) {
+          b.delayed.splice(i, 1);
+          d.fn();
+        }
+      }
+
+      // Súbditos: 25% más de ayuda que los demás jefes (más frecuentes y hasta 25% más a la vez)
+      b.minionTimer -= dt;
+      if (b.minionTimer <= 0) {
+        b.minionTimer = (b.enraged ? 4.2 : 6.0) / 1.25;
+        if (enemies.length < 3 * 1.25) {
+          spawnEnemy(true);
+        }
+      }
+
+      // Ataques
+      b.fireTimer -= dt;
+      if (b.fireTimer <= 0) {
+        b.fireTimer = Math.max(0.8, 1.5 / rage);
+        if (b.dashState === 'none') executeMacaAttack(b);
+      }
+
+      if (overlap(player.x, player.y, player.w * 0.7, player.h * 0.7, b.x, b.y, b.w * 0.8, b.h * 0.8)) {
+        damagePlayer(b.dashState === 'charge' ? 34 : 25);
+      }
+    }
+
+    function drawMacaBoss(b) {
+      ctx.save();
+      ctx.translate(b.x, b.y);
+
+      const aura = ctx.createRadialGradient(0, 0, 10, 0, 0, 96);
+      aura.addColorStop(0, b.enraged ? 'rgba(244, 63, 94, 0.40)' : 'rgba(250, 204, 21, 0.26)');
+      aura.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = aura;
+      ctx.beginPath();
+      ctx.arc(0, 0, 96, 0, Math.PI * 2);
+      ctx.fill();
+
+      if (b.enraged) {
+        ctx.strokeStyle = 'rgba(244, 63, 94, 0.35)';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(0, 0, 80 + Math.sin(b.animPhase) * 4, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      if (b.dashState === 'prep') {
+        ctx.strokeStyle = `rgba(248, 113, 113, ${0.4 + 0.4 * Math.sin(b.dashT * 36)})`;
+        ctx.lineWidth = 3;
+        ctx.setLineDash([9, 9]);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(b.dashTX - b.x, b.dashTY - b.y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      // Nave del doble de tamaño, mirando hacia el jugador
+      ctx.rotate(Math.PI);
+      renderMacaShip(ctx, 0, 0, 2, b.animPhase * 2, -b.bank, true);
+
+      ctx.restore();
     }
 
     // =========================================================================
@@ -3695,6 +5215,340 @@
       }
     }
 
+    // =========================================================================
+    // FONDO DE ESCENARIO: planetas, lunas, satélites y naves destruidas que pasan
+    // por detrás del juego (sin colisión y con transparencia para no estorbar)
+    // =========================================================================
+    let scenery = [];
+    let sceneryTimer = 1.5;
+
+    function sceneryKinds(idx) {
+      if (idx === 13) return ['darkrock'];
+      return ['sat', 'moon', 'wreck', 'planet', 'ringplanet', 'giantwreck'];
+    }
+
+    let sceneryBolts = [];
+    let boltTimer = 1.2;
+
+    function spawnSceneryItem(idx) {
+      const kinds = sceneryKinds(idx);
+      const kind = kinds[Math.floor(Math.random() * kinds.length)];
+      const lvl = LEVELS_DATA[idx] || LEVELS_DATA[0];
+      const sizes = {
+        sat: () => 22 + Math.random() * 10,
+        moon: () => 18 + Math.random() * 26,
+        wreck: () => 90 + Math.random() * 50,
+        planet: () => 70 + Math.random() * 50,
+        ringplanet: () => 60 + Math.random() * 35,
+        giantwreck: () => 170 + Math.random() * 70,
+        darkrock: () => 26 + Math.random() * 40
+      };
+      const verts = [];
+      for (let k = 0; k < 9; k++) {
+        const a = (k / 9) * Math.PI * 2;
+        const d = 0.7 + Math.random() * 0.35;
+        verts.push({ x: Math.cos(a) * d, y: Math.sin(a) * d });
+      }
+      const big = kind === 'wreck' || kind === 'giantwreck';
+      scenery.push({
+        kind,
+        x: Math.random() * W,
+        y: -120,
+        size: sizes[kind](),
+        vy: (big ? 12 : 22) + Math.random() * 14,
+        rot: big ? (Math.random() - 0.5) * 0.6 : Math.random() * 6.28,
+        vr: big ? (Math.random() - 0.5) * 0.03 : (Math.random() - 0.5) * 0.25,
+        alpha: kind === 'darkrock' ? 0.7 : big ? 0.3 : 0.4,
+        verts,
+        c1: lvl.planetColor1,
+        c2: lvl.planetColor2
+      });
+    }
+
+    function updateScenery(dt) {
+      sceneryTimer -= dt;
+      if (sceneryTimer <= 0 && scenery.length < (game.levelIndex === 13 ? 9 : 2)) {
+        sceneryTimer = game.levelIndex === 13 ? 1.4 + Math.random() * 1.2 : 9.6 + Math.random() * 10.4;
+        spawnSceneryItem(game.levelIndex);
+      }
+
+      // Tormenta del mundo de Maca: rayos y truenos
+      if (game.levelIndex === 13) {
+        boltTimer -= dt;
+        if (boltTimer <= 0) {
+          boltTimer = 1.6 + Math.random() * 3.2;
+          sceneryBolts.push(makeSceneryBolt());
+          setTimeout(() => audio.playThunder(), 250 + Math.random() * 800);
+        }
+      }
+      for (let i = sceneryBolts.length - 1; i >= 0; i--) {
+        sceneryBolts[i].life -= dt;
+        if (sceneryBolts[i].life <= 0) sceneryBolts.splice(i, 1);
+      }
+      for (let i = scenery.length - 1; i >= 0; i--) {
+        const s = scenery[i];
+        s.y += s.vy * dt;
+        s.rot += s.vr * dt;
+        if (s.y - s.size > H + 60) scenery.splice(i, 1);
+      }
+    }
+
+    function drawBrokenSatellite(r) {
+      const u = r / 22;
+      ctx.fillStyle = '#64748b';
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 1.2;
+      ctx.fillRect(-11 * u, -7 * u, 22 * u, 14 * u);
+      ctx.strokeRect(-11 * u, -7 * u, 22 * u, 14 * u);
+
+      ctx.beginPath();
+      ctx.moveTo(0, -7 * u);
+      ctx.lineTo(0, -18 * u);
+      ctx.lineTo(6 * u, -22 * u);
+      ctx.stroke();
+
+      ctx.fillStyle = '#1e3a8a';
+      ctx.strokeStyle = '#93c5fd';
+      ctx.fillRect(-42 * u, -6 * u, 28 * u, 12 * u);
+      ctx.strokeRect(-42 * u, -6 * u, 28 * u, 12 * u);
+
+      ctx.beginPath();
+      ctx.moveTo(14 * u, -6 * u);
+      ctx.lineTo(40 * u, -8 * u);
+      ctx.lineTo(34 * u, -1 * u);
+      ctx.lineTo(42 * u, 5 * u);
+      ctx.lineTo(14 * u, 6 * u);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.strokeStyle = '#fb923c';
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.moveTo(-3 * u, 7 * u);
+      ctx.lineTo(-7 * u, 13 * u);
+      ctx.moveTo(6 * u, -7 * u);
+      ctx.lineTo(9 * u, -12 * u);
+      ctx.stroke();
+    }
+
+    function drawWreck(s) {
+      const r = s.size;
+      ctx.fillStyle = '#1e293b';
+      ctx.strokeStyle = '#64748b';
+      ctx.lineWidth = 2;
+
+      // Sección delantera
+      ctx.beginPath();
+      ctx.moveTo(-r, -r * 0.08);
+      ctx.lineTo(-r * 0.35, -r * 0.22);
+      ctx.lineTo(-r * 0.05, -r * 0.12);
+      ctx.lineTo(-r * 0.05, r * 0.12);
+      ctx.lineTo(-r * 0.35, r * 0.22);
+      ctx.lineTo(-r, r * 0.08);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Sección desprendida y desplazada
+      ctx.save();
+      ctx.translate(r * 0.22, r * 0.14);
+      ctx.rotate(0.12);
+      ctx.beginPath();
+      ctx.moveTo(0, -r * 0.12);
+      ctx.lineTo(r * 0.62, -r * 0.2);
+      ctx.lineTo(r * 0.68, r * 0.18);
+      ctx.lineTo(0, r * 0.12);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+
+      // Líneas de paneles y ventanas
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.5)';
+      ctx.lineWidth = 1;
+      for (let i = -0.8; i < 0.7; i += 0.25) {
+        ctx.beginPath();
+        ctx.moveTo(r * i, -r * 0.1);
+        ctx.lineTo(r * i, r * 0.1);
+        ctx.stroke();
+      }
+      ctx.fillStyle = s.c1;
+      ctx.fillRect(-r * 0.6, -r * 0.03, r * 0.08, r * 0.02);
+
+      // Brillos de fuego en las roturas
+      [[-r * 0.05, 0], [r * 0.25, r * 0.12]].forEach(([x, y]) => {
+        const g = ctx.createRadialGradient(x, y, 0, x, y, r * 0.22);
+        g.addColorStop(0, '#fb923c');
+        g.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(x, y, r * 0.22, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    function makeSceneryBolt() {
+      const pts = [];
+      let x = 40 + Math.random() * (W - 80);
+      let y = -10;
+      const endY = 260 + Math.random() * 340;
+      pts.push({ x, y });
+      while (y < endY) {
+        y += 18 + Math.random() * 26;
+        x = Math.max(10, Math.min(W - 10, x + (Math.random() - 0.5) * 42));
+        pts.push({ x, y });
+      }
+      return { pts, life: 0.32, max: 0.32 };
+    }
+
+    function drawSceneryBolts() {
+      sceneryBolts.forEach(b => {
+        const a = Math.max(0, b.life / b.max);
+        ctx.save();
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+        const path = () => {
+          ctx.beginPath();
+          b.pts.forEach((p, i) => (i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y)));
+          ctx.stroke();
+        };
+        ctx.globalAlpha = a * 0.55;
+        ctx.strokeStyle = '#67e8f9';
+        ctx.lineWidth = 8;
+        path();
+        ctx.globalAlpha = a;
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        path();
+        ctx.restore();
+        ctx.fillStyle = 'rgba(186, 230, 253, ' + (0.07 * a).toFixed(3) + ')';
+        ctx.fillRect(0, 0, W, H);
+      });
+    }
+
+    function drawSceneryItem(s) {
+      const r = s.size;
+      if (s.kind === 'darkrock') {
+        ctx.fillStyle = '#0b1020';
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        s.verts.forEach((v, i) => (i === 0 ? ctx.moveTo(v.x * r, v.y * r) : ctx.lineTo(v.x * r, v.y * r)));
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(51, 65, 85, 0.5)';
+        ctx.beginPath();
+        ctx.arc(-r * 0.25, -r * 0.2, r * 0.18, 0, Math.PI * 2);
+        ctx.fill();
+        return;
+      }
+      if (s.kind === 'sat') {
+        drawBrokenSatellite(r);
+        return;
+      }
+      if (s.kind === 'wreck' || s.kind === 'giantwreck') {
+        drawWreck(s);
+        return;
+      }
+
+      const isMoon = s.kind === 'moon';
+      const isRing = s.kind === 'ringplanet';
+      if (isRing) {
+        ctx.strokeStyle = s.c1;
+        ctx.lineWidth = Math.max(2, r * 0.08);
+        ctx.beginPath();
+        ctx.ellipse(0, 0, r * 1.65, r * 0.36, -0.3, Math.PI, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      const g = ctx.createRadialGradient(-r * 0.3, -r * 0.3, r * 0.1, 0, 0, r);
+      if (isMoon) {
+        g.addColorStop(0, '#cbd5e1');
+        g.addColorStop(0.7, '#475569');
+        g.addColorStop(1, '#0f172a');
+      } else {
+        g.addColorStop(0, s.c1);
+        g.addColorStop(0.75, s.c2);
+        g.addColorStop(1, 'rgba(2, 6, 23, 0.95)');
+      }
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = 'rgba(2, 6, 23, 0.25)';
+      const craters = isMoon
+        ? [[-0.3, -0.2, 0.22], [0.25, 0.3, 0.15], [0.1, -0.45, 0.1]]
+        : [[-0.35, 0.1, 0.18], [0.3, -0.25, 0.12], [0.1, 0.4, 0.2]];
+      craters.forEach(([x, y, k]) => {
+        ctx.beginPath();
+        ctx.arc(x * r, y * r, k * r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      if (isRing) {
+        ctx.strokeStyle = s.c1;
+        ctx.lineWidth = Math.max(2, r * 0.08);
+        ctx.beginPath();
+        ctx.ellipse(0, 0, r * 1.65, r * 0.36, -0.3, 0, Math.PI);
+        ctx.stroke();
+      }
+    }
+
+    function drawSceneryLayer() {
+      scenery.forEach(s => {
+        ctx.save();
+        ctx.translate(s.x, s.y);
+        ctx.rotate(s.rot);
+        ctx.globalAlpha = s.alpha;
+        drawSceneryItem(s);
+        ctx.restore();
+      });
+      ctx.globalAlpha = 1;
+      drawSceneryBolts();
+    }
+
+    const BOSS_ROAM_SPEED = {
+      octopus: 1.0, megalodon: 1.5, crocodile: 1.3, mantaray: 1.1, crab: 0.9,
+      jellyfish: 1.0, narwhal: 1.4, turtle: 0.8, eel: 1.5, whale: 0.85
+    };
+
+    // Movimiento libre: el jefe elige puntos cerca de ti (para atacarte) o al azar,
+    // siempre dentro de la mitad superior de la pantalla.
+    function updateBossRoam(b, dt) {
+      const sp = (BOSS_ROAM_SPEED[b.type] || 1) * (b.enraged ? 1.3 : 1);
+      if (b.roamTimer === undefined || b.roamTimer <= 0) {
+        b.roamTimer = 1.4 + Math.random() * 1.3;
+        if (Math.random() < 0.6) {
+          const ang = Math.random() * Math.PI * 2;
+          const dist = 70 + Math.random() * 90;
+          b.roamTX = macaClamp(player.x + Math.cos(ang) * dist, 50, W - 50);
+          b.roamTY = macaClamp(player.y - 150 + Math.sin(ang) * dist * 0.6, 70, H * 0.5);
+        } else {
+          b.roamTX = 50 + Math.random() * (W - 100);
+          b.roamTY = 70 + Math.random() * (H * 0.5 - 70);
+        }
+      }
+      b.roamTimer -= dt;
+
+      const dx = b.roamTX - b.x;
+      const dy = b.roamTY - b.y;
+      const d = Math.hypot(dx, dy) || 1;
+      const step = Math.min(d, 160 * sp * dt);
+      b.x += (dx / d) * step;
+      b.y += (dy / d) * step;
+
+      // Ondulación propia de cada jefe para que se vea vivo
+      b.x += Math.sin(b.animPhase * 0.9) * 22 * sp * dt;
+      b.y += Math.cos(b.animPhase * 0.7) * 16 * sp * dt;
+
+      b.x = macaClamp(b.x, 50, W - 50);
+      b.y = macaClamp(b.y, 70, H * 0.5);
+      b.bank = macaClamp(dx * 0.003, -0.3, 0.3);
+    }
+
     function updateBoss(dt) {
       if (!boss) return;
 
@@ -3720,6 +5574,11 @@
 
       if (boss.defeated) return;
 
+      if (boss.type === 'maca') {
+        updateMacaBoss(boss, dt);
+        return;
+      }
+
       if (!boss.enraged && boss.hp <= boss.maxHp * 0.4) {
         boss.enraged = true;
         game.shake = 9;
@@ -3741,54 +5600,14 @@
 
       if (!boss.introDone) return;
 
-      switch (boss.type) {
-        case 'octopus':
-          boss.x = W / 2 + Math.sin(boss.animPhase * 0.6) * 100;
-          boss.y = boss.targetY + Math.cos(boss.animPhase * 0.95) * 22;
-          break;
-        case 'megalodon':
-          boss.x += boss.vx * 1.45 * rageMult * dt;
-          if (boss.x < 75 || boss.x > W - 75) boss.vx *= -1;
-          boss.y = boss.targetY + Math.abs(Math.sin(boss.animPhase * 0.85)) * 68;
-          break;
-        case 'crocodile':
-          boss.x += boss.vx * 1.15 * rageMult * dt;
-          if (boss.x < 80 || boss.x > W - 80) boss.vx *= -1;
-          break;
-        case 'mantaray':
-          boss.x = W / 2 + Math.sin(boss.animPhase * 0.75) * 128;
-          boss.y = boss.targetY + Math.sin(boss.animPhase * 1.5) * 32;
-          break;
-        case 'crab':
-          boss.x += boss.vx * 1.15 * rageMult * dt;
-          if (boss.x < 82 || boss.x > W - 82) boss.vx *= -1;
-          boss.shieldClosed = Math.sin(boss.animPhase * 0.65) > 0.65;
-          break;
-        case 'jellyfish':
-          boss.x = W / 2 + Math.cos(boss.animPhase * 0.55) * 92;
-          boss.y = boss.targetY + Math.sin(boss.animPhase * 1.15) * 38;
-          break;
-        case 'narwhal':
-          boss.x = W / 2 + Math.sin(boss.animPhase * 1.2) * 124;
-          boss.y = boss.targetY + Math.cos(boss.animPhase * 1.2) * 48;
-          break;
-        case 'turtle':
-          boss.x = W / 2 + Math.sin(boss.animPhase * 0.45) * 72;
-          break;
-        case 'eel':
-          boss.x = W / 2 + Math.sin(boss.animPhase * 1.0) * 118;
-          boss.y = boss.targetY + Math.sin(boss.animPhase * 2.0) * 26;
-          break;
-        case 'whale':
-          boss.x = W / 2 + Math.sin(boss.animPhase * 0.55) * 95;
-          boss.y = boss.targetY + Math.cos(boss.animPhase * 0.75) * 24;
-          break;
-      }
+      updateBossRoam(boss, dt);
+      if (boss.type === 'crab') boss.shieldClosed = Math.sin(boss.animPhase * 0.65) > 0.65;
 
       boss.minionTimer -= dt;
       if (boss.minionTimer <= 0) {
         boss.minionTimer = boss.enraged ? 4.2 : 6.0;
-        if (enemies.length < 3) {
+        const room = 6 - enemies.length;
+        for (let k = 0; k < Math.min(2, room); k++) {
           spawnEnemy(true);
         }
       }
@@ -3805,6 +5624,7 @@
     }
 
     function updateBackgroundEffects(dt) {
+      updateScenery(dt);
       const currentLvl = LEVELS_DATA[game.levelIndex] || LEVELS_DATA[0];
 
       stars.forEach(s => {
@@ -3887,6 +5707,7 @@
       if (game.status !== 'playing') return;
 
       updatePlayerMovement(dt);
+      updateMacaAlly(dt);
 
       if (player.invuln > 0) player.invuln -= dt;
       if (player.fireTimer > 0) player.fireTimer -= dt;
@@ -3913,7 +5734,7 @@
         b.x += b.vx * dt;
         b.y += b.vy * dt;
 
-        if (b.y < -30 || b.x < -20 || b.x > W + 20) {
+        if (b.y < -30 || b.y > H + 30 || b.x < -20 || b.x > W + 20) {
           bullets.splice(i, 1);
           continue;
         }
@@ -4044,14 +5865,18 @@
       // World Progression: Asteroid Belt World vs Standard Boss World
       if (currentLvl.isAsteroidWorld) {
         if (game.levelProgress >= game.enemiesToBoss && asteroids.length === 0) {
-          completeAsteroidWorld();
-          return;
+          if (currentLvl.macaFinale) {
+            if (!game.bossSpawned && !maca.active) spawnMacaBoss();
+          } else {
+            completeAsteroidWorld();
+            return;
+          }
         } else if (game.levelProgress < game.enemiesToBoss) {
           spawnTimer -= dt;
           if (spawnTimer <= 0) {
             spawnAsteroid();
-            if (Math.random() < 0.45) spawnAsteroid();
-            spawnTimer = Math.max(0.36, 0.72 - game.levelIndex * 0.03);
+            if (Math.random() < (currentLvl.meteorShower ? 0.25 : 0.45)) spawnAsteroid();
+            spawnTimer = currentLvl.meteorShower ? 0.62 : Math.max(0.36, 0.72 - game.levelIndex * 0.03);
           }
         }
       } else {
@@ -4078,21 +5903,25 @@
         a.y += a.vy * dt;
         a.rot += a.rotSpeed * dt;
 
-        if (a.x < a.r + 8 || a.x > W - a.r - 8) a.vx *= -1;
+        if (a.meteor) {
+          if ((a.x < a.r + 8 && a.vx < 0) || (a.x > W - a.r - 8 && a.vx > 0)) a.vx *= -1;
+        } else if (a.x < a.r + 8 || a.x > W - a.r - 8) {
+          a.vx *= -1;
+        }
 
         if (Math.hypot(player.x - a.x, player.y - a.y) < a.r + 14) {
           if (player.buffs.shield > 0) {
-            destroyAsteroidWithSpecialEffect(a, k);
+            destroyAsteroidWithSpecialEffect(a, k, true);
             continue;
           } else {
-            damagePlayer(24);
-            destroyAsteroidWithSpecialEffect(a, k);
+            damagePlayer(a.meteor ? (a.tier === 2 ? 30 : a.tier === 1 ? 22 : 14) : 24);
+            destroyAsteroidWithSpecialEffect(a, k, true);
             continue;
           }
         }
 
         if (a.y > H + 50) {
-          game.levelProgress++;
+          if (!a.isFragment) game.levelProgress++;
           updateHUD();
           asteroids.splice(k, 1);
         }
@@ -4171,7 +6000,7 @@
           bossLasers.splice(i, 1);
           continue;
         }
-        if (player.y > bl.y1 && player.y < bl.y2) {
+        if (bl.dmg > 0 && player.y > bl.y1 && player.y < bl.y2) {
           const t = (player.y - bl.y1) / Math.max(1, bl.y2 - bl.y1);
           const lx = bl.x1 + (bl.x2 - bl.x1) * t;
           if (Math.abs(player.x - lx) < bl.width * 0.5 + 14) {
@@ -4292,12 +6121,40 @@
     }
 
     function drawAquaticBoss(b) {
+      if (b.type === 'maca') {
+        drawMacaBoss(b);
+        return;
+      }
       ctx.save();
       ctx.translate(b.x, b.y);
 
       const c1 = b.color1;
       const c2 = b.color2;
       const wave = Math.sin(b.animPhase);
+
+      // Aura pulsante del color del jefe
+      const pulse = 0.5 + 0.5 * Math.sin(b.animPhase * 0.7);
+      const aura = ctx.createRadialGradient(0, 0, 18, 0, 0, 96);
+      aura.addColorStop(0, c1);
+      aura.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.globalAlpha = 0.22 + 0.16 * pulse;
+      ctx.fillStyle = aura;
+      ctx.beginPath();
+      ctx.arc(0, 0, 96, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      // Anillo de carga justo antes de disparar
+      if (b.fireTimer < 0.4 && b.fireTimer > 0) {
+        const k = 1 - b.fireTimer / 0.4;
+        ctx.globalAlpha = 0.35 + 0.5 * k;
+        ctx.strokeStyle = c2;
+        ctx.lineWidth = 2 + k * 2;
+        ctx.beginPath();
+        ctx.arc(0, 0, 70 - k * 22, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
 
       if (b.enraged) {
         ctx.strokeStyle = 'rgba(244, 63, 94, 0.35)';
@@ -4516,6 +6373,7 @@
       });
 
       drawCelestialBackground();
+      drawSceneryLayer();
 
       const currentLvl = LEVELS_DATA[game.levelIndex] || LEVELS_DATA[0];
       stars.forEach(s => {
@@ -4566,6 +6424,17 @@
       });
 
       bullets.forEach(b => {
+        if (b.ally) {
+          ctx.save();
+          ctx.translate(b.x, b.y);
+          ctx.rotate(Math.atan2(b.vy, b.vx) + Math.PI / 2);
+          ctx.fillStyle = b.color;
+          ctx.fillRect(-b.w * 0.5, -b.h * 0.5, b.w, b.h);
+          ctx.fillStyle = b.core || '#ffffff';
+          ctx.fillRect(-b.w * 0.25, -b.h * 0.4, b.w * 0.5, b.h * 0.8);
+          ctx.restore();
+          return;
+        }
         ctx.fillStyle = b.color;
         ctx.fillRect(b.x - b.w * 0.5, b.y - b.h * 0.5, b.w, b.h);
         ctx.fillStyle = b.core || '#ffffff';
@@ -4573,17 +6442,31 @@
       });
 
       missiles.forEach(m => {
-        ctx.fillStyle = '#fbbf24';
+        ctx.save();
+        ctx.shadowColor = '#a3e635';
+        ctx.shadowBlur = 12;
+        ctx.fillStyle = '#a3e635';
+        ctx.strokeStyle = '#ecfccb';
+        ctx.lineWidth = 1.5;
         ctx.beginPath();
-        ctx.moveTo(m.x, m.y - 10);
-        ctx.lineTo(m.x + 4, m.y + 6);
-        ctx.lineTo(m.x - 4, m.y + 6);
+        ctx.moveTo(m.x, m.y - 12);
+        ctx.lineTo(m.x + 5, m.y + 6);
+        ctx.lineTo(m.x - 5, m.y + 6);
         ctx.closePath();
         ctx.fill();
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(m.x - 1.2, m.y - 2, 2.4, 7);
+        ctx.restore();
       });
 
       // Asteroids (Worlds 3, 6, 9)
       asteroids.forEach(a => {
+        if (a.meteor) {
+          drawMeteor(a);
+          return;
+        }
         ctx.save();
         ctx.translate(a.x, a.y);
         ctx.rotate(a.rot);
@@ -4702,6 +6585,17 @@
           const allyY = player.y + 6;
           renderShipModel(ctx, player.ship, allyX, allyY, 0.6, player.wingPhase, 0);
         }
+      }
+
+      // Maca (nave aliada de ayuda)
+      if (maca.active) {
+        renderMacaShip(ctx, maca.x, maca.y, 1, player.wingPhase, maca.bank, false);
+        ctx.font = '900 9px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#020617';
+        ctx.fillText('MACA', maca.x + 1, maca.y - 32);
+        ctx.fillStyle = '#fde047';
+        ctx.fillText('MACA', maca.x, maca.y - 33);
       }
 
       // Special Explosion Rings & BOMBA Shockwaves
@@ -4843,6 +6737,10 @@
     document.getElementById('btn-boss-dlg-skip').addEventListener('click', e => {
       e.stopPropagation();
       audio.unlock();
+      if (bossDialogueState.mode === 'maca') {
+        finishMacaDialogue();
+        return;
+      }
       bossDialogueState.charIndex = bossDialogueState.fullText.length;
       handleBossDialogueAdvance();
     });
@@ -4872,6 +6770,11 @@
     document.getElementById('btn-bomb').addEventListener('click', () => {
       audio.unlock();
       triggerBomba();
+    });
+
+    document.getElementById('btn-help').addEventListener('click', () => {
+      audio.unlock();
+      triggerMacaHelp();
     });
 
     document.getElementById('btn-mute').addEventListener('click', () => {
@@ -4934,6 +6837,10 @@
           audio.unlock();
           triggerBomba();
         }
+      }
+      if (e.key === 'h' || e.key === 'H') {
+        audio.unlock();
+        triggerMacaHelp();
       }
       if (e.key === 'p' || e.key === 'P') togglePause();
     });
